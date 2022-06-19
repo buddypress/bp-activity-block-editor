@@ -1,0 +1,33 @@
+{
+  "name": "bp-gutenberg",
+  "version": "1.0.0",
+  "description": "Adds the block editor to BP",
+  "main": "index.js",
+  "scripts": {
+    "start": "wp-scripts start",
+		"build": "wp-scripts build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/buddypress/bp-blocks.git"
+  },
+  "keywords": [
+    "blocks",
+    "buddypress"
+  ],
+  "author": "imath",
+  "license": "GPL-2.0-or-later",
+  "bugs": {
+    "url": "https://github.com/buddypress/bp-blocks/issues"
+  },
+  "homepage": "https://github.com/buddypress/bp-blocks#readme",
+  "devDependencies": {
+    "@automattic/isolated-block-editor": "^2.14.1",
+		"@wordpress/scripts": "^23.3.0",
+		"@wordpress/babel-preset-default": "^6.13.0",
+		"@wordpress/browserslist-config": "^4.1.2"
+  },
+	"browserslist": [
+		"extends @wordpress/browserslist-config"
+	]
+}
