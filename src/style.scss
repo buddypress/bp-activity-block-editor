@@ -31,7 +31,27 @@ body {
 			.interface-interface-skeleton__content {
 
 				.edit-post-visual-editor {
-					margin: 50px 0;
+
+					.edit-post-visual-editor__content-area {
+						height: 250px;
+						overflow: auto;
+						padding-bottom: 19px;
+					}
+
+					.block-editor-writing-flow {
+
+						p {
+							margin: 16px auto;
+						}
+					}
+				}
+			}
+
+			&.iso-editor__selected {
+
+				.block-editor-block-list__layout {
+					margin-bottom: 19px;
+					padding-top: 3px;
 				}
 			}
 		}
