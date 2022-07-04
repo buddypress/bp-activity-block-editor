@@ -162,36 +162,6 @@ function activity_block_editor_enqueue_assets() {
 
 	// Editor default styles.
 	wp_enqueue_style( 'bp-gutenberg-activity-editor' );
-	wp_add_inline_style(
-		'bp-gutenberg-activity-editor',
-		'body.activity_page_bp-activity-new #wpcontent {
-			padding-left: 0;
-		}
-
-		body.activity_page_bp-activity-new #wpbody-content {
-			padding-bottom: 0;
-		}
-
-		/* We hide legacy notices in Gutenberg Based Pages, because they were not designed in a way that scaled well.
-		   Plugins can use Gutenberg notices if they need to pass on information to the user when they are editing. */
-		body.activity_page_bp-activity-new #wpbody-content > div:not(#bp-gutenberg):not(#screen-meta) {
-			display: none;
-		}
-
-		body.activity_page_bp-activity-new #wpfooter {
-			display: none;
-		}
-
-		body.activity_page_bp-activity-new .a11y-speak-region {
-			left: -1px;
-			top: -1px;
-		}
-
-		body.activity_page_bp-activity-new ul#adminmenu a.wp-has-current-submenu::after,
-		body.activity_page_bp-activity-new ul#adminmenu > li.current > a.current::after {
-			border-right-color: $white;
-		}'
-	);
 }
 
 /**

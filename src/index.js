@@ -17,7 +17,15 @@
 	},
 } = wp;
 
+/**
+ * Automattic dependency.
+ */
 import IsolatedBlockEditor, { EditorLoaded } from '@automattic/isolated-block-editor';
+
+/**
+ * Internal dependency.
+ */
+import './style.scss';
 
 const saveContent = ( html ) => {
 	console.log( html );

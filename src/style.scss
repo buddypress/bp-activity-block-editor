@@ -1,0 +1,39 @@
+body {
+
+	&.activity_page_bp-activity-new {
+
+		#wpcontent {
+			padding-left: 0;
+		}
+
+		#wpbody-content {
+			padding-bottom: 0;
+
+			> div:not(#bp-gutenberg):not(#screen-meta) {
+				display: none;
+			}
+
+			.a11y-speak-region {
+				left: -1px;
+				top: -1px;
+			}
+		}
+
+		#wpfooter {
+			display: none;
+		}
+	}
+
+	#bp-gutenberg {
+
+		.block-editor {
+
+			.interface-interface-skeleton__content {
+
+				.edit-post-visual-editor {
+					margin: 50px 0;
+				}
+			}
+		}
+	}
+}
