@@ -6,7 +6,6 @@
 	element: {
 		createElement,
 		render,
-		Fragment,
 	},
 	i18n: {
 		__,
@@ -20,42 +19,48 @@
 /**
  * Automattic dependency.
  */
-import IsolatedBlockEditor, { EditorLoaded } from '@automattic/isolated-block-editor';
+import IsolatedBlockEditor, { ToolbarSlot } from '@automattic/isolated-block-editor';
 
 /**
  * Internal dependency.
  */
 import './style.scss';
+import { BP_ACTIVITY_STORE_KEY } from './store';
+import ActivityPublishButton from './components/publish-button';
 
-const saveContent = ( html ) => {
-	console.log( html );
-};
+const ActivityEditor = ( { settings } ) => {
+	const {
+		editor: {
+			activeComponents,
+		}
+	} = settings;
+	const { setActiveComponents, updateContent, resetJustPostedActivity } = useDispatch( BP_ACTIVITY_STORE_KEY );
+	const activityCreated = useSelect( ( select ) => {
+		return select( BP_ACTIVITY_STORE_KEY ).getJustPostedActivity();
+	}, [] );
 
-const loadInitialContent = ( parse ) => {
-	console.log( parse );
-};
+	// Set active components.
+	setActiveComponents( activeComponents );
 
-const setLoaded = ( container ) => {
-	const closest = container.closest( '.iso-editor__loading' );
-
-	if ( closest ) {
-		closest.classList.remove( 'iso-editor__loading' );
+	if ( activityCreated && activityCreated.id ) {
+		resetJustPostedActivity();
 	}
-};
+
+	return (
+		<IsolatedBlockEditor
+			settings={ settings }
+			onSaveContent={ ( html ) => updateContent( html ) }
+			onError={ () => document.location.reload() }
+		>
+			<ToolbarSlot>
+				<ActivityPublishButton />
+			</ToolbarSlot>
+		</IsolatedBlockEditor>
+	);
+}
 
 domReady( function() {
 	const settings = window.bpGutenbergSettings || {};
-	const container = document.querySelector( '#bp-gutenberg' );
 
-	render(
-		<IsolatedBlockEditor
-			settings={ settings }
-			onSaveContent={ ( html ) => saveContent( html ) }
-			onLoad={ ( parse ) => loadInitialContent( parse ) }
-			onError={ () => document.location.reload() }
-		>
-			<EditorLoaded onLoaded={ () => setLoaded( container ) } />
-		</IsolatedBlockEditor>,
-		container
-	);
+	render( <ActivityEditor settings={ settings } />, document.querySelector( '#bp-gutenberg' ) );
 } );
