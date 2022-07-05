@@ -53,22 +53,32 @@ function activity_block_editor_load_screen() {
  */
 function activity_block_editor_get_settings() {
 	$settings = array(
-		'disableCustomColors'                  => get_theme_support( 'disable-custom-colors' ),
-		'disableCustomFontSizes'               => get_theme_support( 'disable-custom-font-sizes' ),
-		'isRTL'                                => is_rtl(),
-		'codeEditingEnabled'                   => false,
-		'__experimentalBlockPatterns'          => array(),
-		'__experimentalBlockPatternCategories' => array(),
-		'activeComponents'                     => array_values( bp_core_get_active_components() ),
+		'iso'    => array(
+			'blocks' => array(
+				'allowBlocks' => array( 'core/paragraph', 'core/embed' ),
+			),
+			'moreMenu' => array(
+				'topToolbar' => true,
+			),
+		),
+		'editor' => array(
+			'disableCustomColors'                  => get_theme_support( 'disable-custom-colors' ),
+			'disableCustomFontSizes'               => get_theme_support( 'disable-custom-font-sizes' ),
+			'isRTL'                                => is_rtl(),
+			'codeEditingEnabled'                   => false,
+			'__experimentalBlockPatterns'          => array(),
+			'__experimentalBlockPatternCategories' => array(),
+			'activeComponents'                     => array_values( bp_core_get_active_components() ),
+		),
 	);
 
 	list( $color_palette, ) = (array) get_theme_support( 'editor-color-palette' );
 	list( $font_sizes, )    = (array) get_theme_support( 'editor-font-sizes' );
 	if ( false !== $color_palette ) {
-		$settings['colors'] = $color_palette;
+		$settings['editor']['colors'] = $color_palette;
 	}
 	if ( false !== $font_sizes ) {
-		$settings['fontSizes'] = $font_sizes;
+		$settings['editor']['fontSizes'] = $font_sizes;
 	}
 
 	return $settings;
