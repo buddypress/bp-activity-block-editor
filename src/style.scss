@@ -41,10 +41,47 @@ body {
 
 					.block-editor-writing-flow {
 
+						.activity-editor-user-avatar__container {
+							width: 75px;
+							height: 75px;
+							float: left;
+
+							.components-button {
+
+								&.activity-editor-user-avatar__button {
+									padding: 0;
+									margin: 10px 5px 0 10px;
+									height: 50px;
+									float: left;
+								}
+							}
+						}
+
+						.block-editor-block-list__layout {
+							margin-left: 80px;
+
+							.block-editor-default-block-appender {
+								clear: none;
+							}
+						}
+
 						p {
 							margin: 16px auto;
 						}
+
 					}
+				}
+			}
+
+			.interface-interface-skeleton__footer {
+
+				.edit-post-layout__footer {
+					padding: 16px 0;
+					margin-right: 28px;
+					display: flex;
+					justify-content: flex-end;
+					gap: 10px;
+					width: 100%;
 				}
 			}
 

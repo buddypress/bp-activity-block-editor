@@ -14,12 +14,15 @@
 		useSelect,
 		useDispatch,
 	},
+	richText: {
+		unregisterFormatType,
+	}
 } = wp;
 
 /**
  * Automattic dependency.
  */
-import IsolatedBlockEditor, { ToolbarSlot } from '@automattic/isolated-block-editor';
+import IsolatedBlockEditor, { EditorHeadingSlot, DocumentSection, FooterSlot } from '@automattic/isolated-block-editor';
 
 /**
  * Internal dependency.
@@ -27,6 +30,7 @@ import IsolatedBlockEditor, { ToolbarSlot } from '@automattic/isolated-block-edi
 import './style.scss';
 import { BP_ACTIVITY_STORE_KEY } from './store';
 import ActivityPublishButton from './components/publish-button';
+import ActivityUserAvatar from './components/user-avatar';
 
 const ActivityEditor = ( { settings } ) => {
 	const {
@@ -52,9 +56,13 @@ const ActivityEditor = ( { settings } ) => {
 			onSaveContent={ ( html ) => updateContent( html ) }
 			onError={ () => document.location.reload() }
 		>
-			<ToolbarSlot>
+			<DocumentSection><h2>Activity</h2></DocumentSection>
+			<FooterSlot>
 				<ActivityPublishButton />
-			</ToolbarSlot>
+			</FooterSlot>
+			<EditorHeadingSlot>
+				<ActivityUserAvatar />
+			</EditorHeadingSlot>
 		</IsolatedBlockEditor>
 	);
 }
