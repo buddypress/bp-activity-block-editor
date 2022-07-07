@@ -50,6 +50,11 @@ const ActivityEditor = ( { settings } ) => {
 		resetJustPostedActivity();
 	}
 
+	// Remove some formatting buttons.
+	['core/text-color', 'core/keyboard', 'core/subscript', 'core/superscript'].forEach( ( format ) => {
+		unregisterFormatType( format );
+	} );
+
 	return (
 		<IsolatedBlockEditor
 			settings={ settings }
