@@ -50,11 +50,6 @@ const ActivityEditor = ( { settings } ) => {
 		resetJustPostedActivity();
 	}
 
-	// Remove some formatting buttons.
-	['core/text-color', 'core/keyboard', 'core/subscript', 'core/superscript'].forEach( ( format ) => {
-		unregisterFormatType( format );
-	} );
-
 	return (
 		<IsolatedBlockEditor
 			settings={ settings }
@@ -74,6 +69,11 @@ const ActivityEditor = ( { settings } ) => {
 
 domReady( function() {
 	const settings = window.bpGutenbergSettings || {};
+
+	// Remove some formatting buttons.
+	['core/text-color', 'core/keyboard', 'core/subscript', 'core/superscript'].forEach( ( format ) => {
+		unregisterFormatType( format );
+	} );
 
 	render( <ActivityEditor settings={ settings } />, document.querySelector( '#bp-gutenberg' ) );
 } );
