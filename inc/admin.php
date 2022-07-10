@@ -143,28 +143,13 @@ function activity_block_editor_enqueue_assets() {
 				.auto-fold #wpcontent { margin-left: 0 !important; }
 			}'
 		);
-		/*$settings['templateLock'] = 'all';
-		$settings['template']     = array(
-			array(
-				'bp/text',
-				array(
-					'placeholder' => __( 'Add an optional complementary text...', 'buddypress' ),
-				),
-			),
-			array(
-				'core-embed/wordpress',
-				array(
-					'url' => $_GET['url'], // phpcs:ignore
-				),
-			),
-		);*/
 	}
 
 	/**
 	 * Add a setting to inform whether the Activity Block Editor
 	 * is used form the Activity Admin screen or not.
 	 */
-	$settings['isActivityAdminScreen'] = ! defined( 'IFRAME_REQUEST' ) && is_admin();
+	$settings['editor']['isActivityAdminScreen'] = ! defined( 'IFRAME_REQUEST' ) && is_admin();
 
 	wp_add_inline_script(
 		'bp-gutenberg-activity-editor',

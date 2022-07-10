@@ -12,12 +12,12 @@ const {
 import { TYPES as types } from './action-types';
 
 /**
- * Returns an action object used to set an activity date.
+ * Returns an action object used to set active components.
  *
  * @param {array} list The active components.
  * @return {Object} Object for action.
  */
- export function setActiveComponents( list ) {
+export function setActiveComponents( list ) {
 	return {
 		type: types.SET_ACTIVE_COMPONENTS,
 		list,

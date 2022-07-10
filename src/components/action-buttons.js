@@ -2,18 +2,18 @@
  * WordPress dependencies.
  */
 const {
-	i18n: {
-		__,
-	},
-	element: {
-		createElement,
+	components: {
+		Button,
 	},
 	data: {
 		useSelect,
 		useDispatch,
 	},
-	components: {
-		Button,
+	element: {
+		createElement,
+	},
+	i18n: {
+		__,
 	},
 } = wp;
 
@@ -22,7 +22,7 @@ const {
  */
 import { BP_ACTIVITY_STORE_KEY } from '../store';
 
-const ActivityPublishButton = () => {
+const ActivityActionButtons = () => {
 	const { content, isInserting, user } = useSelect( ( select ) => {
 		const store = select( BP_ACTIVITY_STORE_KEY );
 
@@ -46,21 +46,38 @@ const ActivityPublishButton = () => {
 			content: content,
 		};
 
-		insertActivity( activity );
+		if ( ! isBusy ) {
+			insertActivity( activity );
+		}
+
+		resetBlocks( [] );
+	}
+
+	const cancelActivity = () => {
 		resetBlocks( [] );
 	}
 
 	return (
-		<Button
-			className="activity-editor-header__publish-button"
-			isPrimary
-			disabled={ isDisabled }
-			isBusy={ isBusy }
-			onClick={ () => postActivity() }
-		>
-			{ __( 'Post Update', 'bp-gutenberg' ) }
-		</Button>
+		<div className="activity-editor-footer__action-buttons">
+			<Button
+				className="activity-editor-footer__reset-button"
+				variant="secondary"
+				disabled={ isDisabled }
+				onClick={ () => cancelActivity() }
+			>
+				{ __( 'Cancel', 'bp-gutenberg' ) }
+			</Button>
+			<Button
+				className="activity-editor-footer__publish-button"
+				variant="primary"
+				disabled={ isDisabled }
+				isBusy={ isBusy }
+				onClick={ () => postActivity() }
+			>
+				{ __( 'Post Update', 'bp-gutenberg' ) }
+			</Button>
+		</div>
 	);
 };
 
-export default ActivityPublishButton;
+export default ActivityActionButtons;

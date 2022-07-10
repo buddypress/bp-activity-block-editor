@@ -83,6 +83,10 @@ body {
 					justify-content: flex-end;
 					gap: 10px;
 					width: 100%;
+
+					.activity-editor-footer__reset-button {
+						margin-right: 16px;
+					}
 				}
 			}
 

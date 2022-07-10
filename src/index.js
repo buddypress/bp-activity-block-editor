@@ -29,8 +29,9 @@ import IsolatedBlockEditor, { EditorHeadingSlot, DocumentSection, FooterSlot } f
  */
 import './style.scss';
 import { BP_ACTIVITY_STORE_KEY } from './store';
-import ActivityPublishButton from './components/publish-button';
+import ActivityActionButtons from './components/action-buttons';
 import ActivityUserAvatar from './components/user-avatar';
+import ActivityUserFeedbacks from './components/user-feedback';
 
 const ActivityEditor = ( { settings } ) => {
 	const {
@@ -38,16 +39,14 @@ const ActivityEditor = ( { settings } ) => {
 			activeComponents,
 		}
 	} = settings;
-	const { setActiveComponents, updateContent, resetJustPostedActivity } = useDispatch( BP_ACTIVITY_STORE_KEY );
-	const activityCreated = useSelect( ( select ) => {
-		return select( BP_ACTIVITY_STORE_KEY ).getJustPostedActivity();
+	const { setActiveComponents, updateContent } = useDispatch( BP_ACTIVITY_STORE_KEY );
+	const availableComponents = useSelect( ( select ) => {
+		return select( BP_ACTIVITY_STORE_KEY ).getActiveComponents();
 	}, [] );
 
 	// Set active components.
-	setActiveComponents( activeComponents );
-
-	if ( activityCreated && activityCreated.id ) {
-		resetJustPostedActivity();
+	if ( ! availableComponents ) {
+		setActiveComponents( activeComponents );
 	}
 
 	return (
@@ -56,9 +55,10 @@ const ActivityEditor = ( { settings } ) => {
 			onSaveContent={ ( html ) => updateContent( html ) }
 			onError={ () => document.location.reload() }
 		>
+			<ActivityUserFeedbacks />
 			<DocumentSection><h2>Activity</h2></DocumentSection>
 			<FooterSlot>
-				<ActivityPublishButton />
+				<ActivityActionButtons />
 			</FooterSlot>
 			<EditorHeadingSlot>
 				<ActivityUserAvatar />
