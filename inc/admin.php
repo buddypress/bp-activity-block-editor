@@ -197,6 +197,7 @@ function activity_block_editor_admin_body_class( $admin_body_class = '' ) {
 function activity_block_editor_screen() {
 	?>
 	<div id="bp-gutenberg"></div>
+	<div id="bp-gutenberg-notices"></div>
 	<?php
 }
 

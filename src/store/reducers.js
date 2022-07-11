@@ -56,7 +56,7 @@ const reducer = ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				inserting: action.inserting,
-				created: action.created[0],
+				created: !! action.created[0] ? action.created[0] : state.created,
 				content: '',
 				date: '',
 				groupId: 0,
@@ -73,6 +73,7 @@ const reducer = ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				content: action.content,
+				created: {},
 			};
 
 		case types.SET_ACTIVITY_DATE:

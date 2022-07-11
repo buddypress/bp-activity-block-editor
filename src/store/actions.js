@@ -41,6 +41,7 @@ export function* insertActivity( activity ) {
 			error: error.message,
 		}, activity );
 
+
 		yield { type: types.ADD_ERROR, created };
 	}
 

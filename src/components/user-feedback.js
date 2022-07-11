@@ -9,6 +9,9 @@ const {
 		useSelect,
 		useDispatch,
 	},
+	components: {
+		Notice,
+	},
 	element: {
 		createElement,
 	},
@@ -21,11 +24,19 @@ const {
  * Internal dependencies.
  */
 import { BP_ACTIVITY_STORE_KEY } from '../store';
+import ActivityElementPortal from './portal';
 
+/**
+ * Manage notices display.
+ *
+ * NB: we are not using `createSuccessNotice` or `createErrorNotice` to avoid a
+ * rendering error.
+ *
+ * @returns A Notice React Element or null.
+ */
 const ActivityUserFeedbacks = () => {
-	const { resetJustPostedActivity, updateContent } = useDispatch( BP_ACTIVITY_STORE_KEY );
+	const { updateContent } = useDispatch( BP_ACTIVITY_STORE_KEY );
 	const { resetBlocks } = useDispatch( 'core/block-editor' );
-	const { createSuccessNotice, createErrorNotice, removeNotice } = useDispatch( 'core/notices' );
 	const getSettings = useSelect( ( select ) => {
 		return select( 'core/block-editor' ).getSettings();
 	}, [] );
@@ -38,42 +49,54 @@ const ActivityUserFeedbacks = () => {
 		resetBlocks( blocks );
 
 		updateContent( activity.content );
-		removeNotice( 'activity-posted-error' );
 	};
 
-	if ( activityCreated ) {
-		if ( activityCreated.link ) {
-			if ( getSettings.isActivityAdminScreen && true === getSettings.isActivityAdminScreen ) {
-				createSuccessNotice( __( 'Activity successfully posted', 'bp-gutenberg' ), {
-					isDismissible: true,
-					actions: [ {
-						label: __( 'View Activity', 'bp-gutenberg' ),
-						url: activityCreated.link,
-					} ],
-				} );
-			} else {
-				activityCreated.message = __( 'View Activity', 'bp-gutenberg' );
-				window.parent.postMessage( activityCreated, window.parent.location.href );
-			}
+	if ( activityCreated.link ) {
+		if ( getSettings.isActivityAdminScreen && true === getSettings.isActivityAdminScreen ) {
+			return (
+				<ActivityElementPortal>
+					<Notice
+						status="success"
+						isDismissible={ false }
+						actions={
+							[
+								{
+									label: __( 'View Activity', 'bp-gutenberg' ),
+									url: activityCreated.link,
+								}
+							]
+						}
+					>
+						<p>{ __( 'Activity successfully posted', 'bp-gutenberg' ) }</p>
+					</Notice>
+				</ActivityElementPortal>
+			);
+		} else {
+			activityCreated.message = __( 'View Activity', 'bp-gutenberg' );
+			window.parent.postMessage( activityCreated, window.parent.location.href );
 		}
-
-		if ( activityCreated.error ) {
-			createErrorNotice( activityCreated.error, {
-				id: 'activity-posted-error',
-				isDismissible: true,
-				actions: [ {
-					label: __( 'Restore Activity content', 'bp-gutenberg' ),
-					onClick: () => { resetActivity( activityCreated ); },
-				} ],
-			} );
-		}
-
-		if ( activityCreated.id ) {
-			resetJustPostedActivity();
-		}
+	} else if ( activityCreated.error ) {
+		return (
+			<ActivityElementPortal>
+				<Notice
+					status="error"
+					isDismissible={ false }
+					actions={
+						[
+							{
+								label: __( 'Restore Activity content', 'bp-gutenberg' ),
+								onClick: () => { resetActivity( activityCreated ); },
+							}
+						]
+					}
+				>
+					<p>{ activityCreated.error }</p>
+				</Notice>
+			</ActivityElementPortal>
+		);
+	} else {
+		return null;
 	}
-
-	return null;
 };
 
 export default ActivityUserFeedbacks;

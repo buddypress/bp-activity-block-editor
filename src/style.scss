@@ -9,7 +9,7 @@ body {
 		#wpbody-content {
 			padding-bottom: 0;
 
-			> div:not(#bp-gutenberg):not(#screen-meta) {
+			> div:not(#bp-gutenberg):not(#screen-meta):not(#bp-gutenberg-notices) {
 				display: none;
 			}
 
@@ -97,6 +97,26 @@ body {
 					padding-top: 3px;
 				}
 			}
+		}
+	}
+
+	#bp-gutenberg-notices {
+
+		.components-notice {
+			margin: 0;
+
+			&.is-error {
+
+				.components-notice__action.components-button {
+					color: #cc1818;
+					box-shadow: inset 0 0 0 1px #cc1818;
+				}
+			}
+		}
+
+		.components-notice__action.components-button,
+		.components-notice__action.components-button.is-link {
+			margin-left: 0;
 		}
 	}
 }

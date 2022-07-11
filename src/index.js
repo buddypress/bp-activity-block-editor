@@ -55,14 +55,14 @@ const ActivityEditor = ( { settings } ) => {
 			onSaveContent={ ( html ) => updateContent( html ) }
 			onError={ () => document.location.reload() }
 		>
-			<ActivityUserFeedbacks />
 			<DocumentSection><h2>Activity</h2></DocumentSection>
-			<FooterSlot>
-				<ActivityActionButtons />
-			</FooterSlot>
+			<ActivityUserFeedbacks />
 			<EditorHeadingSlot>
 				<ActivityUserAvatar />
 			</EditorHeadingSlot>
+			<FooterSlot>
+				<ActivityActionButtons />
+			</FooterSlot>
 		</IsolatedBlockEditor>
 	);
 }
