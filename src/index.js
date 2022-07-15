@@ -29,6 +29,7 @@ import IsolatedBlockEditor, { EditorHeadingSlot, DocumentSection, FooterSlot } f
  */
 import './style.scss';
 import { BP_ACTIVITY_STORE_KEY } from './store';
+import ActivitySidebar from './components/sidebar';
 import ActivityActionButtons from './components/action-buttons';
 import ActivityUserAvatar from './components/user-avatar';
 import ActivityUserFeedbacks from './components/user-feedback';
@@ -45,7 +46,7 @@ const ActivityEditor = ( { settings } ) => {
 	}, [] );
 
 	// Set active components.
-	if ( ! availableComponents ) {
+	if ( ! availableComponents || availableComponents.length === 0 ) {
 		setActiveComponents( activeComponents );
 	}
 
@@ -55,7 +56,9 @@ const ActivityEditor = ( { settings } ) => {
 			onSaveContent={ ( html ) => updateContent( html ) }
 			onError={ () => document.location.reload() }
 		>
-			<DocumentSection><h2>Activity</h2></DocumentSection>
+			<DocumentSection>
+				<ActivitySidebar />
+			</DocumentSection>
 			<ActivityUserFeedbacks />
 			<EditorHeadingSlot>
 				<ActivityUserAvatar />

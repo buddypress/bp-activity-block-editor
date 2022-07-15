@@ -23,13 +23,14 @@ const {
 import { BP_ACTIVITY_STORE_KEY } from '../store';
 
 const ActivityActionButtons = () => {
-	const { content, isInserting, user } = useSelect( ( select ) => {
+	const { content, isInserting, user, group } = useSelect( ( select ) => {
 		const store = select( BP_ACTIVITY_STORE_KEY );
 
 		return {
 			content: store.getContent(),
 			isInserting: store.isInsertingActivity(),
 			user: store.getCurrentUser(),
+			group: store.getActivityGroup(),
 		};
 	}, [] );
 	const { insertActivity } = useDispatch( BP_ACTIVITY_STORE_KEY );
@@ -45,6 +46,11 @@ const ActivityActionButtons = () => {
 			component: 'activity',
 			content: content,
 		};
+
+		if ( !! group && group.id ) {
+			activity.primary_item_id = group.id;
+			activity.component = 'groups';
+		}
 
 		if ( ! isBusy ) {
 			insertActivity( activity );

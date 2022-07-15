@@ -26,6 +26,18 @@ body {
 
 	#bp-gutenberg {
 
+		.activity-editor-sidebar__group-selection-cancel,
+		.activity-editor-sidebar__selected-group-cancel {
+			vertical-align: middle;
+			margin-left: 5px;
+			text-decoration: none;
+			border: none;
+
+			.dashicons-dismiss {
+				color: #cc1818;
+			}
+		}
+
 		.block-editor {
 			min-height: auto;
 

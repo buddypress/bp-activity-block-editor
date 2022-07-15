@@ -24,7 +24,7 @@ function activity_block_editor_load_screen() {
 	wp_register_script(
 		'bp-gutenberg-activity-editor',
 		plugins_url( 'build/index.js', dirname( __FILE__ ) ),
-		$script_assets['dependencies'],
+		array_merge( $script_assets['dependencies'], array( 'bp-block-components' ) ),
 		$script_assets['version'],
 		true
 	);
@@ -100,6 +100,7 @@ function activity_block_editor_get_settings() {
 function activity_block_editor_enqueue_assets() {
 	$paths = array(
 		'/buddypress/v1/members/me?context=edit',
+		'/buddypress/v1/components?status=active',
 	);
 
 	if ( bp_is_active( 'groups' ) ) {
