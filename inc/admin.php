@@ -76,6 +76,7 @@ function activity_block_editor_get_settings() {
 			'__experimentalBlockPatternCategories' => array(),
 			'activeComponents'                     => array_values( bp_core_get_active_components() ),
 			'bodyPlaceholder'                      => sprintf( __( 'What’s new %s?', 'bp-gutenberg' ), bp_core_get_user_displayname( get_current_user_id() ) ),
+			'canLockBlocks'                        => false,
 		),
 	);
 
