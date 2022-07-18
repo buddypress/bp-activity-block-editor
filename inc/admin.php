@@ -42,6 +42,26 @@ function activity_block_editor_load_screen() {
 		$script_assets['version']
 	);
 
+	if ( isset( $_GET['aid'] ) && isset( $_GET['action'] ) && 'edit' === sanitize_key( wp_unslash( $_GET['action'] ) ) ) {
+		$activity_id = absint( wp_unslash( $_GET['aid'] ) );
+		$activities  = bp_activity_get(
+			array(
+				'in'          => $activity_id,
+				'show_hidden' => true,
+			)
+		);
+
+		$activity = null;
+		if ( isset( $activities['activities'] ) ) {
+			$activity = reset( $activities['activities'] );
+		}
+
+		// Starts easy before dealing with more complex capabilities.
+		if ( isset( $activity->user_id ) && bp_loggedin_user_id() === (int) $activity->user_id ) {
+			plugin()->edit_activity = $activity;
+		}
+	}
+
 	add_action( 'bp_admin_enqueue_scripts', __NAMESPACE__ . '\activity_block_editor_enqueue_assets' );
 	add_filter( 'admin_body_class', __NAMESPACE__ . '\activity_block_editor_admin_body_class' );
 }
@@ -82,9 +102,11 @@ function activity_block_editor_get_settings() {
 
 	list( $color_palette, ) = (array) get_theme_support( 'editor-color-palette' );
 	list( $font_sizes, )    = (array) get_theme_support( 'editor-font-sizes' );
+
 	if ( false !== $color_palette ) {
 		$settings['editor']['colors'] = $color_palette;
 	}
+
 	if ( false !== $font_sizes ) {
 		$settings['editor']['fontSizes'] = $font_sizes;
 	}
@@ -98,14 +120,17 @@ function activity_block_editor_get_settings() {
  * @since 1.0.0
  */
 function activity_block_editor_enqueue_assets() {
+	$settings                           = activity_block_editor_get_settings();
+	$settings['editor']['activityEdit'] = plugin()->edit_activity;
+
 	$paths = array(
 		'/buddypress/v1/members/me?context=edit',
-		'/buddypress/v1/components?status=active',
 	);
 
 	if ( bp_is_active( 'groups' ) ) {
 		$paths[] = '/buddypress/v1/groups/me?context=edit';
 	}
+
 	/**
 	 * Filter here to add your preloaded paths.
 	 *
@@ -134,7 +159,6 @@ function activity_block_editor_enqueue_assets() {
 
 	wp_enqueue_script( 'bp-gutenberg-activity-editor' );
 
-	$settings = activity_block_editor_get_settings();
 	if ( defined( 'IFRAME_REQUEST' ) && isset( $_GET['url'] ) && $_GET['url'] ) { // phpcs:ignore
 		wp_add_inline_style(
 			'common',
@@ -186,6 +210,12 @@ function activity_block_editor_admin_body_class( $admin_body_class = '' ) {
 
 	if ( defined( 'IFRAME_REQUEST' ) ) {
 		$admin_body_class .= ' iframe';
+	}
+
+	$edit_activity = plugin()->edit_activity;
+
+	if ( ! is_null( $edit_activity ) ) {
+		$admin_body_class .= ' edit-activity';
 	}
 
 	return $admin_body_class;

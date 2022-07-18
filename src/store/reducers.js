@@ -15,6 +15,7 @@ const DEFAULT_STATE = {
 	activeComponents: [],
 	groups: [],
 	groupId: 0,
+	edits: {},
 };
 
 /**
@@ -74,6 +75,15 @@ const reducer = ( state = DEFAULT_STATE, action ) => {
 				...state,
 				content: action.content,
 				created: {},
+			};
+
+		case types.INIT_ACTIVITY_EDITS:
+			return {
+				...state,
+				content: action.activity.content,
+				date: action.activity.date_recorded,
+				groupId: 'item_id' in action.activity && 'groups' === action.activity.component ? action.activity.item_id : 0,
+				edits: action.activity,
 			};
 
 		case types.SET_ACTIVITY_DATE:

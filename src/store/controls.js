@@ -18,4 +18,7 @@ export const controls = {
 	CREATE_FROM_API( { path, data } ) {
 		return apiFetch( { path, method: 'POST', data } );
 	},
+	UPDATE_FROM_API( { path, data } ) {
+		return apiFetch( { path, method: 'PUT', data } );
+	},
 };

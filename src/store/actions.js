@@ -26,6 +26,8 @@ export function setActiveComponents( list ) {
 
 /**
  * Resolver for creating an activity.
+ *
+ * @todo as it's used for inserting and updating, it should be renammed.
  */
 export function* insertActivity( activity ) {
 	let inserting = true, created;
@@ -33,7 +35,11 @@ export function* insertActivity( activity ) {
 	yield { type: types.CREATE_START, inserting, activity };
 
 	try {
-		created = yield createFromAPI( '/buddypress/v1/activity', activity );
+		if ( ! activity.id ) {
+			created = yield createFromAPI( '/buddypress/v1/activity', activity );
+		} else {
+			created = yield updateFromAPI( '/buddypress/v1/activity/' + activity.id, activity );
+		}
 
 	} catch ( error ) {
 		created = assignIn( {
@@ -107,17 +113,43 @@ export function createFromAPI( path, data ) {
 }
 
 /**
+ * Returns an action object used to update an object via the API.
+ *
+ * @param {string} path Endpoint path.
+ * @param {Object} data The data used for the update.
+ * @return {Object} Object for action.
+ */
+ export function updateFromAPI( path, data ) {
+	return {
+		type: types.UPDATE_FROM_API,
+		path,
+		data,
+	};
+}
+
+/**
  * Returns an action object used to update activity content.
  *
  * @param {string} content Activity content.
- * @param {Array} blocks Array of blocks.
  * @return {Object} Object for action.
  */
-export function updateContent( content, blocks ) {
+export function updateContent( content ) {
 	return {
 		type: types.UPDATE_CONTENT,
 		content,
-		blocks,
+	};
+}
+
+/**
+ * Returns an action object used to init the activity edits.
+ *
+ * @param {Object} activity Activity object.
+ * @return {Object} Object for action.
+ */
+ export function initActivityEdits( activity ) {
+	return {
+		type: types.INIT_ACTIVITY_EDITS,
+		activity,
 	};
 }
 

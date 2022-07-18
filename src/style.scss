@@ -36,6 +36,46 @@ body {
 		}
 	}
 
+	&.edit-activity #bp-gutenberg .block-editor,
+	#bp-gutenberg .block-editor.iso-editor__selected {
+		min-height: 145px;
+
+		.edit-post-layout {
+
+			&.has-footer {
+
+				.interface-interface-skeleton__header {
+					display: block;
+				}
+
+				.interface-interface-skeleton__editor {
+					margin-bottom: 68px;
+				}
+
+				.interface-interface-skeleton__body {
+					padding-bottom: 25px;
+				}
+			}
+		}
+
+		.edit-post-visual-editor {
+			margin-top: 35px;
+		}
+
+		&.has-fixed-toolbar .edit-post-visual-editor {
+			margin-top: 0;
+		}
+
+		.interface-interface-skeleton__footer {
+			display: flex;
+		}
+
+		.block-editor-block-list__layout {
+			margin-bottom: 19px;
+			padding-top: 3px;
+		}
+	}
+
 	#bp-gutenberg {
 
 		.activity-editor-sidebar__group-selection-cancel,
@@ -128,45 +168,6 @@ body {
 					.activity-editor-footer__reset-button {
 						margin-right: 16px;
 					}
-				}
-			}
-
-			&.iso-editor__selected {
-				min-height: 145px;
-
-				.edit-post-layout {
-
-					&.has-footer {
-
-						.interface-interface-skeleton__header {
-							display: block;
-						}
-
-						.interface-interface-skeleton__editor {
-							margin-bottom: 68px;
-						}
-
-						.interface-interface-skeleton__body {
-							padding-bottom: 25px;
-						}
-					}
-				}
-
-				.edit-post-visual-editor {
-					margin-top: 35px;
-				}
-
-				&.has-fixed-toolbar .edit-post-visual-editor {
-					margin-top: 0;
-				}
-
-				.interface-interface-skeleton__footer {
-					display: flex;
-				}
-
-				.block-editor-block-list__layout {
-					margin-bottom: 19px;
-					padding-top: 3px;
 				}
 			}
 		}

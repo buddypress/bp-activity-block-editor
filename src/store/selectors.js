@@ -46,6 +46,16 @@ export const getContent = ( state )  => {
 };
 
 /**
+ * Retrieves the activity edits.
+ *
+ * @param {Object} state The current state.
+ * @return {Object} The data to return.
+ */
+ export const getActivityEdits = ( state )  => {
+	return state.edits || {};
+};
+
+/**
  * Retrieves blocks.
  *
  * @param {Object} state The current state.

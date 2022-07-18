@@ -38,9 +38,10 @@ const ActivityEditor = ( { settings } ) => {
 	const {
 		editor: {
 			activeComponents,
+			activityEdit,
 		}
 	} = settings;
-	const { setActiveComponents, updateContent } = useDispatch( BP_ACTIVITY_STORE_KEY );
+	const { setActiveComponents, updateContent, initActivityEdits } = useDispatch( BP_ACTIVITY_STORE_KEY );
 	const availableComponents = useSelect( ( select ) => {
 		return select( BP_ACTIVITY_STORE_KEY ).getActiveComponents();
 	}, [] );
@@ -50,10 +51,23 @@ const ActivityEditor = ( { settings } ) => {
 		setActiveComponents( activeComponents );
 	}
 
+	const loadInitialContent = ( parse ) => {
+		let content = '';
+		if ( null !== activityEdit && activityEdit.content ) {
+			activityEdit.blocks = parse( activityEdit.content );
+			initActivityEdits( activityEdit );
+
+			content = activityEdit.blocks;
+		}
+
+		return content;
+	}
+
 	return (
 		<IsolatedBlockEditor
 			settings={ settings }
 			onSaveContent={ ( html ) => updateContent( html ) }
+			onLoad={ ( parse ) => loadInitialContent( parse ) }
 			onError={ () => document.location.reload() }
 		>
 			<DocumentSection>

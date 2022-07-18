@@ -44,6 +44,7 @@ const ActivityUserFeedbacks = () => {
 		return select( BP_ACTIVITY_STORE_KEY ).getJustPostedActivity();
 	}, [] );
 
+	// @todo in case of an edit, the blocks shouldn't be reset.
 	const resetActivity = ( activity ) => {
 		const blocks = parse( activity.content );
 		resetBlocks( blocks );

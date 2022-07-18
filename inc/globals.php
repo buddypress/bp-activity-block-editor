@@ -28,5 +28,8 @@ function globals() {
 
 	// URL.
 	$bp_plugin->url = plugins_url( '', dirname( __FILE__ ) );
+
+	// Edited activity.
+	$bp_plugin->edit_activity = null;
 }
 add_action( 'bp_loaded', __NAMESPACE__ . '\globals', 1 );

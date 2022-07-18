@@ -23,7 +23,7 @@ const {
 import { BP_ACTIVITY_STORE_KEY } from '../store';
 
 const ActivityActionButtons = () => {
-	const { content, isInserting, user, group } = useSelect( ( select ) => {
+	const { content, isInserting, user, group, activityEdits } = useSelect( ( select ) => {
 		const store = select( BP_ACTIVITY_STORE_KEY );
 
 		return {
@@ -31,11 +31,12 @@ const ActivityActionButtons = () => {
 			isInserting: store.isInsertingActivity(),
 			user: store.getCurrentUser(),
 			group: store.getActivityGroup(),
+			activityEdits: store.getActivityEdits(),
 		};
 	}, [] );
-	const { insertActivity } = useDispatch( BP_ACTIVITY_STORE_KEY );
+	const { insertActivity, initActivityEdits } = useDispatch( BP_ACTIVITY_STORE_KEY );
 	const { resetBlocks } = useDispatch( 'core/block-editor' );
-	const isDisabled = ! content || isInserting;
+	const isDisabled = ! content || isInserting || ( !! activityEdits && content === activityEdits.content );
 	const isBusy = !! isInserting;
 
 	// This is where Posting the activity is handled.
@@ -52,15 +53,32 @@ const ActivityActionButtons = () => {
 			activity.component = 'groups';
 		}
 
+		if ( !! activityEdits.id ) {
+			activity.id = activityEdits.id;
+			activity.date = activityEdits.date;
+		}
+
 		if ( ! isBusy ) {
 			insertActivity( activity );
 		}
 
+		// @todo in case of an edit, the blocks shouldn't be reset.
 		resetBlocks( [] );
 	}
 
 	const cancelActivity = () => {
-		resetBlocks( [] );
+		if ( !! activityEdits.blocks ) {
+			initActivityEdits( activityEdits );
+
+			resetBlocks( activityEdits.blocks );
+		} else {
+			resetBlocks( [] );
+		}
+	}
+
+	let publishButtonLabel = __( 'Post Update', 'bp-gutenberg' );
+	if ( !! activityEdits.id ) {
+		publishButtonLabel = __( 'Update Activity', 'bp-gutenberg' );
 	}
 
 	return (
@@ -80,7 +98,7 @@ const ActivityActionButtons = () => {
 				isBusy={ isBusy }
 				onClick={ () => postActivity() }
 			>
-				{ __( 'Post Update', 'bp-gutenberg' ) }
+				{ publishButtonLabel }
 			</Button>
 		</div>
 	);

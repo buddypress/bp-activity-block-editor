@@ -54,7 +54,6 @@ const getSlugValue = ( item ) => {
 };
 
 const ActivitySidebar = () => {
-	const [ component, onSelect ] = useState( 'activity' );
 	const { isGroupsActive, userGroups, group, user } = useSelect( ( select ) => {
 		const store = select( BP_ACTIVITY_STORE_KEY );
 		const activeComponents = store.getActiveComponents();
@@ -67,11 +66,20 @@ const ActivitySidebar = () => {
 			user: store.getCurrentUser(),
 		};
 	}, [] );
+	const [ component, onSelect ] = useState( !! group ? 'groups' : 'activity' );
 
 	const {
 		setActivityGroup,
 		resetActivityGroup,
 	} = useDispatch( BP_ACTIVITY_STORE_KEY );
+
+	const cancelSelectedGroup = () => {
+		if ( 'groups' !== component ) {
+			onSelect( 'groups' );
+		}
+
+		resetActivityGroup();
+	}
 
 	let postInOptions = [
 		{ label: __( 'my Profile', 'bp-gutenberg' ), value: 'activity' },
@@ -142,7 +150,7 @@ const ActivitySidebar = () => {
 						<ExternalLink href={ group.link }>{ group.name }</ExternalLink>
 						<Button
 							className="activity-editor-sidebar__selected-group-cancel"
-							onClick={ () => resetActivityGroup() }
+							onClick={ () => cancelSelectedGroup() }
 							isLink
 						>
 							<Dashicon icon="dismiss" />
