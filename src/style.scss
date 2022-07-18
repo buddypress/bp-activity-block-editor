@@ -24,6 +24,18 @@ body {
 		}
 	}
 
+	&.is-fullscreen-mode {
+
+		#bp-gutenberg {
+			min-height: 100vh;
+
+			.block-editor,
+			.block-editor.iso-editor__selected {
+				min-height: 100vh;
+			}
+		}
+	}
+
 	#bp-gutenberg {
 
 		.activity-editor-sidebar__group-selection-cancel,
@@ -35,6 +47,16 @@ body {
 
 			.dashicons-dismiss {
 				color: #cc1818;
+			}
+		}
+
+		.activity-editor-sidebar__group-selection-input-row {
+
+			input.components-placeholder__input {
+				flex: 1 1 auto;
+				border-radius: 2px;
+				border: 1px solid #757575;
+				padding: 6px 8px;
 			}
 		}
 
