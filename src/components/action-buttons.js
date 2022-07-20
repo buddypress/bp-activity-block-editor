@@ -45,7 +45,7 @@ const ActivityActionButtons = () => {
 			activityEdits: store.getActivityEdits(),
 		};
 	}, [] );
-	const { insertActivity, updateActivityEdits } = useDispatch( BP_ACTIVITY_STORE_KEY );
+	const { saveActivity, updateActivityEdits } = useDispatch( BP_ACTIVITY_STORE_KEY );
 	const { resetBlocks } = useDispatch( 'core/block-editor' );
 	const isDisabled = ! content || isInserting || ( !! activityEdits.blocks && ( content === serialize( activityEdits.blocks ) || content === activityEdits.content ) );
 	const isBusy = !! isInserting;
@@ -70,7 +70,7 @@ const ActivityActionButtons = () => {
 		}
 
 		if ( ! isBusy ) {
-			insertActivity( activity );
+			saveActivity( activity );
 		}
 
 		if ( !! activityEdits.id ) {

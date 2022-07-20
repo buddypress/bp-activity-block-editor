@@ -25,14 +25,12 @@ export function setActiveComponents( list ) {
 }
 
 /**
- * Resolver for creating an activity.
- *
- * @todo as it's used for inserting and updating, it should be renammed.
+ * Resolver for saving an activity.
  */
-export function* insertActivity( activity ) {
+export function* saveActivity( activity ) {
 	let inserting = true, created;
 
-	yield { type: types.CREATE_START, inserting, activity };
+	yield { type: types.SAVE_START, inserting, activity };
 
 	try {
 		if ( ! activity.id ) {
@@ -53,7 +51,7 @@ export function* insertActivity( activity ) {
 
 	inserting = false;
 
-	yield { type: types.CREATE_END, inserting, created };
+	yield { type: types.SAVE_END, inserting, created };
 }
 
 /**

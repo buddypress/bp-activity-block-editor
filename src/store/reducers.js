@@ -46,14 +46,14 @@ const reducer = ( state = DEFAULT_STATE, action ) => {
 				groups: action.groups,
 			};
 
-		case types.CREATE_START:
+		case types.SAVE_START:
 			return {
 				...state,
 				inserting: action.inserting,
 				created: action.created,
 			};
 
-		case types.CREATE_END:
+		case types.SAVE_END:
 			return {
 				...state,
 				inserting: action.inserting,
