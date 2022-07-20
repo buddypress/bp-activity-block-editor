@@ -146,9 +146,9 @@ export function updateContent( content ) {
  * @param {Object} activity Activity object.
  * @return {Object} Object for action.
  */
- export function initActivityEdits( activity ) {
+ export function updateActivityEdits( activity ) {
 	return {
-		type: types.INIT_ACTIVITY_EDITS,
+		type: types.UPDATE_ACTIVITY_EDITS,
 		activity,
 	};
 }

@@ -1,7 +1,18 @@
 /**
+ * External dependencies.
+ */
+const {
+	merge,
+} = lodash;
+
+/**
  * WordPress dependencies.
  */
 const {
+	blocks: {
+		parse,
+		serialize,
+	},
 	components: {
 		Button,
 	},
@@ -34,9 +45,9 @@ const ActivityActionButtons = () => {
 			activityEdits: store.getActivityEdits(),
 		};
 	}, [] );
-	const { insertActivity, initActivityEdits } = useDispatch( BP_ACTIVITY_STORE_KEY );
+	const { insertActivity, updateActivityEdits } = useDispatch( BP_ACTIVITY_STORE_KEY );
 	const { resetBlocks } = useDispatch( 'core/block-editor' );
-	const isDisabled = ! content || isInserting || ( !! activityEdits && content === activityEdits.content );
+	const isDisabled = ! content || isInserting || ( !! activityEdits.blocks && ( content === serialize( activityEdits.blocks ) || content === activityEdits.content ) );
 	const isBusy = !! isInserting;
 
 	// This is where Posting the activity is handled.
@@ -62,13 +73,26 @@ const ActivityActionButtons = () => {
 			insertActivity( activity );
 		}
 
-		// @todo in case of an edit, the blocks shouldn't be reset.
-		resetBlocks( [] );
+		if ( !! activityEdits.id ) {
+			const updatedActivity = merge(
+				activityEdits,
+				{
+					component: activity.component,
+					content: activity.content,
+					'item_id' : activity.primary_item_id ? activity.primary_item_id : 0,
+					blocks: parse( activity.content ),
+				}
+			);
+
+			updateActivityEdits( updatedActivity );
+		} else {
+			resetBlocks( [] );
+		}
 	}
 
 	const cancelActivity = () => {
 		if ( !! activityEdits.blocks ) {
-			initActivityEdits( activityEdits );
+			updateActivityEdits( activityEdits );
 
 			resetBlocks( activityEdits.blocks );
 		} else {

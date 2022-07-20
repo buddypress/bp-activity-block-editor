@@ -41,7 +41,7 @@ const ActivityEditor = ( { settings } ) => {
 			activityEdit,
 		}
 	} = settings;
-	const { setActiveComponents, updateContent, initActivityEdits } = useDispatch( BP_ACTIVITY_STORE_KEY );
+	const { setActiveComponents, updateContent, updateActivityEdits } = useDispatch( BP_ACTIVITY_STORE_KEY );
 	const availableComponents = useSelect( ( select ) => {
 		return select( BP_ACTIVITY_STORE_KEY ).getActiveComponents();
 	}, [] );
@@ -55,7 +55,7 @@ const ActivityEditor = ( { settings } ) => {
 		let content = '';
 		if ( null !== activityEdit && activityEdit.content ) {
 			activityEdit.blocks = parse( activityEdit.content );
-			initActivityEdits( activityEdit );
+			updateActivityEdits( activityEdit );
 
 			content = activityEdit.blocks;
 		}

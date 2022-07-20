@@ -77,7 +77,7 @@ const reducer = ( state = DEFAULT_STATE, action ) => {
 				created: {},
 			};
 
-		case types.INIT_ACTIVITY_EDITS:
+		case types.UPDATE_ACTIVITY_EDITS:
 			return {
 				...state,
 				content: action.activity.content,
