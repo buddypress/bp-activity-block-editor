@@ -57,7 +57,11 @@ function activity_block_editor_load_screen() {
 		}
 
 		// Starts easy before dealing with more complex capabilities.
-		if ( isset( $activity->user_id ) && bp_loggedin_user_id() === (int) $activity->user_id ) {
+		if ( bp_loggedin_user_id() !== (int) $activity->user_id ) {
+			wp_die( __( 'You are not the author of this activity. Only Activity authors can edit their activities.', 'bp-gutenberg' ) );
+		}
+
+		if ( isset( $activity->user_id ) ) {
 			plugin()->edit_activity = $activity;
 		}
 	}

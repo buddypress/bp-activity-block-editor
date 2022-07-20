@@ -40,11 +40,15 @@ const ActivityUserFeedbacks = () => {
 	const getSettings = useSelect( ( select ) => {
 		return select( 'core/block-editor' ).getSettings();
 	}, [] );
-	const activityCreated = useSelect( ( select ) => {
-		return select( BP_ACTIVITY_STORE_KEY ).getJustPostedActivity();
+	const { activityPosted, activityEdits } = useSelect( ( select ) => {
+		const store = select( BP_ACTIVITY_STORE_KEY );
+
+		return {
+			activityPosted: store.getJustPostedActivity(),
+			activityEdits: store.getActivityEdits(),
+		};
 	}, [] );
 
-	// @todo in case of an edit, the blocks shouldn't be reset.
 	const resetActivity = ( activity ) => {
 		const blocks = parse( activity.content );
 		resetBlocks( blocks );
@@ -52,7 +56,7 @@ const ActivityUserFeedbacks = () => {
 		updateContent( activity.content );
 	};
 
-	if ( activityCreated.link ) {
+	if ( activityPosted.link ) {
 		if ( getSettings.isActivityAdminScreen && true === getSettings.isActivityAdminScreen ) {
 			return (
 				<ActivityElementPortal>
@@ -63,35 +67,38 @@ const ActivityUserFeedbacks = () => {
 							[
 								{
 									label: __( 'View Activity', 'bp-gutenberg' ),
-									url: activityCreated.link,
+									url: activityPosted.link,
 								}
 							]
 						}
 					>
-						<p>{ __( 'Activity successfully posted', 'bp-gutenberg' ) }</p>
+						<p>{ !! activityEdits.blocks ? __( 'Activity successfully updated', 'bp-gutenberg' )  : __( 'Activity successfully posted', 'bp-gutenberg' ) }</p>
 					</Notice>
 				</ActivityElementPortal>
 			);
 		} else {
-			activityCreated.message = __( 'View Activity', 'bp-gutenberg' );
-			window.parent.postMessage( activityCreated, window.parent.location.href );
+			activityPosted.message = __( 'View Activity', 'bp-gutenberg' );
+			window.parent.postMessage( activityPosted, window.parent.location.href );
 		}
-	} else if ( activityCreated.error ) {
+	} else if ( activityPosted.error ) {
+		let errorActions = [];
+		if ( ! activityEdits.blocks ) {
+			errorActions = [
+				{
+					label: __( 'Restore Activity content', 'bp-gutenberg' ),
+					onClick: () => { resetActivity( activityPosted ); },
+				}
+			];
+		}
+
 		return (
 			<ActivityElementPortal>
 				<Notice
 					status="error"
 					isDismissible={ false }
-					actions={
-						[
-							{
-								label: __( 'Restore Activity content', 'bp-gutenberg' ),
-								onClick: () => { resetActivity( activityCreated ); },
-							}
-						]
-					}
+					actions={ errorActions }
 				>
-					<p>{ activityCreated.error }</p>
+					<p>{ activityPosted.error }</p>
 				</Notice>
 			</ActivityElementPortal>
 		);
