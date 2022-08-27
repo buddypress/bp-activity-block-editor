@@ -68,6 +68,13 @@ function activity_block_editor_load_screen() {
 
 	add_action( 'bp_admin_enqueue_scripts', __NAMESPACE__ . '\activity_block_editor_enqueue_assets' );
 	add_filter( 'admin_body_class', __NAMESPACE__ . '\activity_block_editor_admin_body_class' );
+
+	/**
+	 * This hook is used to register blocks for the BuddyPress Activity Block Editor.
+	 *
+	 * @since 1.0.0
+	 */
+	do_action( 'bp_activity_enqueue_block_editor_assets' );
 }
 
 /**
@@ -76,11 +83,20 @@ function activity_block_editor_load_screen() {
  * @since 1.0.0
  */
 function activity_block_editor_get_settings() {
+	/**
+	 * This filter is used to allow blocks to add their settings to the BuddyPress Activity Block Editor.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $custom_editor_settings Block custom settings.
+	 */
+	$custom_editor_settings = apply_filters( 'bp_activity_block_editor_settings', array() );
+
 	$settings = array(
 		'iso'    => array(
 			'footer' => true,
 			'blocks' => array(
-				'allowBlocks' => array( 'core/paragraph', 'core/embed' ),
+				'allowBlocks' => array( 'core/paragraph', 'core/embed', 'bp/image-attachment' ),
 			),
 			'toolbar' => array(
 				'inspector'         => true,
@@ -91,16 +107,19 @@ function activity_block_editor_get_settings() {
 				'fullscreen' => true,
 			),
 		),
-		'editor' => array(
-			'disableCustomColors'                  => get_theme_support( 'disable-custom-colors' ),
-			'disableCustomFontSizes'               => get_theme_support( 'disable-custom-font-sizes' ),
-			'isRTL'                                => is_rtl(),
-			'codeEditingEnabled'                   => false,
-			'__experimentalBlockPatterns'          => array(),
-			'__experimentalBlockPatternCategories' => array(),
-			'activeComponents'                     => array_values( bp_core_get_active_components() ),
-			'bodyPlaceholder'                      => sprintf( __( 'What’s new %s?', 'bp-gutenberg' ), bp_core_get_user_displayname( get_current_user_id() ) ),
-			'canLockBlocks'                        => false,
+		'editor' => array_merge(
+			array(
+				'disableCustomColors'                  => get_theme_support( 'disable-custom-colors' ),
+				'disableCustomFontSizes'               => get_theme_support( 'disable-custom-font-sizes' ),
+				'isRTL'                                => is_rtl(),
+				'codeEditingEnabled'                   => false,
+				'__experimentalBlockPatterns'          => array(),
+				'__experimentalBlockPatternCategories' => array(),
+				'activeComponents'                     => array_values( bp_core_get_active_components() ),
+				'bodyPlaceholder'                      => sprintf( __( 'What’s new %s?', 'bp-gutenberg' ), bp_core_get_user_displayname( get_current_user_id() ) ),
+				'canLockBlocks'                        => false,
+			),
+			$custom_editor_settings
 		),
 	);
 

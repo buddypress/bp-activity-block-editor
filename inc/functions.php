@@ -126,3 +126,41 @@ function activity_blocks_allowed_tags( $tags = array() ) {
 	return array_merge( $tags, array( 'p' => true ) );
 }
 add_filter( 'bp_activity_allowed_tags', __NAMESPACE__ . '\activity_blocks_allowed_tags' );
+
+/**
+ * Enqueues script and styles for Activity blocks.
+ *
+ * NB: BP Activity blocks need to use include `activity` into their `buddypress_contexts` property.
+ *
+ * @since 1.0.0
+ */
+function enqueue_block_editor_assets() {
+	$block_registry = \WP_Block_Type_Registry::get_instance();
+
+	foreach ( $block_registry->get_all_registered() as $block_name => $block_type ) {
+		if ( empty( $block_type->buddypress_contexts ) || ! in_array( 'activity', $block_type->buddypress_contexts, true ) ) {
+			continue;
+		}
+
+		// Front-end styles.
+		if ( ! empty( $block_type->style ) ) {
+			wp_enqueue_style( $block_type->style );
+		}
+
+		// Front-end script.
+		if ( ! empty( $block_type->script ) ) {
+			wp_enqueue_script( $block_type->script );
+		}
+
+		// Editor styles.
+		if ( ! empty( $block_type->editor_style ) ) {
+			wp_enqueue_style( $block_type->editor_style );
+		}
+
+		// Editor script.
+		if ( ! empty( $block_type->editor_script ) ) {
+			wp_enqueue_script( $block_type->editor_script );
+		}
+	}
+}
+add_action( 'bp_activity_enqueue_block_editor_assets', __NAMESPACE__ . '\enqueue_block_editor_assets', 1 );
