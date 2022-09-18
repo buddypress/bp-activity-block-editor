@@ -40,9 +40,9 @@ const {
 import { BP_ACTIVITY_STORE_KEY } from '../store';
 
 const GROUP_STATI = {
-	public: __( 'Public', 'bp-gutenberg' ),
-	private: __( 'Private', 'bp-gutenberg' ),
-	hidden: __( 'Hidden', 'bp-gutenberg' ),
+	public: __( 'Public', 'bp-activity-block-editor' ),
+	private: __( 'Private', 'bp-activity-block-editor' ),
+	hidden: __( 'Hidden', 'bp-activity-block-editor' ),
 };
 
 const getSlugValue = ( item ) => {
@@ -82,23 +82,23 @@ const ActivitySidebar = () => {
 	}
 
 	let postInOptions = [
-		{ label: __( 'my Profile', 'bp-gutenberg' ), value: 'activity' },
+		{ label: __( 'my Profile', 'bp-activity-block-editor' ), value: 'activity' },
 	];
 
 	if ( isGroupsActive && 0 !== userGroups.length ) {
-		postInOptions.push( { label: __( 'a Group', 'bp-gutenberg' ), value: 'groups' } );
+		postInOptions.push( { label: __( 'a Group', 'bp-activity-block-editor' ), value: 'groups' } );
 	}
 
 	return (
 		<Panel>
 			<PanelBody
 				className="activity-editor-sidebar__sharing-preferences-panel"
-				title={ __( 'Sharing preferences', 'bp-gutenberg' ) }
+				title={ __( 'Sharing preferences', 'bp-activity-block-editor' ) }
 				opened={ true }
 			>
 				{ ! group && (
 					<PanelRow className="activity-editor-sidebar__sharing-preferences-row">
-						<span>{ __( 'Post in', 'bp-gutenberg' ) }</span>
+						<span>{ __( 'Post in', 'bp-activity-block-editor' ) }</span>
 						<SelectControl
 							value={ component }
 							options={ postInOptions }
@@ -110,7 +110,7 @@ const ActivitySidebar = () => {
 				{ 'activity' === component && (
 					<PanelRow className="activity-editor-sidebar__sharing-preferences-help-row">
 						<p className="description">
-							{ __( 'Posting an activity in your Profile will make it available from your Activity Profile page and more widely into the Activity directory.', 'bp-gutenberg' ) }
+							{ __( 'Posting an activity in your Profile will make it available from your Activity Profile page and more widely into the Activity directory.', 'bp-activity-block-editor' ) }
 						</p>
 					</PanelRow>
 				) }
@@ -119,7 +119,7 @@ const ActivitySidebar = () => {
 					<Fragment>
 						<PanelRow className="activity-editor-sidebar__group-selection-help-row">
 							<p className="description">
-								{ __( 'Start typing the name of the group you want to post your activity into.', 'bp-gutenberg' ) }
+								{ __( 'Start typing the name of the group you want to post your activity into.', 'bp-activity-block-editor' ) }
 							</p>
 						</PanelRow>
 						<PanelRow className="activity-editor-sidebar__group-selection-input-row">
@@ -127,8 +127,8 @@ const ActivitySidebar = () => {
 								component="groups"
 								objectQueryArgs={ { 'show_hidden': true, 'user_id': user.id } }
 								slugValue={ getSlugValue }
-								ariaLabel={ __( 'Group\'s name', 'bp-gutenberg' ) }
-								placeholder={ __( 'Enter Group\'s name here…', 'bp-gutenberg' ) }
+								ariaLabel={ __( 'Group\'s name', 'bp-activity-block-editor' ) }
+								placeholder={ __( 'Enter Group\'s name here…', 'bp-activity-block-editor' ) }
 								onSelectItem={ ( { itemID } ) => setActivityGroup( itemID ) }
 								useAvatar={ true }
 							/>
@@ -138,7 +138,7 @@ const ActivitySidebar = () => {
 								isLink
 							>
 								<Dashicon icon="dismiss" />
-								<span className="screen-reader-text">{ __( 'Dismiss group search', 'bp-gutenberg' ) }</span>
+								<span className="screen-reader-text">{ __( 'Dismiss group search', 'bp-activity-block-editor' ) }</span>
 							</Button>
 						</PanelRow>
 					</Fragment>
@@ -146,7 +146,7 @@ const ActivitySidebar = () => {
 
 				{ !! group && !! group.id && (
 					<PanelRow className="activity-editor-sidebar__selected-group">
-						<span>{ __( 'Post in', 'bp-gutenberg' ) }</span>
+						<span>{ __( 'Post in', 'bp-activity-block-editor' ) }</span>
 						<ExternalLink href={ group.link }>{ group.name }</ExternalLink>
 						<Button
 							className="activity-editor-sidebar__selected-group-cancel"
@@ -154,7 +154,7 @@ const ActivitySidebar = () => {
 							isLink
 						>
 							<Dashicon icon="dismiss" />
-							<span className="screen-reader-text">{ __( 'Remove Group', 'bp-gutenberg' ) }</span>
+							<span className="screen-reader-text">{ __( 'Remove Group', 'bp-activity-block-editor' ) }</span>
 						</Button>
 					</PanelRow>
 				) }
@@ -162,9 +162,9 @@ const ActivitySidebar = () => {
 				{ 'groups' === component && (
 					<PanelRow className="activity-editor-sidebar__sharing-preferences-help-row">
 						<p className="description">
-							{ __( 'Posting an activity in a Group you are a member of will make it available from the Group’s activity page. It will also be reachable from your Activity Profile page and more widely into the Activity directory.', 'bp-gutenberg' ) }
+							{ __( 'Posting an activity in a Group you are a member of will make it available from the Group’s activity page. It will also be reachable from your Activity Profile page and more widely into the Activity directory.', 'bp-activity-block-editor' ) }
 							<br/>
-							{ __( 'NB: Into the Activity directory, use the "My Groups" tab to see activities shared into Private or hidden groups.', 'bp-gutenberg' ) }
+							{ __( 'NB: Into the Activity directory, use the "My Groups" tab to see activities shared into Private or hidden groups.', 'bp-activity-block-editor' ) }
 						</p>
 					</PanelRow>
 				) }

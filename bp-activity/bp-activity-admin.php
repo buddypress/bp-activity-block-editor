@@ -1,12 +1,10 @@
 <?php
 /**
- * BuddyPress Admin Functions.
+ * BuddyPress Activity Admin functions.
  *
- * @package bp-gutenberg\inc
+ * @package bp-activity-block-editor\bp-activity
  * @since 1.0.0
  */
-
-namespace BP\Gutenberg;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -18,20 +16,20 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-function activity_block_editor_load_screen() {
-	$script_assets = require_once plugin_dir_path( dirname( __FILE__ ) ) . 'build/index.asset.php';
+function bp_activity_admin_load_screen() {
+	$script_assets = require_once plugin_dir_path( __FILE__ ) . 'block-editor/index.asset.php';
 
 	wp_register_script(
-		'bp-gutenberg-activity-editor',
-		plugins_url( 'build/index.js', dirname( __FILE__ ) ),
+		'bp-activity-block-editor',
+		plugins_url( 'block-editor/index.js', __FILE__ ),
 		array_merge( $script_assets['dependencies'], array( 'bp-block-components' ) ),
 		$script_assets['version'],
 		true
 	);
 
 	wp_register_style(
-		'bp-gutenberg-activity-editor',
-		plugins_url( 'build/style-index.css', dirname( __FILE__ ) ),
+		'bp-activity-block-editor',
+		plugins_url( 'block-editor/style-index.css', __FILE__ ),
 		array(
 			'wp-format-library',
 			'wp-components',
@@ -58,16 +56,16 @@ function activity_block_editor_load_screen() {
 
 		// Starts easy before dealing with more complex capabilities.
 		if ( bp_loggedin_user_id() !== (int) $activity->user_id ) {
-			wp_die( __( 'You are not the author of this activity. Only Activity authors can edit their activities.', 'bp-gutenberg' ) );
+			wp_die( __( 'You are not the author of this activity. Only Activity authors can edit their activities.', 'bp-activity-block-editor' ) );
 		}
 
 		if ( isset( $activity->user_id ) ) {
-			plugin()->edit_activity = $activity;
+			bp_activity_block_editor()->edit_activity = $activity;
 		}
 	}
 
-	add_action( 'bp_admin_enqueue_scripts', __NAMESPACE__ . '\activity_block_editor_enqueue_assets' );
-	add_filter( 'admin_body_class', __NAMESPACE__ . '\activity_block_editor_admin_body_class' );
+	add_action( 'bp_admin_enqueue_scripts', 'bp_activity_block_editor_enqueue_assets' );
+	add_filter( 'admin_body_class', 'bp_activity_admin_body_class' );
 
 	/**
 	 * This hook is used to register blocks for the BuddyPress Activity Block Editor.
@@ -82,7 +80,7 @@ function activity_block_editor_load_screen() {
  *
  * @since 1.0.0
  */
-function activity_block_editor_get_settings() {
+function bp_activity_block_editor_get_settings() {
 	/**
 	 * This filter is used to allow blocks to add their settings to the BuddyPress Activity Block Editor.
 	 *
@@ -100,7 +98,7 @@ function activity_block_editor_get_settings() {
 			),
 			'toolbar' => array(
 				'inspector'         => true,
-				'documentInspector' => __( 'Activity', 'bp-gutenberg' ),
+				'documentInspector' => __( 'Activity', 'bp-activity-block-editor' ),
 			),
 			'moreMenu' => array(
 				'topToolbar' => true,
@@ -116,7 +114,7 @@ function activity_block_editor_get_settings() {
 				'__experimentalBlockPatterns'          => array(),
 				'__experimentalBlockPatternCategories' => array(),
 				'activeComponents'                     => array_values( bp_core_get_active_components() ),
-				'bodyPlaceholder'                      => sprintf( __( 'What’s new %s?', 'bp-gutenberg' ), bp_core_get_user_displayname( get_current_user_id() ) ),
+				'bodyPlaceholder'                      => sprintf( __( 'What’s new %s?', 'bp-activity-block-editor' ), bp_core_get_user_displayname( get_current_user_id() ) ),
 				'canLockBlocks'                        => false,
 			),
 			$custom_editor_settings
@@ -142,9 +140,9 @@ function activity_block_editor_get_settings() {
  *
  * @since 1.0.0
  */
-function activity_block_editor_enqueue_assets() {
-	$settings                           = activity_block_editor_get_settings();
-	$settings['editor']['activityEdit'] = plugin()->edit_activity;
+function bp_activity_block_editor_enqueue_assets() {
+	$settings                           = bp_activity_block_editor_get_settings();
+	$settings['editor']['activityEdit'] = bp_activity_block_editor()->edit_activity;
 
 	$paths = array(
 		'/buddypress/v1/members/me?context=edit',
@@ -180,7 +178,7 @@ function activity_block_editor_enqueue_assets() {
 		'after'
 	);
 
-	wp_enqueue_script( 'bp-gutenberg-activity-editor' );
+	wp_enqueue_script( 'bp-activity-block-editor' );
 
 	if ( defined( 'IFRAME_REQUEST' ) && isset( $_GET['url'] ) && $_GET['url'] ) { // phpcs:ignore
 		wp_add_inline_style(
@@ -201,8 +199,8 @@ function activity_block_editor_enqueue_assets() {
 	$settings['editor']['isActivityAdminScreen'] = ! defined( 'IFRAME_REQUEST' ) && is_admin();
 
 	wp_add_inline_script(
-		'bp-gutenberg-activity-editor',
-		'window.bpGutenbergSettings = ' . wp_json_encode( $settings ) . ';'
+		'bp-activity-block-editor',
+		'window.bpActivityBlockEditor = ' . wp_json_encode( $settings ) . ';'
 	);
 
 	// Preload server-registered block schemas.
@@ -212,7 +210,7 @@ function activity_block_editor_enqueue_assets() {
 	);
 
 	// Editor default styles.
-	wp_enqueue_style( 'bp-gutenberg-activity-editor' );
+	wp_enqueue_style( 'bp-activity-block-editor' );
 }
 
 /**
@@ -223,19 +221,19 @@ function activity_block_editor_enqueue_assets() {
  * @param string $admin_body_class The Admin screen body classes.
  * @return string The Admin screen body classes.
  */
-function activity_block_editor_admin_body_class( $admin_body_class = '' ) {
+function bp_activity_admin_body_class( $admin_body_class = '' ) {
 	global $hook_suffix;
 	$screen_class = preg_replace( '/[^a-z0-9_-]+/i', '-', $hook_suffix );
 
-	if ( 'activity_page_bp-activity-new' !== $screen_class ) {
-		$admin_body_class .= ' activity_page_bp-activity-new';
+	if ( 'toplevel_page_bp-activities' !== $screen_class ) {
+		$admin_body_class .= ' toplevel_page_bp-activities';
 	}
 
 	if ( defined( 'IFRAME_REQUEST' ) ) {
 		$admin_body_class .= ' iframe';
 	}
 
-	$edit_activity = plugin()->edit_activity;
+	$edit_activity = bp_activity_block_editor()->edit_activity;
 
 	if ( ! is_null( $edit_activity ) ) {
 		$admin_body_class .= ' edit-activity';
@@ -249,10 +247,10 @@ function activity_block_editor_admin_body_class( $admin_body_class = '' ) {
  *
  *  @since 1.0.0
  */
-function activity_block_editor_screen() {
+function bp_activity_admin_screen() {
 	?>
-	<div id="bp-gutenberg"></div>
-	<div id="bp-gutenberg-notices"></div>
+	<div id="bp-activity-block-editor"></div>
+	<div id="bp-activity-block-editor-notices"></div>
 	<?php
 }
 
@@ -261,16 +259,24 @@ function activity_block_editor_screen() {
  *
  * @since 1.0.0
  */
-function activity_admin_submenu() {
-	$screen = add_submenu_page(
-		'bp-activity',
-		__( 'Activity Block Editor', 'bp-gutenberg' ),
-		__( 'Add new', 'bp-gutenberg' ),
+function bp_activity_admin_replace_menu() {
+	remove_action( bp_core_admin_hook(), 'bp_activity_add_admin_menu' );
+
+	$screen = add_menu_page(
+		_x( 'Activity', 'Admin Dashboard SWA page title', 'bp-activity-block-editor' ),
+		_x( 'Activity', 'Admin Dashboard SWA menu', 'bp-activity-block-editor' ),
 		'exist',
-		'bp-activity-new',
-		__NAMESPACE__ . '\activity_block_editor_screen'
+		'bp-activities',
+		'bp_activity_admin_screen',
+		'dashicons-buddicons-activity'
 	);
 
-	add_action( 'load-' . $screen, __NAMESPACE__ . '\activity_block_editor_load_screen' );
+	add_action( 'load-' . $screen, 'bp_activity_admin_load_screen' );
 }
-add_action( bp_core_admin_hook(), __NAMESPACE__ . '\activity_admin_submenu', 100 );
+add_action( bp_core_admin_hook(), 'bp_activity_admin_replace_menu', 9 );
+
+function bp_activity_admin_filter_menu_order( $custom_menus = array() ) {
+	array_push( $custom_menus, 'bp-activities' );
+	return $custom_menus;
+}
+add_filter( 'bp_admin_menu_order', 'bp_activity_admin_filter_menu_order' );

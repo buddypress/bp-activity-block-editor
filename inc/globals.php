@@ -1,12 +1,10 @@
 <?php
 /**
- * BuddyPress Gutenberg Globals.
+ * BuddyPress Activity Block Editor Globals.
  *
- * @package bp-gutenberg\inc
+ * @package bp-activity-block-editor\inc
  * @since 1.0.0
  */
-
-namespace BP\Gutenberg;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -18,9 +16,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-function globals() {
-	$bp_plugin = plugin();
+function bp_activity_block_editor_setup_globals() {
+	$bp_plugin = bp_activity_block_editor();
 
+	// Version.
 	$bp_plugin->version = '1.0.0';
 
 	// Path.
@@ -32,4 +31,4 @@ function globals() {
 	// Edited activity.
 	$bp_plugin->edit_activity = null;
 }
-add_action( 'bp_loaded', __NAMESPACE__ . '\globals', 1 );
+add_action( 'bp_loaded', 'bp_activity_block_editor_setup_globals', 1 );

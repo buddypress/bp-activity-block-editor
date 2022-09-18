@@ -1,12 +1,10 @@
 <?php
 /**
- * BuddyPress Gutenberg Functions.
+ * BuddyPress Activity Block Editor functions.
  *
- * @package bp-gutenberg\inc
+ * @package bp-activity-block-editor\bp-activity
  * @since 1.0.0
  */
-
-namespace BP\Gutenberg;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -22,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param string|int|BP_Activity_Activity|null $activity Activity content, Activity ID, or Activity object.
  * @return bool Whether the post has blocks.
  */
-function activity_has_blocks( $activity = null ) {
+function bp_activity_has_blocks( $activity = null ) {
 	if ( is_null( $activity ) ) {
 		return false;
 	}
@@ -51,11 +49,11 @@ function activity_has_blocks( $activity = null ) {
  * @param string $content The activity content running through this filter.
  * @return string The unmodified activity content.
  */
-function activity_restore_wpautop_hook( $content ) {
-	$current_priority = has_filter( 'bp_get_activity_content_body', __NAMESPACE__ . '\activity_restore_wpautop_hook' );
+function bp_activity_restore_wpautop_hook( $content ) {
+	$current_priority = has_filter( 'bp_get_activity_content_body', 'bp_activity_restore_wpautop_hook' );
 
 	add_filter( 'bp_get_activity_content_body', 'wpautop', $current_priority - 1 );
-	remove_filter( 'bp_get_activity_content_body', __NAMESPACE__ . '\activity_restore_wpautop_hook', $current_priority );
+	remove_filter( 'bp_get_activity_content_body', 'bp_activity_restore_wpautop_hook', $current_priority );
 
 	return $content;
 }
@@ -68,7 +66,7 @@ function activity_restore_wpautop_hook( $content ) {
  * @param string $content Activity content.
  * @return string Updated activity content.
  */
-function activity_do_blocks( $content ) {
+function bp_activity_do_blocks( $content ) {
 	$blocks = parse_blocks( $content );
 	$output = '';
 
@@ -78,14 +76,14 @@ function activity_do_blocks( $content ) {
 
 	// If there are blocks in this content, we shouldn't run wpautop() on it later.
 	$priority = has_filter( 'bp_get_activity_content_body', 'wpautop' );
-	if ( false !== $priority && doing_filter( 'bp_get_activity_content_body' ) && activity_has_blocks( $content ) ) {
+	if ( false !== $priority && doing_filter( 'bp_get_activity_content_body' ) && bp_activity_has_blocks( $content ) ) {
 		remove_filter( 'bp_get_activity_content_body', 'wpautop', $priority );
-		add_filter( 'bp_get_activity_content_body', __NAMESPACE__ . '\activity_restore_wpautop_hook', $priority + 1 );
+		add_filter( 'bp_get_activity_content_body', 'bp_activity_restore_wpautop_hook', $priority + 1 );
 	}
 
 	return $output;
 }
-add_filter( 'bp_get_activity_content_body', __NAMESPACE__ . '\activity_do_blocks', 9 );
+add_filter( 'bp_get_activity_content_body', 'bp_activity_do_blocks', 9 );
 
 /**
  * Make sure only Emoji chars are saved into the DB.
@@ -95,7 +93,7 @@ add_filter( 'bp_get_activity_content_body', __NAMESPACE__ . '\activity_do_blocks
  * @param string $activity_content The activity content.
  * @return string The sanitized activity content.
  */
-function activity_blocks_preserve_emoji_chars( $activity_content ) {
+function bp_activity_blocks_preserve_emoji_chars( $activity_content ) {
 	preg_match_all( '/\<img[^>]*alt=\"([^"]*)\".?\>/', $activity_content, $matches );
 
 	if ( isset( $matches[0][0] ) && isset( $matches[1][0] ) ) {
@@ -108,7 +106,7 @@ function activity_blocks_preserve_emoji_chars( $activity_content ) {
 
 	return $activity_content;
 }
-add_filter( 'bp_activity_content_before_save', __NAMESPACE__ . '\activity_blocks_preserve_emoji_chars', 2 );
+add_filter( 'bp_activity_content_before_save', 'bp_activity_blocks_preserve_emoji_chars', 2 );
 
 /**
  * Allow usage of the paragraph tag and the link’s target attribute into Activities content.
@@ -118,14 +116,14 @@ add_filter( 'bp_activity_content_before_save', __NAMESPACE__ . '\activity_blocks
  * @param array $tags The activity allowed tags.
  * @return array The activity allowed tags.
  */
-function activity_blocks_allowed_tags( $tags = array() ) {
+function bp_activity_blocks_allowed_tags( $tags = array() ) {
 	if ( isset( $tags['a'] ) && ! isset( $tags['a']['target'] ) ) {
 		$tags['a']['target'] = true;
 	}
 
 	return array_merge( $tags, array( 'p' => true ) );
 }
-add_filter( 'bp_activity_allowed_tags', __NAMESPACE__ . '\activity_blocks_allowed_tags' );
+add_filter( 'bp_activity_allowed_tags', 'bp_activity_blocks_allowed_tags' );
 
 /**
  * Enqueues script and styles for Activity blocks.
@@ -134,8 +132,8 @@ add_filter( 'bp_activity_allowed_tags', __NAMESPACE__ . '\activity_blocks_allowe
  *
  * @since 1.0.0
  */
-function enqueue_block_editor_assets() {
-	$block_registry = \WP_Block_Type_Registry::get_instance();
+function bp_activity_enqueue_block_editor_assets() {
+	$block_registry = WP_Block_Type_Registry::get_instance();
 
 	foreach ( $block_registry->get_all_registered() as $block_name => $block_type ) {
 		if ( empty( $block_type->buddypress_contexts ) || ! in_array( 'activity', $block_type->buddypress_contexts, true ) ) {
@@ -163,4 +161,4 @@ function enqueue_block_editor_assets() {
 		}
 	}
 }
-add_action( 'bp_activity_enqueue_block_editor_assets', __NAMESPACE__ . '\enqueue_block_editor_assets', 1 );
+add_action( 'bp_activity_enqueue_block_editor_assets', 'bp_activity_enqueue_block_editor_assets', 1 );

@@ -1,27 +1,25 @@
 <?php
 /**
- * BuddyPress Gutenberg development plugin.
+ * BuddyPress Activity Block Editor development plugin.
  *
- * @package   bp-gutenberg
+ * @package   bp-activity-block-editor
  * @author    The BuddyPress Community
  * @license   GPL-2.0+
  * @link      https://buddypress.org
  *
  * @buddypress-plugin
- * Plugin Name:       BP Gutenberg
- * Plugin URI:        https://github.com/buddypress/bp-gutenberg
- * Description:       BuddyPress Gutenberg development plugin.
+ * Plugin Name:       BP Activity Block Editor
+ * Plugin URI:        https://github.com/buddypress/bp-activity-block-editor
+ * Description:       Brings the power of the WordPress Blocks API into BuddyPress activities.
  * Version:           1.0.0
  * Author:            The BuddyPress Community
  * Author URI:        https://buddypress.org
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Domain Path:       /languages/
- * Text Domain:       bp-gutenberg
- * GitHub Plugin URI: https://github.com/buddypress/bp-gutenberg
+ * Text Domain:       bp-activity-block-editor
+ * GitHub Plugin URI: https://github.com/buddypress/bp-activity-block-editor
  */
-
-namespace BP\Gutenberg;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -33,7 +31,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-final class BP_Plugin {
+final class BP_Activity_Block_Editor {
 	/**
 	 * Instance of this class.
 	 *
@@ -48,13 +46,13 @@ final class BP_Plugin {
 	 */
 	private function __construct() {
 		// Load Globals & Functions.
-		$inc_path = plugin_dir_path( __FILE__ ) . 'inc/';
+		$path = plugin_dir_path( __FILE__ );
 
-		require $inc_path . 'globals.php';
-		require $inc_path . 'functions.php';
+		require $path . 'inc/globals.php';
+		require $path . 'bp-activity/bp-activity-block-editor.php';
 
 		if ( is_admin() ) {
-			require $inc_path . 'admin.php';
+			require $path . 'bp-activity/bp-activity-admin.php';
 		}
 	}
 
@@ -105,9 +103,9 @@ final class BP_Plugin {
  *
  * @since 1.0.0
  *
- * @return Plugin The main instance of the plugin.
+ * @return BP_Activity_Block_Editor The main instance of the plugin.
  */
-function plugin() {
-	return BP_Plugin::start();
+function bp_activity_block_editor() {
+	return BP_Activity_Block_Editor::start();
 }
-add_action( 'bp_loaded', __NAMESPACE__ . '\plugin', -1 );
+add_action( 'bp_loaded', 'bp_activity_block_editor', -1 );

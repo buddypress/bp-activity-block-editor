@@ -13,7 +13,7 @@ class ActivityElementPortal extends Component {
 	render() {
 		return createPortal(
 			this.props.children,
-			document.querySelector( "#bp-gutenberg-notices" )
+			document.querySelector( "#bp-activity-block-editor-notices" )
 		);
 	}
 }

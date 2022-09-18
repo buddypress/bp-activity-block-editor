@@ -66,18 +66,18 @@ const ActivityUserFeedbacks = () => {
 						actions={
 							[
 								{
-									label: __( 'View Activity', 'bp-gutenberg' ),
+									label: __( 'View Activity', 'bp-activity-block-editor' ),
 									url: activityPosted.link,
 								}
 							]
 						}
 					>
-						<p>{ !! activityEdits.blocks ? __( 'Activity successfully updated', 'bp-gutenberg' )  : __( 'Activity successfully posted', 'bp-gutenberg' ) }</p>
+						<p>{ !! activityEdits.blocks ? __( 'Activity successfully updated', 'bp-activity-block-editor' )  : __( 'Activity successfully posted', 'bp-activity-block-editor' ) }</p>
 					</Notice>
 				</ActivityElementPortal>
 			);
 		} else {
-			activityPosted.message = __( 'View Activity', 'bp-gutenberg' );
+			activityPosted.message = __( 'View Activity', 'bp-activity-block-editor' );
 			window.parent.postMessage( activityPosted, window.parent.location.href );
 		}
 	} else if ( activityPosted.error ) {
@@ -85,7 +85,7 @@ const ActivityUserFeedbacks = () => {
 		if ( ! activityEdits.blocks ) {
 			errorActions = [
 				{
-					label: __( 'Restore Activity content', 'bp-gutenberg' ),
+					label: __( 'Restore Activity content', 'bp-activity-block-editor' ),
 					onClick: () => { resetActivity( activityPosted ); },
 				}
 			];

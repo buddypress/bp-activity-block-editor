@@ -100,9 +100,9 @@ const ActivityActionButtons = () => {
 		}
 	}
 
-	let publishButtonLabel = __( 'Post Update', 'bp-gutenberg' );
+	let publishButtonLabel = __( 'Post Update', 'bp-activity-block-editor' );
 	if ( !! activityEdits.id ) {
-		publishButtonLabel = __( 'Update Activity', 'bp-gutenberg' );
+		publishButtonLabel = __( 'Update Activity', 'bp-activity-block-editor' );
 	}
 
 	return (
@@ -113,7 +113,7 @@ const ActivityActionButtons = () => {
 				disabled={ isDisabled }
 				onClick={ () => cancelActivity() }
 			>
-				{ __( 'Cancel', 'bp-gutenberg' ) }
+				{ __( 'Cancel', 'bp-activity-block-editor' ) }
 			</Button>
 			<Button
 				className="activity-editor-footer__publish-button"

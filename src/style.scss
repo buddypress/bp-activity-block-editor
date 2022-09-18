@@ -1,6 +1,6 @@
 body {
 
-	&.activity_page_bp-activity-new {
+	&.toplevel_page_bp-activities {
 
 		#wpcontent {
 			padding-left: 0;
@@ -9,7 +9,7 @@ body {
 		#wpbody-content {
 			padding-bottom: 0;
 
-			> div:not(#bp-gutenberg):not(#screen-meta):not(#bp-gutenberg-notices) {
+			> div:not(#bp-activity-block-editor):not(#screen-meta):not(#bp-activity-block-editor-notices) {
 				display: none;
 			}
 
@@ -26,7 +26,7 @@ body {
 
 	&.is-fullscreen-mode {
 
-		#bp-gutenberg {
+		#bp-activity-block-editor {
 			min-height: 100vh;
 
 			.block-editor,
@@ -36,8 +36,8 @@ body {
 		}
 	}
 
-	&.edit-activity #bp-gutenberg .block-editor,
-	#bp-gutenberg .block-editor.iso-editor__selected {
+	&.edit-activity #bp-activity-block-editor .block-editor,
+	#bp-activity-block-editor .block-editor.iso-editor__selected {
 		min-height: 145px;
 
 		.edit-post-layout {
@@ -76,7 +76,7 @@ body {
 		}
 	}
 
-	#bp-gutenberg {
+	#bp-activity-block-editor {
 
 		.activity-editor-sidebar__group-selection-cancel,
 		.activity-editor-sidebar__selected-group-cancel {
@@ -173,7 +173,7 @@ body {
 		}
 	}
 
-	#bp-gutenberg-notices {
+	#bp-activity-block-editor-notices {
 
 		.components-notice {
 			margin: 0;
