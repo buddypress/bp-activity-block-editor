@@ -313,7 +313,7 @@ function bp_activity_admin_body_class( $admin_body_class = '' ) {
  *  @since 1.0.0
  */
 function bp_activity_admin_screen() {
-	bp_core_admin_tabbed_screen_header( __( 'Activity', 'bp-activity-block-editor' ), __( 'Activity', 'bp-activity-block-editor' ) );
+	bp_core_admin_tabbed_screen_header( __( 'Activity', 'bp-activity-block-editor' ), __( 'Everyone', 'bp-activity-block-editor' ), 'bp-activity' );
 	?>
 	<div class="buddypress-body">
 		<div id="bp-activity-block-editor"></div>
@@ -366,3 +366,32 @@ function bp_activity_admin_filter_menu_order( $custom_menus = array() ) {
 	return $custom_menus;
 }
 add_filter( 'bp_admin_menu_order', 'bp_activity_admin_filter_menu_order' );
+
+/**
+ * Adds tabs to the Activity Admin.
+ *
+ * @since 1.0.0
+ *
+ * @param array $tabs A list of Admin tabs.
+ * @param string $context The Admin context tabs should be output.
+ * @return array The list of Admin tabs for the given context.
+ */
+function bp_activity_admin_get_tabs( $tabs = array(), $context = '' ) {
+	if ( 'bp-activity' === $context ) {
+		$tabs = array(
+			'0' => array(
+				'id'   => 'bp-activity-everyone',
+				'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bp-activities' ), 'admin.php' ) ),
+				'name' => __( 'Everyone', 'bp-activity-block-editor' ),
+			),
+			'1' => array(
+				'id'   => 'bp-activity-personal',
+				'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bp-activities' ), 'admin.php' ) ),
+				'name' => __( 'Personal', 'bp-activity-block-editor' ),
+			),
+		);
+	}
+
+	return $tabs;
+}
+add_filter( 'bp_core_get_admin_tabs', 'bp_activity_admin_get_tabs', 10, 2 );
