@@ -17,13 +17,22 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 function bp_activity_admin_load_screen() {
-	$script_assets = require_once plugin_dir_path( __FILE__ ) . 'block-editor/index.asset.php';
+	$plugin_version = bp_activity_block_editor()->version;
+	$script_assets  = require_once plugin_dir_path( __FILE__ ) . 'block-editor/index.asset.php';
 
 	wp_register_script(
 		'bp-activity-block-editor',
 		plugins_url( 'block-editor/index.js', __FILE__ ),
 		array_merge( $script_assets['dependencies'], array( 'bp-block-components' ) ),
 		$script_assets['version'],
+		true
+	);
+
+	wp_register_script(
+		'bp-activity-wall',
+		plugins_url( 'activity-wall/index.js', __FILE__ ),
+		array( 'lodash', 'wp-dom-ready', 'wp-i18n', 'wp-url' ),
+		$plugin_version,
 		true
 	);
 
@@ -38,6 +47,13 @@ function bp_activity_admin_load_screen() {
 			'wp-edit-post',
 		),
 		$script_assets['version']
+	);
+
+	wp_register_style(
+		'bp-activity-wall',
+		plugins_url( 'activity-wall/style-index.css', __FILE__ ),
+		array( 'bp-admin-common-css' ),
+		$plugin_version
 	);
 
 	if ( isset( $_GET['aid'] ) && isset( $_GET['action'] ) && 'edit' === sanitize_key( wp_unslash( $_GET['action'] ) ) ) {
@@ -64,8 +80,10 @@ function bp_activity_admin_load_screen() {
 		}
 	}
 
+	add_action( 'bp_admin_enqueue_scripts', 'bp_activity_admin_enqueue_assets', 9 );
 	add_action( 'bp_admin_enqueue_scripts', 'bp_activity_block_editor_enqueue_assets' );
 	add_filter( 'admin_body_class', 'bp_activity_admin_body_class' );
+	add_action( 'admin_footer', 'bp_activity_admin_print_wall_templates' );
 
 	/**
 	 * This hook is used to register blocks for the BuddyPress Activity Block Editor.
@@ -94,7 +112,14 @@ function bp_activity_block_editor_get_settings() {
 		'iso'    => array(
 			'footer' => true,
 			'blocks' => array(
-				'allowBlocks' => array( 'core/paragraph', 'core/embed', 'bp/image-attachment' ),
+				'allowBlocks' => array(
+					'core/paragraph',
+					'core/embed',
+					'bp/image-attachment',
+					'bp/video-attachment',
+					'bp/audio-attachment',
+					'bp/file-attachment',
+				),
 			),
 			'toolbar' => array(
 				'inspector'         => true,
@@ -102,7 +127,7 @@ function bp_activity_block_editor_get_settings() {
 			),
 			'moreMenu' => array(
 				'topToolbar' => true,
-				'fullscreen' => true,
+				'fullscreen' => defined( 'IFRAME_REQUEST' ) && IFRAME_REQUEST,
 			),
 		),
 		'editor' => array_merge(
@@ -133,6 +158,43 @@ function bp_activity_block_editor_get_settings() {
 	}
 
 	return $settings;
+}
+
+/**
+ * Enqueues Admin assets.
+ *
+ * @since 1.0.0
+ */
+function bp_activity_admin_enqueue_assets() {
+	wp_enqueue_style( 'bp-activity-wall' );
+
+	$bp_base      = sprintf(
+		'/%1$s/%2$s/',
+		bp_rest_namespace(),
+		bp_rest_version()
+	);
+	$activity_path = $bp_base . 'activity';
+	$member_path   = $bp_base . 'members/me';
+
+	// Preloads BP Members directory data.
+	$preload_data = array_reduce(
+		array( $activity_path, $member_path ),
+		'rest_preload_api_request',
+		array()
+	);
+
+	wp_enqueue_script( 'bp-activity-wall' );
+	wp_localize_script(
+		'bp-activity-wall',
+		'bpActivityWallSettings',
+		array(
+			'path'              => ltrim( $activity_path, '/' ),
+			'root'              => esc_url_raw( get_rest_url() ),
+			'nonce'             => wp_create_nonce( 'wp_rest' ),
+			'preloadedActivity' => $preload_data[ $activity_path ],
+			'preloadedMember'   => $preload_data[ $member_path ],
+		)
+	);
 }
 
 /**
@@ -196,7 +258,8 @@ function bp_activity_block_editor_enqueue_assets() {
 	 * Add a setting to inform whether the Activity Block Editor
 	 * is used form the Activity Admin screen or not.
 	 */
-	$settings['editor']['isActivityAdminScreen'] = ! defined( 'IFRAME_REQUEST' ) && is_admin();
+	$settings['editor']['isDialog']        = defined( 'IFRAME_REQUEST' ) && IFRAME_REQUEST;
+	$settings['editor']['hasActivityWall'] = ! defined( 'IFRAME_REQUEST' );
 
 	wp_add_inline_script(
 		'bp-activity-block-editor',
@@ -229,6 +292,8 @@ function bp_activity_admin_body_class( $admin_body_class = '' ) {
 		$admin_body_class .= ' toplevel_page_bp-activities';
 	}
 
+	$admin_body_class .= ' bp-is-tabbed-screen';
+
 	if ( defined( 'IFRAME_REQUEST' ) ) {
 		$admin_body_class .= ' iframe';
 	}
@@ -243,15 +308,28 @@ function bp_activity_admin_body_class( $admin_body_class = '' ) {
 }
 
 /**
- * Activity Editor Screen.
+ * Activity Admin screen.
  *
  *  @since 1.0.0
  */
 function bp_activity_admin_screen() {
+	bp_core_admin_tabbed_screen_header( __( 'Activity', 'bp-activity-block-editor' ), __( 'Activity', 'bp-activity-block-editor' ) );
 	?>
-	<div id="bp-activity-block-editor"></div>
-	<div id="bp-activity-block-editor-notices"></div>
+	<div class="buddypress-body">
+		<div id="bp-activity-block-editor"></div>
+		<div id="bp-activity-block-editor-notices"></div>
+		<div id="bp-activity-wall-items"></div>
+	</div>
 	<?php
+}
+
+/**
+ * Includes Activity Wall templates
+ *
+ * @since .1.0.0
+ */
+function bp_activity_admin_print_wall_templates() {
+	require_once plugin_dir_path( __FILE__ ) . 'bp-activity-wall-templates.php';
 }
 
 /**
@@ -275,6 +353,14 @@ function bp_activity_admin_replace_menu() {
 }
 add_action( bp_core_admin_hook(), 'bp_activity_admin_replace_menu', 9 );
 
+/**
+ * Adds the Activity menu to custom BuddyPress menus.
+ *
+ * @since 1.0.0
+ *
+ * @param array $custom_menus The BuddyPress custom menus.
+ * @return array The BuddyPress custom menus.
+ */
 function bp_activity_admin_filter_menu_order( $custom_menus = array() ) {
 	array_push( $custom_menus, 'bp-activities' );
 	return $custom_menus;

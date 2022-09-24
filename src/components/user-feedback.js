@@ -57,7 +57,7 @@ const ActivityUserFeedbacks = () => {
 	};
 
 	if ( activityPosted.link ) {
-		if ( getSettings.isActivityAdminScreen && true === getSettings.isActivityAdminScreen ) {
+		if ( ! getSettings.hasActivityWall ) {
 			return (
 				<ActivityElementPortal>
 					<Notice
@@ -77,8 +77,15 @@ const ActivityUserFeedbacks = () => {
 				</ActivityElementPortal>
 			);
 		} else {
-			activityPosted.message = __( 'View Activity', 'bp-activity-block-editor' );
-			window.parent.postMessage( activityPosted, window.parent.location.href );
+			activityPosted.message = 'postedBPActivity';
+
+			if ( !! getSettings.isDialog ) {
+				window.parent.postMessage( activityPosted, window.parent.location.href );
+			} else {
+				window.postMessage( activityPosted, '*' );
+			}
+
+			return null;
 		}
 	} else if ( activityPosted.error ) {
 		let errorActions = [];

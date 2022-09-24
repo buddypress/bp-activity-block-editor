@@ -1,0 +1,49 @@
+#wpbody-content {
+	background-color: #f0f0f1;
+
+	#bp-activity-wall-items {
+		margin: 2rem 0;
+
+		> article {
+			border: 1px solid #dcdcde;
+			background-color: #fff;
+			padding: 0.5rem;
+			border-collapse: inherit;
+			margin-bottom: 1rem;
+
+			> header {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+
+				.activity-avatar img {
+					width: 20px;
+					height: 20px;
+				}
+
+				.activity-title p {
+					margin: 0;
+				}
+			}
+
+			&:not(.mini) {
+
+				> header {
+					padding-bottom: .5rem;
+					box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+				}
+			}
+
+			.activity-content {
+
+				.activity-inner {
+
+					p {
+						margin: 1rem 0;
+						font-size: var( --wp--preset--font-size--normal );
+					}
+				}
+			}
+		}
+	}
+}

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "wp-scripts start --output-path=bp-activity/block-editor",
-    "build": "wp-scripts build --output-path=bp-activity/block-editor"
+    "build": "wp-scripts build --output-path=bp-activity/block-editor",
+		"build:activity": "wp-scripts build --webpack-src-dir=src-activity-wall --output-path=bp-activity/activity-wall"
   },
   "repository": {
     "type": "git",

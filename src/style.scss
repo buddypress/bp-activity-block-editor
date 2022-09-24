@@ -1,29 +1,5 @@
 body {
 
-	&.toplevel_page_bp-activities {
-
-		#wpcontent {
-			padding-left: 0;
-		}
-
-		#wpbody-content {
-			padding-bottom: 0;
-
-			> div:not(#bp-activity-block-editor):not(#screen-meta):not(#bp-activity-block-editor-notices) {
-				display: none;
-			}
-
-			.a11y-speak-region {
-				left: -1px;
-				top: -1px;
-			}
-		}
-
-		#wpfooter {
-			display: none;
-		}
-	}
-
 	&.is-fullscreen-mode {
 
 		#bp-activity-block-editor {

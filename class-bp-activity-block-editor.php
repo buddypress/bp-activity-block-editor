@@ -49,6 +49,7 @@ final class BP_Activity_Block_Editor {
 		$path = plugin_dir_path( __FILE__ );
 
 		require $path . 'inc/globals.php';
+		require $path . 'inc/functions.php';
 		require $path . 'bp-activity/bp-activity-block-editor.php';
 
 		if ( is_admin() ) {
