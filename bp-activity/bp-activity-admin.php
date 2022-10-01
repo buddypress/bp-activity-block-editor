@@ -99,6 +99,12 @@ function bp_activity_admin_load_screen() {
  * @since 1.0.0
  */
 function bp_activity_block_editor_get_settings() {
+	wp_add_inline_script(
+		'wp-blocks',
+		sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( bp_activity_get_block_categories() ) ),
+		'after'
+	);
+
 	/**
 	 * This filter is used to allow blocks to add their settings to the BuddyPress Activity Block Editor.
 	 *

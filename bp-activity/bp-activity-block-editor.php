@@ -12,6 +12,38 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Returns the Block Categories for the BP Activity context.
+ *
+ * @since 1.0.0
+ *
+ * @return array The list of block categories for the activity context.
+ */
+function bp_activity_get_block_categories() {
+	$block_categories = get_default_block_categories();
+	$embed_category   = array();
+	foreach ( $block_categories as $position => $category ) {
+		if ( isset( $category['slug'] ) && in_array( $category['slug'], array( 'embed', 'reusable', 'theme' ), true ) ) {
+			unset( $block_categories[ $position ] );
+
+			if ( 'embed' === $category['slug'] ) {
+				$embed_category = array( $category );
+			}
+		}
+	}
+
+	/**
+	 * Filter here to include your custom block categories for the activity context.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $block_categories array The list of block categories for the activity context.
+	 */
+	$bp_activity_block_categories = apply_filters( 'bp_activity_block_categories', array_values( $block_categories ) );
+
+	return array_merge( $bp_activity_block_categories, $embed_category );
+}
+
+/**
  * Determine whether an activity or its content string has blocks.
  *
  * @since 1.0.0
