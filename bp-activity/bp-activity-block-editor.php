@@ -22,12 +22,9 @@ function bp_activity_get_block_categories() {
 	$block_categories = get_default_block_categories();
 	$embed_category   = array();
 	foreach ( $block_categories as $position => $category ) {
-		if ( isset( $category['slug'] ) && in_array( $category['slug'], array( 'embed', 'reusable', 'theme' ), true ) ) {
+		if ( isset( $category['slug'] ) && 'embed' === $category['slug'] ) {
 			unset( $block_categories[ $position ] );
-
-			if ( 'embed' === $category['slug'] ) {
-				$embed_category = array( $category );
-			}
+			$embed_category = array( $category );
 		}
 	}
 
