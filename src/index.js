@@ -39,6 +39,7 @@ const ActivityEditor = ( { settings } ) => {
 		editor: {
 			activeComponents,
 			activityEdit,
+			parentActivity,
 		}
 	} = settings;
 	const { setActiveComponents, updateContent, updateActivityEdits } = useDispatch( BP_ACTIVITY_STORE_KEY );
@@ -70,15 +71,17 @@ const ActivityEditor = ( { settings } ) => {
 			onLoad={ ( parse ) => loadInitialContent( parse ) }
 			onError={ () => document.location.reload() }
 		>
-			<DocumentSection>
-				<ActivitySidebar />
-			</DocumentSection>
+			{ ! parentActivity && (
+				<DocumentSection>
+					<ActivitySidebar />
+				</DocumentSection>
+			) }
 			<ActivityUserFeedbacks />
 			<EditorHeadingSlot>
 				<ActivityUserAvatar />
 			</EditorHeadingSlot>
 			<FooterSlot>
-				<ActivityActionButtons />
+				<ActivityActionButtons parentActivity={ parentActivity } />
 			</FooterSlot>
 		</IsolatedBlockEditor>
 	);

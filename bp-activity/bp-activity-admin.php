@@ -45,13 +45,11 @@ function bp_activity_admin_register_editor() {
 }
 
 /**
- * Register Activity editor assets.
+ * Registers the Activity Wall for the WP Admin context.
  *
  * @since 1.0.0
  */
-function bp_activity_admin_load_screen() {
-	bp_activity_admin_register_editor();
-
+function bp_activity_admin_register_wall() {
 	$plugin_version = bp_activity_block_editor()->version;
 
 	wp_register_script(
@@ -71,6 +69,16 @@ function bp_activity_admin_load_screen() {
 
 	add_action( 'bp_admin_enqueue_scripts', 'bp_activity_admin_enqueue_assets', 9 );
 	add_action( 'admin_footer', 'bp_activity_admin_print_wall_templates' );
+}
+
+/**
+ * Registers Activity assets for the main Activity Admin screen.
+ *
+ * @since 1.0.0
+ */
+function bp_activity_admin_load_screen() {
+	bp_activity_admin_register_editor();
+	bp_activity_admin_register_wall();
 
 	/**
 	 * This hook is used to register blocks for the BuddyPress Activity Block Editor.
@@ -80,30 +88,67 @@ function bp_activity_admin_load_screen() {
 	do_action( 'bp_activity_enqueue_block_editor_assets' );
 }
 
-function bp_activity_admin_load_edit_screen() {
-	if ( isset( $_GET['aid'] ) ) {
+function bp_activity_admin_get_single_activity( $activity_id = 0 ) {
+	$activity = null;
+
+	if ( ! $activity_id ) {
+		return $activity;
+	}
+
+	$activities  = bp_activity_get(
+		array(
+			'in'          => $activity_id,
+			'show_hidden' => true,
+		)
+	);
+
+	if ( isset( $activities['activities'] ) ) {
+		$activity = reset( $activities['activities'] );
+	}
+
+	return $activity;
+}
+
+/**
+ * Registers Activity assets for the Edit/View Activity Admin screens.
+ *
+ * @since 1.0.0
+ */
+function bp_activity_admin_load_single_screen() {
+	$allowed_screens = array( 'activity_page_bp-view-activity', 'activity_page_bp-edit-activity' );
+	$current_screen  = '';
+
+	if ( function_exists( 'get_current_screen') ) {
+		$current_screen = get_current_screen()->id;
+	}
+
+	if ( isset( $_GET['aid'] ) && in_array( $current_screen, $allowed_screens, true ) ) {
+		$is_edit = 'activity_page_bp-edit-activity' === $current_screen;
+
+		// Register the Block Editor.
 		bp_activity_admin_register_editor();
 
 		$activity_id = absint( wp_unslash( $_GET['aid'] ) );
-		$activities  = bp_activity_get(
-			array(
-				'in'          => $activity_id,
-				'show_hidden' => true,
-			)
-		);
-
-		$activity = null;
-		if ( isset( $activities['activities'] ) ) {
-			$activity = reset( $activities['activities'] );
-		}
-
-		// Starts easy before dealing with more complex capabilities.
-		if ( bp_loggedin_user_id() !== (int) $activity->user_id ) {
-			wp_die( __( 'You are not the author of this activity. Only Activity authors can edit their activities.', 'bp-activity-block-editor' ) );
-		}
+		$activity    = bp_activity_admin_get_single_activity( $activity_id );
 
 		if ( isset( $activity->user_id ) ) {
-			bp_activity_block_editor()->edit_activity = $activity;
+			if ( $is_edit ) {
+				// Starts easy before dealing with more complex capabilities.
+				if ( bp_loggedin_user_id() !== (int) $activity->user_id ) {
+					wp_die( __( 'You are not the author of this activity. Only Activity authors can edit their activities.', 'bp-activity-block-editor' ) );
+				}
+
+				bp_activity_block_editor()->edit_activity = $activity;
+			} else {
+				bp_activity_block_editor()->view_activity = $activity;
+			}
+
+		} else {
+			wp_die( __( 'The activity is missing.', 'bp-activity-block-editor' ) );
+		}
+
+		if ( ! $is_edit ) {
+			bp_activity_admin_register_wall();
 		}
 
 		/**
@@ -198,19 +243,39 @@ function bp_activity_block_editor_get_settings() {
 function bp_activity_admin_enqueue_assets() {
 	wp_enqueue_style( 'bp-activity-wall' );
 
-	$bp_base      = sprintf(
+	// Check if we're displaying an activity.
+	$activity = bp_activity_block_editor()->view_activity;
+
+	$bp_base = sprintf(
 		'/%1$s/%2$s/',
 		bp_rest_namespace(),
 		bp_rest_version()
 	);
+
+	$request_args = array(
+		'_embed'                => true,
+		'_is_bp_activity_admin' => true,
+	);
+
+	// We need this activity comments.
+	if ( isset( $activity->id ) ) {
+		$request_args = array_merge(
+			$request_args,
+			array(
+				'primary_id'       => $activity->id,
+				'type'             => 'activity_comment',
+				'display_comments' => true,
+				'order'            => 'asc',
+			)
+		);
+	}
+
 	$activity_path = add_query_arg(
-		array(
-			'_embed'                => true,
-			'_is_bp_activity_admin' => true,
-		),
+		$request_args,
 		$bp_base . 'activity'
 	);
-	$member_path   = $bp_base . 'members/me';
+
+	$member_path = $bp_base . 'members/me';
 
 	// Preloads BP Members directory data.
 	$preload_data = array_reduce(
@@ -219,18 +284,21 @@ function bp_activity_admin_enqueue_assets() {
 		array()
 	);
 
-	wp_enqueue_script( 'bp-activity-wall' );
-	wp_localize_script(
-		'bp-activity-wall',
-		'bpActivityWallSettings',
-		array(
-			'path'              => ltrim( $activity_path, '/' ),
-			'root'              => esc_url_raw( get_rest_url() ),
-			'nonce'             => wp_create_nonce( 'wp_rest' ),
-			'preloadedActivity' => $preload_data[ $activity_path ],
-			'preloadedMember'   => $preload_data[ $member_path ],
-		)
+	$script_strings = array(
+		'path'              => ltrim( $activity_path, '/' ),
+		'root'              => esc_url_raw( get_rest_url() ),
+		'nonce'             => wp_create_nonce( 'wp_rest' ),
+		'preloadedActivity' => $preload_data[ $activity_path ],
+		'preloadedMember'   => $preload_data[ $member_path ],
 	);
+
+	$script_strings['currentActivity'] = null;
+	if ( isset( $activity->id ) ) {
+		$script_strings['currentActivity'] = $activity;
+	}
+
+	wp_enqueue_script( 'bp-activity-wall' );
+	wp_localize_script( 'bp-activity-wall', 'bpActivityWallSettings', $script_strings );
 }
 
 /**
@@ -239,8 +307,14 @@ function bp_activity_admin_enqueue_assets() {
  * @since 1.0.0
  */
 function bp_activity_block_editor_enqueue_assets() {
-	$settings                           = bp_activity_block_editor_get_settings();
-	$settings['editor']['activityEdit'] = bp_activity_block_editor()->edit_activity;
+	$main_instance                        = bp_activity_block_editor();
+	$settings                             = bp_activity_block_editor_get_settings();
+	$settings['editor']['activityEdit']   = $main_instance->edit_activity;
+	$settings['editor']['parentActivity'] = $main_instance->view_activity;
+
+	if ( ! is_null( $settings['editor']['parentActivity'] ) && isset( $settings['iso']['toolbar']['documentInspector'] ) ) {
+		unset( $settings['iso']['toolbar']['documentInspector'] );
+	}
 
 	$paths = array(
 		'/buddypress/v1/members/me?context=edit',
@@ -351,22 +425,38 @@ function bp_activity_admin_body_class( $admin_body_class = '' ) {
  *  @since 1.0.0
  */
 function bp_activity_admin_screen() {
-	$context     = 'bp-activity';
-	$current_tab = __( 'Everyone', 'bp-activity-block-editor' );
+	$main_instance = bp_activity_block_editor();
+	$context       = 'bp-activity';
+	$current_tab   = __( 'Everyone', 'bp-activity-block-editor' );
 
-	if ( isset( $_GET['aid'] ) ) {
+	if ( ! is_null( $main_instance->edit_activity ) ) {
 		$context     = 'bp-edit-activity';
 		$current_tab = __( 'Edit Activity', 'bp-activity-block-editor' );
+	} elseif ( ! is_null( $main_instance->view_activity ) ) {
+		$context     = 'bp-view-activity';
+		$current_tab = __( 'View Activity', 'bp-activity-block-editor' );
 	}
 
 	bp_core_admin_tabbed_screen_header( __( 'Activity', 'bp-activity-block-editor' ), $current_tab, $context );
-	?>
-	<div class="buddypress-body">
-		<div id="bp-activity-block-editor"></div>
-		<div id="bp-activity-block-editor-notices"></div>
-		<div id="bp-activity-wall-items"></div>
-	</div>
-	<?php
+
+	if ( 'bp-view-activity' !== $context ) {
+		?>
+		<div class="buddypress-body">
+			<div id="bp-activity-block-editor"></div>
+			<div id="bp-activity-block-editor-notices"></div>
+			<div id="bp-activity-wall-items"></div>
+		</div>
+		<?php
+	} else {
+		?>
+		<div class="buddypress-body">
+			<div id="bp-activity-view"></div>
+			<div id="bp-activity-wall-items"></div>
+			<div id="bp-activity-block-editor"></div>
+			<div id="bp-activity-block-editor-notices"></div>
+		</div>
+		<?php
+	}
 }
 
 /**
@@ -404,8 +494,18 @@ function bp_activity_admin_replace_menu() {
 		'bp_activity_admin_screen',
 	);
 
+	$view_screen = add_submenu_page(
+		'bp-activities',
+		_x( 'View Activity', 'Admin Dashboard Activity Edit page title', 'bp-activity-block-editor' ),
+		_x( 'View Activity', 'Admin Dashboard Activity Edit menu', 'bp-activity-block-editor' ),
+		'exist',
+		'bp-view-activity',
+		'bp_activity_admin_screen',
+	);
+
 	add_action( 'load-' . $screen, 'bp_activity_admin_load_screen' );
-	add_action( 'load-' . $edit_screen, 'bp_activity_admin_load_edit_screen' );
+	add_action( 'load-' . $edit_screen, 'bp_activity_admin_load_single_screen' );
+	add_action( 'load-' . $view_screen, 'bp_activity_admin_load_single_screen' );
 }
 add_action( bp_core_admin_hook(), 'bp_activity_admin_replace_menu', 9 );
 
@@ -430,6 +530,7 @@ add_filter( 'bp_admin_menu_order', 'bp_activity_admin_filter_menu_order' );
  */
 function bp_activity_admin_head() {
 	remove_submenu_page( 'bp-activities', 'bp-edit-activity' );
+	remove_submenu_page( 'bp-activities', 'bp-view-activity' );
 	remove_submenu_page( 'bp-activities', 'bp-activities' );
 }
 add_action( 'bp_admin_head', 'bp_activity_admin_head', 998 );
@@ -444,6 +545,18 @@ add_action( 'bp_admin_head', 'bp_activity_admin_head', 998 );
  * @return array The list of Admin tabs for the given context.
  */
 function bp_activity_admin_get_tabs( $tabs = array(), $context = '' ) {
+	$activity_id  = 0;
+	$activity_all = array();
+
+	if ( isset( $_GET['aid'] ) ) {
+		$activity_id  = (int) $_GET['aid'];
+		$activity_all = array(
+			'id'   => 'bp-activity-all',
+			'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bp-activities' ), 'admin.php' ) ),
+			'name' => __( 'All activities', 'bp-activity-block-editor' ),
+		);
+	}
+
 	if ( 'bp-activity' === $context ) {
 		$tabs = array(
 			'0' => array(
@@ -458,23 +571,22 @@ function bp_activity_admin_get_tabs( $tabs = array(), $context = '' ) {
 			),
 		);
 	} elseif ( 'bp-edit-activity' === $context ) {
-		$activity_id = 0;
-
-		if ( isset( $_GET['aid'] ) ) {
-			$activity_id = (int) $_GET['aid'];
-		}
-
 		$tabs = array(
 			'0' => array(
 				'id'   => 'bp-activity-edit',
 				'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bp-edit-activity', 'aid' => $activity_id ), 'admin.php' ) ),
 				'name' => __( 'Edit Activity', 'bp-activity-block-editor' ),
 			),
-			'1' => array(
-				'id'   => 'bp-activity-all',
-				'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bp-activities' ), 'admin.php' ) ),
-				'name' => __( 'All activities', 'bp-activity-block-editor' ),
+			'1' => $activity_all,
+		);
+	} elseif ( 'bp-view-activity' === $context ) {
+		$tabs = array(
+			'0' => array(
+				'id'   => 'bp-activity-view',
+				'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bp-view-activity', 'aid' => $activity_id ), 'admin.php' ) ),
+				'name' => __( 'View Activity', 'bp-activity-block-editor' ),
 			),
+			'1' => $activity_all,
 		);
 	}
 

@@ -30,5 +30,8 @@ function bp_activity_block_editor_setup_globals() {
 
 	// Edited activity.
 	$bp_plugin->edit_activity = null;
+
+	// Viewed activity.
+	$bp_plugin->view_activity = null;
 }
 add_action( 'bp_loaded', 'bp_activity_block_editor_setup_globals', 1 );

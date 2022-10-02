@@ -57,7 +57,7 @@ const ActivityUserFeedbacks = () => {
 	};
 
 	if ( activityPosted.link ) {
-		if ( ! getSettings.hasActivityWall ) {
+		if ( ! getSettings.hasActivityWall || !! activityEdits.blocks ) {
 			return (
 				<ActivityElementPortal>
 					<Notice

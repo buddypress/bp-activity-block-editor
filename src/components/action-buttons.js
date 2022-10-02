@@ -33,7 +33,7 @@ const {
  */
 import { BP_ACTIVITY_STORE_KEY } from '../store';
 
-const ActivityActionButtons = () => {
+const ActivityActionButtons = ( { parentActivity } ) => {
 	const { content, isInserting, user, group, activityEdits } = useSelect( ( select ) => {
 		const store = select( BP_ACTIVITY_STORE_KEY );
 
@@ -58,6 +58,11 @@ const ActivityActionButtons = () => {
 			component: 'activity',
 			content: content,
 		};
+
+		if ( parentActivity && !! parentActivity.id ) {
+			activity.type = 'activity_comment';
+			activity.primary_item_id = parentActivity.id;
+		}
 
 		if ( !! group && group.id ) {
 			activity.primary_item_id = group.id;
@@ -103,6 +108,8 @@ const ActivityActionButtons = () => {
 	let publishButtonLabel = __( 'Post Update', 'bp-activity-block-editor' );
 	if ( !! activityEdits.id ) {
 		publishButtonLabel = __( 'Update Activity', 'bp-activity-block-editor' );
+	} else if ( parentActivity && !! parentActivity.id ) {
+		publishButtonLabel = __( 'Reply', 'bp-activity-block-editor' );
 	}
 
 	return (

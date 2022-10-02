@@ -28,12 +28,13 @@ class bpActivityWall {
 	 * @param {Object} settings The REST API settings and preloaded data.
 	 */
 	constructor( settings ) {
-		const { path, root, nonce, preloadedActivity, preloadedMember } = settings;
+		const { path, root, nonce, preloadedActivity, preloadedMember, currentActivity } = settings;
 		this.endpoint = getPath( root.replace( '/wp-json', '' ) + path );
 		this.root = root;
 		this.nonce = nonce;
 		this.activities = 'body' in preloadedActivity ? preloadedActivity.body : [];
 		this.member = 'body' in preloadedMember ? preloadedMember.body : {};
+		this.currentActivity = currentActivity;
 		this.container = document.querySelector( '#bp-activity-wall-items' );
 	}
 
@@ -90,9 +91,16 @@ class bpActivityWall {
 
 		if ( !! activity && ! this.activities.find( existingActivity => existingActivity.id === activity.id ) ) {
 			delete activity.message;
-			this.activities.unshift( activity );
 
-			this.container.prepend( stringToElements( this.renderItem( activity ) ) );
+			if ( 'activity_comment' === activity.type ) {
+				this.activities.push( activity );
+
+				this.container.append( stringToElements( this.renderItem( activity ) ) );
+			} else {
+				this.activities.unshift( activity );
+
+				this.container.prepend( stringToElements( this.renderItem( activity ) ) );
+			}
 		}
 	}
 
