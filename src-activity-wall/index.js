@@ -73,6 +73,7 @@ class bpActivityWall {
 	 */
 	loop( activities ) {
 		activities.forEach( ( activity ) => {
+			activity.author_link = activity._embedded.user[0].link;
 			this.container.innerHTML += this.renderItem( activity );
 		} );
 	}

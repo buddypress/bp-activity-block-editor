@@ -26,9 +26,8 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 		$data = $response->get_data();
 
 		if ( $data ) {
-			$data['author_link']   = esc_url( bp_core_get_user_domain( $activity->user_id ) );
-			$data['timediff']      = bp_core_time_since( $activity->date_recorded );
-			$data['timestamp']     = strtotime( $activity->date_recorded );
+			$data['timediff']  = bp_core_time_since( $activity->date_recorded );
+			$data['timestamp'] = strtotime( $activity->date_recorded );
 
 			// Update the response.
 			$response->set_data( $data );
