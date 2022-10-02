@@ -26,11 +26,24 @@
 				}
 			}
 
+			> footer .activity-action-buttons {
+				margin-top: 0.2em;
+				margin-bottom: 0;
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+			}
+
 			&:not(.mini) {
 
 				> header {
 					padding-bottom: .5rem;
 					box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+				}
+
+				> footer {
+					padding-top: .5rem;
+					box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.04);
 				}
 			}
 

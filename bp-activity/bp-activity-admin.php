@@ -203,7 +203,13 @@ function bp_activity_admin_enqueue_assets() {
 		bp_rest_namespace(),
 		bp_rest_version()
 	);
-	$activity_path = $bp_base . 'activity?_embed=true';
+	$activity_path = add_query_arg(
+		array(
+			'_embed'                => true,
+			'_is_bp_activity_admin' => true,
+		),
+		$bp_base . 'activity'
+	);
 	$member_path   = $bp_base . 'members/me';
 
 	// Preloads BP Members directory data.
