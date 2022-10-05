@@ -294,7 +294,13 @@ function bp_activity_admin_enqueue_assets() {
 
 	$script_strings['currentActivity'] = null;
 	if ( isset( $activity->id ) ) {
-		$script_strings['currentActivity'] = $activity;
+		$single_path      = sprintf( $bp_base . 'activity/%d', $activity->id );
+		$current_activity = rest_preload_api_request( array(), $single_path );
+
+		$script_strings['currentActivity'] = null;
+		if ( isset( $current_activity[ $single_path ]['body'][0] ) ) {
+			$script_strings['currentActivity'] = $current_activity[ $single_path ]['body'][0];
+		}
 	}
 
 	wp_enqueue_script( 'bp-activity-wall' );

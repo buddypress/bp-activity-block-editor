@@ -123,6 +123,10 @@ class bpActivityWall {
 			this.loop( this.activities );
 		}
 
+		if ( !! this.currentActivity ) {
+			document.querySelector( '#bp-activity-view' ).innerHTML = this.renderItem( this.currentActivity );
+		}
+
 		this.setUpListeners();
 	}
 }
