@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/buddypress/bp-blocks.git"
+    "url": "git+https://github.com/buddypress/bp-activity-block-editor.git"
   },
   "keywords": [
     "blocks",
@@ -23,10 +23,10 @@
   },
   "homepage": "https://github.com/buddypress/bp-activity-block-editor#readme",
   "devDependencies": {
-    "@automattic/isolated-block-editor": "^2.18.0",
-    "@wordpress/scripts": "^23.3.0",
-    "@wordpress/babel-preset-default": "^6.13.0",
-    "@wordpress/browserslist-config": "^4.1.2"
+    "@automattic/isolated-block-editor": "^2.20.0",
+    "@wordpress/scripts": "^24.1.2",
+    "@wordpress/babel-preset-default": "^7.1.1",
+    "@wordpress/browserslist-config": "^5.5.0"
   },
   "browserslist": [
     "extends @wordpress/browserslist-config"
