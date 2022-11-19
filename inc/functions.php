@@ -11,6 +11,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// The BP Activity Block Editor needs BuddyPress Activity Block functions.
+add_filter( 'bp_is_activity_blocks_active', '__return_true' );
+
 /**
  * Adds some specific data to the Activity REST API response.
  *
