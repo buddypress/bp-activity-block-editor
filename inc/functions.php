@@ -72,6 +72,19 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 			$can_comment     = bp_activity_type_supports( $data['type'], 'comment-reply' );
 		}
 
+		/*
+		 * BuddyPress `bp_groups_filter_activity_can_comment()` needs the $activities_template to be set.
+		 * We probably need to make this unnecessary in BuddyPress, in the meantime let's simulate this global.
+		 */
+		if ( isset( $GLOBALS['activities_template'] ) ) {
+			$reset_activities_template = $GLOBALS['activities_template'];
+		} else {
+			$reset_activities_template = null;
+		}
+
+		$GLOBALS['activities_template'] = new stdClass();
+		$GLOBALS['activities_template']->activity = $activity;
+
 		/** This filter is documented in wp-content/plugins/buddypress/bp-activity/bp-activity-template.php */
 		$data['can_comment'] = apply_filters( $filter, $can_comment, $can_comment_arg );
 
@@ -83,6 +96,9 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 
 		// Update the response.
 		$response->set_data( $data );
+
+		// Reset the global.
+		$GLOBALS['activities_template'] = $reset_activities_template;
 	}
 
 	return $response;
