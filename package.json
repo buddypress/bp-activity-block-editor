@@ -16,7 +16,7 @@
     "blocks",
     "buddypress"
   ],
-  "author": "imath",
+  "author": "buddypress",
   "license": "GPL-2.0-or-later",
   "bugs": {
     "url": "https://github.com/buddypress/bp-activity-block-editor/issues"
