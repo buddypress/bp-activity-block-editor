@@ -39,7 +39,7 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 		$data['timediff']  = bp_core_time_since( $activity->date_recorded );
 		$data['timestamp'] = strtotime( $activity->date_recorded );
 
-		if ( (int) bp_loggedin_user_id() === (int) $data['user_id'] ) {
+		if ( (int) bp_loggedin_user_id() === (int) $data['user_id'] && bp_activity_has_blocks( $activity->content ) ) {
 			$data['edit_link'] = bp_get_admin_url(
 				add_query_arg(
 					array(
