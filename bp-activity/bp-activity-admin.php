@@ -513,7 +513,6 @@ function bp_activity_admin_replace_menu() {
 	add_action( 'load-' . $edit_screen, 'bp_activity_admin_load_single_screen' );
 	add_action( 'load-' . $view_screen, 'bp_activity_admin_load_single_screen' );
 }
-add_action( bp_core_admin_hook(), 'bp_activity_admin_replace_menu', 9 );
 
 /**
  * Adds the Activity menu to custom BuddyPress menus.
@@ -527,7 +526,6 @@ function bp_activity_admin_filter_menu_order( $custom_menus = array() ) {
 	array_push( $custom_menus, 'bp-activities' );
 	return $custom_menus;
 }
-add_filter( 'bp_admin_menu_order', 'bp_activity_admin_filter_menu_order' );
 
 /**
  * Remove Activity submenus.
@@ -539,7 +537,6 @@ function bp_activity_admin_head() {
 	remove_submenu_page( 'bp-activities', 'bp-view-activity' );
 	remove_submenu_page( 'bp-activities', 'bp-activities' );
 }
-add_action( 'bp_admin_head', 'bp_activity_admin_head', 998 );
 
 /**
  * Adds tabs to the Activity Admin.
@@ -599,3 +596,31 @@ function bp_activity_admin_get_tabs( $tabs = array(), $context = '' ) {
 	return $tabs;
 }
 add_filter( 'bp_core_get_admin_tabs', 'bp_activity_admin_get_tabs', 10, 2 );
+
+/**
+ * Inform the Admin user this plugin requires the Activity component to be active.
+ *
+ * @since 1.0.0
+ */
+function bp_activity_block_editor_admin_notice() {
+	printf(
+		'<div class="notice notice-error is-dismissible"><p>%s</p></div>',
+		esc_html__( 'BP Activity Block Editor needs the BP Activity component to be active.', 'bp-activity-block-editor' )
+	);
+}
+
+/**
+ * Checks the Activity component is active before generating admin menu and screen functions.
+ *
+ * @since 1.0.0
+ */
+function bp_activity_block_editor_admin_hooks() {
+	if ( ! bp_is_active( 'activity' ) ) {
+		add_action( 'admin_notices', 'bp_activity_block_editor_admin_notice' );
+	} else {
+		add_action( bp_core_admin_hook(), 'bp_activity_admin_replace_menu', 9 );
+		add_action( 'bp_admin_head', 'bp_activity_admin_head', 998 );
+		add_filter( 'bp_admin_menu_order', 'bp_activity_admin_filter_menu_order' );
+	}
+}
+add_action( 'bp_init', 'bp_activity_block_editor_admin_hooks' );
