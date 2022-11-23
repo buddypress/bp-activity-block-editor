@@ -59,9 +59,15 @@ const ActivityActionButtons = ( { parentActivity } ) => {
 			content: content,
 		};
 
-		if ( parentActivity && !! parentActivity.id ) {
+		if ( ( parentActivity && !! parentActivity.id ) || ( !! activityEdits.type && 'activity_comment' === activityEdits.type ) ) {
 			activity.type = 'activity_comment';
-			activity.primary_item_id = parentActivity.id;
+
+			if ( !! activityEdits.type ) {
+				activity.primary_item_id = activityEdits.item_id;
+				activity.secondary_item_id = activityEdits.secondary_item_id;
+			} else {
+				activity.primary_item_id = parentActivity.id;
+			}
 		}
 
 		if ( !! group && group.id ) {

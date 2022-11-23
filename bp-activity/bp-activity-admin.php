@@ -222,6 +222,11 @@ function bp_activity_block_editor_get_settings() {
 		),
 	);
 
+	$viewed_activity = bp_activity_block_editor()->view_activity;
+	if ( isset ( $viewed_activity->user_id ) ) {
+		$settings['editor']['bodyPlaceholder'] = sprintf( __( 'Engage into the conversation and reply to %s!', 'bp-activity-block-editor' ), bp_core_get_user_displayname( $viewed_activity->user_id ) );
+	}
+
 	list( $color_palette, ) = (array) get_theme_support( 'editor-color-palette' );
 	list( $font_sizes, )    = (array) get_theme_support( 'editor-font-sizes' );
 
