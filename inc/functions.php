@@ -39,6 +39,12 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 		$data['timediff']  = bp_core_time_since( $activity->date_recorded );
 		$data['timestamp'] = strtotime( $activity->date_recorded );
 
+		if ( ! isset( $activity->children ) ) {
+			$top_level_parent_id   = 'activity_comment' == $activity->type ? $activity->item_id : 0;
+			$activity_comments     = BP_Activity_Activity::get_activity_comments( $activity->id, $activity->mptt_left, $activity->mptt_right, 'ham_only', $top_level_parent_id );
+			$data['comment_count'] = count( $activity_comments );
+		}
+
 		if ( (int) bp_loggedin_user_id() === (int) $data['user_id'] && bp_activity_has_blocks( $activity->content ) ) {
 			$data['edit_link'] = bp_get_admin_url(
 				add_query_arg(

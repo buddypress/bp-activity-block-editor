@@ -97,8 +97,9 @@ function bp_activity_admin_get_single_activity( $activity_id = 0 ) {
 
 	$activities  = bp_activity_get(
 		array(
-			'in'          => $activity_id,
-			'show_hidden' => true,
+			'in'               => $activity_id,
+			'show_hidden'      => true,
+			'display_comments' => 'stream',
 		)
 	);
 

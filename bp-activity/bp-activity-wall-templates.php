@@ -37,7 +37,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<footer class="activity-footer item-footer">
 			<ul class="activity-action-buttons">
 				<# if ( !! data.can_comment ) { #>
-					<li><a href="{{{data.link}}}" class="button bp-activity-comment bp-primary-action button-primary" role="button"><?php esc_html_e( 'Comment', 'bp-activity-block-editor' ); ?></a></li>
+					<li>
+						<a href="{{{data.link}}}" class="button bp-activity-comment bp-primary-action button-primary" role="button">
+							<?php esc_html_e( 'Comment', 'bp-activity-block-editor' ); ?>
+							<# if ( !! data.comment_count && data.comment_count > 0 ) { #>
+								({{ data.comment_count }})
+							<# } #>
+						</a>
+					</li>
 				<# } #>
 				<# if ( !! data.can_favorite ) { #>
 					<li>
