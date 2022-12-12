@@ -40,7 +40,7 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 		$data['timestamp'] = strtotime( $activity->date_recorded );
 
 		if ( ! isset( $activity->children ) ) {
-			$top_level_parent_id   = 'activity_comment' == $activity->type ? $activity->item_id : 0;
+			$top_level_parent_id   = 'activity_comment' === $activity->type ? $activity->item_id : 0;
 			$activity_comments     = BP_Activity_Activity::get_activity_comments( $activity->id, $activity->mptt_left, $activity->mptt_right, 'ham_only', $top_level_parent_id );
 			$data['comment_count'] = count( $activity_comments );
 		}
@@ -91,7 +91,7 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 			$reset_activities_template = null;
 		}
 
-		$GLOBALS['activities_template'] = new stdClass();
+		$GLOBALS['activities_template']           = new stdClass();
 		$GLOBALS['activities_template']->activity = $activity;
 
 		/** This filter is documented in wp-content/plugins/buddypress/bp-activity/bp-activity-template.php */

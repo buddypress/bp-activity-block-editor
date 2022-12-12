@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 function bp_activity_admin_register_editor() {
-	$script_assets  = require_once plugin_dir_path( __FILE__ ) . 'block-editor/index.asset.php';
+	$script_assets = require_once plugin_dir_path( __FILE__ ) . 'block-editor/index.asset.php';
 
 	wp_register_script(
 		'bp-activity-block-editor',
@@ -88,6 +88,14 @@ function bp_activity_admin_load_screen() {
 	do_action( 'bp_activity_enqueue_block_editor_assets' );
 }
 
+/**
+ * Get an activity object according to its ID.
+ *
+ * @since 1.0.0
+ *
+ * @param int $activity_id The Activity ID.
+ * @return BP_Activity_Activity The Activity object.
+ */
 function bp_activity_admin_get_single_activity( $activity_id = 0 ) {
 	$activity = null;
 
@@ -95,7 +103,7 @@ function bp_activity_admin_get_single_activity( $activity_id = 0 ) {
 		return $activity;
 	}
 
-	$activities  = bp_activity_get(
+	$activities = bp_activity_get(
 		array(
 			'in'               => $activity_id,
 			'show_hidden'      => true,
@@ -119,33 +127,32 @@ function bp_activity_admin_load_single_screen() {
 	$allowed_screens = array( 'activity_page_bp-view-activity', 'activity_page_bp-edit-activity' );
 	$current_screen  = '';
 
-	if ( function_exists( 'get_current_screen') ) {
+	if ( function_exists( 'get_current_screen' ) ) {
 		$current_screen = get_current_screen()->id;
 	}
 
-	if ( isset( $_GET['aid'] ) && in_array( $current_screen, $allowed_screens, true ) ) {
+	if ( isset( $_GET['aid'] ) && in_array( $current_screen, $allowed_screens, true ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 		$is_edit = 'activity_page_bp-edit-activity' === $current_screen;
 
 		// Register the Block Editor.
 		bp_activity_admin_register_editor();
 
-		$activity_id = absint( wp_unslash( $_GET['aid'] ) );
+		$activity_id = absint( wp_unslash( $_GET['aid'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		$activity    = bp_activity_admin_get_single_activity( $activity_id );
 
 		if ( isset( $activity->user_id ) ) {
 			if ( $is_edit ) {
 				// Starts easy before dealing with more complex capabilities.
 				if ( bp_loggedin_user_id() !== (int) $activity->user_id ) {
-					wp_die( __( 'You are not the author of this activity. Only Activity authors can edit their activities.', 'bp-activity-block-editor' ) );
+					wp_die( esc_html__( 'You are not the author of this activity. Only Activity authors can edit their activities.', 'bp-activity-block-editor' ) );
 				}
 
 				bp_activity_block_editor()->edit_activity = $activity;
 			} else {
 				bp_activity_block_editor()->view_activity = $activity;
 			}
-
 		} else {
-			wp_die( __( 'The activity is missing.', 'bp-activity-block-editor' ) );
+			wp_die( esc_html__( 'The activity is missing.', 'bp-activity-block-editor' ) );
 		}
 
 		if ( ! $is_edit ) {
@@ -159,7 +166,7 @@ function bp_activity_admin_load_single_screen() {
 		 */
 		do_action( 'bp_activity_enqueue_block_editor_assets' );
 	} else {
-		wp_die( __( 'The activity ID is missing.', 'bp-activity-block-editor' ) );
+		wp_die( esc_html__( 'The activity ID is missing.', 'bp-activity-block-editor' ) );
 	}
 }
 
@@ -186,8 +193,8 @@ function bp_activity_block_editor_get_settings() {
 
 	$settings = array(
 		'iso'    => array(
-			'footer' => true,
-			'blocks' => array(
+			'footer'   => true,
+			'blocks'   => array(
 				'allowBlocks' => array(
 					'core/paragraph',
 					'core/embed',
@@ -197,7 +204,7 @@ function bp_activity_block_editor_get_settings() {
 					'bp/file-attachment',
 				),
 			),
-			'toolbar' => array(
+			'toolbar'  => array(
 				'inspector'         => true,
 				'documentInspector' => __( 'Activity', 'bp-activity-block-editor' ),
 			),
@@ -215,7 +222,11 @@ function bp_activity_block_editor_get_settings() {
 				'__experimentalBlockPatterns'          => array(),
 				'__experimentalBlockPatternCategories' => array(),
 				'activeComponents'                     => array_values( bp_core_get_active_components() ),
-				'bodyPlaceholder'                      => sprintf( __( 'What’s new %s?', 'bp-activity-block-editor' ), bp_core_get_user_displayname( get_current_user_id() ) ),
+				'bodyPlaceholder'                      => sprintf(
+					/* translators: %s is the user display name. */
+					__( 'What’s new %s?', 'bp-activity-block-editor' ),
+					bp_core_get_user_displayname( get_current_user_id() )
+				),
 				'canLockBlocks'                        => false,
 			),
 			$custom_editor_settings
@@ -223,8 +234,12 @@ function bp_activity_block_editor_get_settings() {
 	);
 
 	$viewed_activity = bp_activity_block_editor()->view_activity;
-	if ( isset ( $viewed_activity->user_id ) ) {
-		$settings['editor']['bodyPlaceholder'] = sprintf( __( 'Engage into the conversation and reply to %s!', 'bp-activity-block-editor' ), bp_core_get_user_displayname( $viewed_activity->user_id ) );
+	if ( isset( $viewed_activity->user_id ) ) {
+		$settings['editor']['bodyPlaceholder'] = sprintf(
+			/* translators: %s is the user display name. */
+			__( 'Engage into the conversation and reply to %s!', 'bp-activity-block-editor' ),
+			bp_core_get_user_displayname( $viewed_activity->user_id )
+		);
 	}
 
 	list( $color_palette, ) = (array) get_theme_support( 'editor-color-palette' );
@@ -376,7 +391,7 @@ function bp_activity_block_editor_enqueue_assets() {
 		);
 	}
 
-	if ( isset( $_GET['aid'] ) ) {
+	if ( isset( $_GET['aid'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 		wp_add_inline_style(
 			'common',
 			'#wpbody-content {
@@ -503,7 +518,7 @@ function bp_activity_admin_replace_menu() {
 		_x( 'Edit Activity', 'Admin Dashboard Activity Edit menu', 'bp-activity-block-editor' ),
 		'exist',
 		'bp-edit-activity',
-		'bp_activity_admin_screen',
+		'bp_activity_admin_screen'
 	);
 
 	$view_screen = add_submenu_page(
@@ -512,7 +527,7 @@ function bp_activity_admin_replace_menu() {
 		_x( 'View Activity', 'Admin Dashboard Activity Edit menu', 'bp-activity-block-editor' ),
 		'exist',
 		'bp-view-activity',
-		'bp_activity_admin_screen',
+		'bp_activity_admin_screen'
 	);
 
 	add_action( 'load-' . $screen, 'bp_activity_admin_load_screen' );
@@ -549,7 +564,7 @@ function bp_activity_admin_head() {
  *
  * @since 1.0.0
  *
- * @param array $tabs A list of Admin tabs.
+ * @param array  $tabs A list of Admin tabs.
  * @param string $context The Admin context tabs should be output.
  * @return array The list of Admin tabs for the given context.
  */
@@ -557,8 +572,8 @@ function bp_activity_admin_get_tabs( $tabs = array(), $context = '' ) {
 	$activity_id  = 0;
 	$activity_all = array();
 
-	if ( isset( $_GET['aid'] ) ) {
-		$activity_id  = (int) $_GET['aid'];
+	if ( isset( $_GET['aid'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		$activity_id  = (int) $_GET['aid']; // phpcs:ignore WordPress.Security.NonceVerification
 		$activity_all = array(
 			'id'   => 'bp-activity-all',
 			'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bp-activities' ), 'admin.php' ) ),
@@ -583,7 +598,15 @@ function bp_activity_admin_get_tabs( $tabs = array(), $context = '' ) {
 		$tabs = array(
 			'0' => array(
 				'id'   => 'bp-activity-edit',
-				'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bp-edit-activity', 'aid' => $activity_id ), 'admin.php' ) ),
+				'href' => bp_get_admin_url(
+					add_query_arg(
+						array(
+							'page' => 'bp-edit-activity',
+							'aid'  => $activity_id,
+						),
+						'admin.php'
+					)
+				),
 				'name' => __( 'Edit Activity', 'bp-activity-block-editor' ),
 			),
 			'1' => $activity_all,
@@ -592,7 +615,15 @@ function bp_activity_admin_get_tabs( $tabs = array(), $context = '' ) {
 		$tabs = array(
 			'0' => array(
 				'id'   => 'bp-activity-view',
-				'href' => bp_get_admin_url( add_query_arg( array( 'page' => 'bp-view-activity', 'aid' => $activity_id ), 'admin.php' ) ),
+				'href' => bp_get_admin_url(
+					add_query_arg(
+						array(
+							'page' => 'bp-view-activity',
+							'aid'  => $activity_id,
+						),
+						'admin.php'
+					)
+				),
 				'name' => __( 'View Activity', 'bp-activity-block-editor' ),
 			),
 			'1' => $activity_all,
