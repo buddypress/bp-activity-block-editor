@@ -1,10 +1,10 @@
 /**
  * External dependencies.
  */
-const {
+import {
 	assignIn,
 	uniqueId,
-} = lodash;
+} from 'lodash';
 
 /**
  * Internal dependencies.

@@ -1,32 +1,21 @@
 /**
  * External dependencies.
  */
-const {
-	merge,
-} = lodash;
+import { merge } from 'lodash';
 
 /**
  * WordPress dependencies.
  */
-const {
-	blocks: {
-		parse,
-		serialize,
-	},
-	components: {
-		Button,
-	},
-	data: {
-		useSelect,
-		useDispatch,
-	},
-	element: {
-		createElement,
-	},
-	i18n: {
-		__,
-	},
-} = wp;
+import {
+	parse,
+	serialize,
+} from '@wordpress/blocks';
+import { Button } from '@wordpress/components';
+import {
+	useSelect,
+	useDispatch,
+} from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies.

@@ -1,23 +1,14 @@
 /**
  * WordPress dependencies
  */
- const {
-	domReady,
-	element: {
-		createElement,
-		render,
-	},
-	i18n: {
-		__,
-	},
-	data: {
-		useSelect,
-		useDispatch,
-	},
-	richText: {
-		unregisterFormatType,
-	}
-} = wp;
+import { createRoot } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+import domReady from '@wordpress/dom-ready';
+import {
+	useSelect,
+	useDispatch,
+} from '@wordpress/data';
+import { unregisterFormatType } from '@wordpress/rich-text';
 
 /**
  * Automattic dependency.
@@ -88,6 +79,8 @@ const ActivityEditor = ( { settings } ) => {
 }
 
 domReady( function() {
+	const target = document.querySelector( '#bp-activity-block-editor' )
+	const root = createRoot( target );
 	const settings = window.bpActivityBlockEditor || {};
 
 	// Remove some formatting buttons.
@@ -95,5 +88,5 @@ domReady( function() {
 		unregisterFormatType( format );
 	} );
 
-	render( <ActivityEditor settings={ settings } />, document.querySelector( '#bp-activity-block-editor' ) );
+	root.render( <ActivityEditor settings={ settings } /> );
 } );

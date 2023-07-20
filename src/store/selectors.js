@@ -1,9 +1,7 @@
 /**
  * External dependencies.
  */
-const {
-	find,
-} = lodash;
+import { find } from 'lodash';
 
 /**
  * Returns the list of Active BP Components.

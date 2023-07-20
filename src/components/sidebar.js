@@ -1,29 +1,24 @@
 /**
  * WordPress dependencies.
  */
-const {
-	components: {
-		Button,
-		Dashicon,
-		ExternalLink,
-		Panel,
-		PanelBody,
-		PanelRow,
-		SelectControl,
-	},
-	data: {
-		useSelect,
-		useDispatch,
-	},
-	element: {
-		createElement,
-		Fragment,
-		useState,
-	},
-	i18n: {
-		__,
-	},
-} = wp;
+import {
+	Button,
+	Dashicon,
+	ExternalLink,
+	Panel,
+	PanelBody,
+	PanelRow,
+	SelectControl,
+} from '@wordpress/components';
+import {
+	useSelect,
+	useDispatch,
+} from '@wordpress/data';
+import {
+	Fragment,
+	useState,
+} from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 /**
  * BuddyPress dependencies.

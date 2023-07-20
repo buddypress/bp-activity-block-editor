@@ -1,13 +1,10 @@
 /**
  * WordPress dependencies
  */
-const {
-	element: {
-		Component,
-		createElement,
-		createPortal,
-	},
-} = wp;
+import {
+	Component,
+	createPortal,
+} from '@wordpress/element';
 
 class ActivityElementPortal extends Component {
 	render() {

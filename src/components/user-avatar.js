@@ -1,22 +1,17 @@
 /**
  * WordPress dependencies.
  */
-const {
-	i18n: {
-		__,
-		sprintf,
-	},
-	element: {
-		createElement,
-	},
-	data: {
-		useSelect,
-	},
-	components: {
-		Button,
-		Dashicon,
-	},
-} = wp;
+import {
+	Button,
+	Dashicon,
+} from '@wordpress/components';
+import {
+	useSelect,
+} from '@wordpress/data';
+import {
+	__,
+	sprintf,
+} from '@wordpress/i18n';
 
 /**
  * Internal dependencies.

@@ -1,24 +1,13 @@
 /**
  * WordPress dependencies.
  */
-const {
-	blocks: {
-		parse,
-	},
-	data: {
-		useSelect,
-		useDispatch,
-	},
-	components: {
-		Notice,
-	},
-	element: {
-		createElement,
-	},
-	i18n: {
-		__,
-	},
-} = wp;
+import { parse } from '@wordpress/blocks';
+import { Notice } from '@wordpress/components';
+import {
+	useSelect,
+	useDispatch,
+} from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies.
