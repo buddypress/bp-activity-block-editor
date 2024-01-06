@@ -21,8 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 function bp_activity_get_block_categories() {
 	$block_categories = get_default_block_categories();
 	$embed_category   = array();
+
 	foreach ( $block_categories as $position => $category ) {
-		if ( isset( $category['slug'] ) && 'embed' === $category['slug'] ) {
+		if ( ! isset( $category['slug'] ) ) {
+			continue;
+		}
+
+		if ( 'embed' === $category['slug'] ) {
 			unset( $block_categories[ $position ] );
 			$embed_category = array( $category );
 		}
@@ -39,6 +44,43 @@ function bp_activity_get_block_categories() {
 
 	return array_merge( $bp_activity_block_categories, $embed_category );
 }
+
+/**
+ * Returns the list of allowed block types to use in the Activity block editor.
+ *
+ * @since 1.0.0
+ *
+ * @param bool|string[]           $allowed_block_types  Array of block type slugs, or boolean to enable/disable all.
+ * @param WP_Block_Editor_Context $block_editor_context The current block editor context.
+ * @return bool|string[]          Array of block type slugs, or boolean to enable/disable all.
+ */
+function bp_activity_allowed_block_types( $allowed_block_types, $block_editor_context ) {
+	if ( isset( $block_editor_context->name ) && 'bp/edit-activity' === $block_editor_context->name ) {
+		$activity_block_types = array( 'core/paragraph', 'core/embed' );
+		$block_registry       = WP_Block_Type_Registry::get_instance();
+
+		// Allow all Block types having the 'activity' `buddypress_contexts`.
+		foreach ( $block_registry->get_all_registered() as $block_name => $block_type ) {
+			if ( empty( $block_type->buddypress_contexts ) || ! in_array( 'activity', $block_type->buddypress_contexts, true ) ) {
+				continue;
+			}
+
+			$activity_block_types[] = $block_name;
+		}
+
+		/**
+		 * Filter here to enable custom BP Activity block types.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param $allowed_block_types  Array of block type slugs.
+		 */
+		$allowed_block_types = apply_filters( 'bp_activity_allowed_block_types', $activity_block_types );
+	}
+
+	return $allowed_block_types;
+}
+add_filter( 'allowed_block_types_all', 'bp_activity_allowed_block_types', 10, 2 );
 
 /**
  * Enqueues script and styles for Activity blocks.
