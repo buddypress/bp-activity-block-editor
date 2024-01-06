@@ -194,6 +194,11 @@ function bp_activity_block_editor_get_settings() {
 	$settings = array(
 		'iso'    => array(
 			'footer'   => true,
+			/*
+			 * This part is neutralized as it's not taken in account by the Isolated Block Editor.
+			 *
+			 * See: https://github.com/Automattic/isolated-block-editor/issues/244
+			 *
 			'blocks'   => array(
 				'allowBlocks' => array(
 					'core/paragraph',
@@ -204,6 +209,7 @@ function bp_activity_block_editor_get_settings() {
 					'bp/file-attachment',
 				),
 			),
+			*/
 			'toolbar'  => array(
 				'inspector'         => true,
 				'documentInspector' => __( 'Activity', 'bp-activity-block-editor' ),
