@@ -176,6 +176,8 @@ function bp_activity_admin_load_single_screen() {
  * @since 1.0.0
  */
 function bp_activity_block_editor_get_settings() {
+	$block_editor_context = new WP_Block_Editor_Context( array( 'name' => 'bp/edit-activity' ) );
+
 	wp_add_inline_script(
 		'wp-blocks',
 		sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( bp_activity_get_block_categories() ) ),
@@ -194,22 +196,6 @@ function bp_activity_block_editor_get_settings() {
 	$settings = array(
 		'iso'    => array(
 			'footer'   => true,
-			/*
-			 * This part is neutralized as it's not taken in account by the Isolated Block Editor.
-			 *
-			 * See: https://github.com/Automattic/isolated-block-editor/issues/244
-			 *
-			'blocks'   => array(
-				'allowBlocks' => array(
-					'core/paragraph',
-					'core/embed',
-					'bp/image-attachment',
-					'bp/video-attachment',
-					'bp/audio-attachment',
-					'bp/file-attachment',
-				),
-			),
-			*/
 			'toolbar'  => array(
 				'inspector'         => true,
 				'documentInspector' => __( 'Activity', 'bp-activity-block-editor' ),
@@ -234,6 +220,7 @@ function bp_activity_block_editor_get_settings() {
 					bp_core_get_user_displayname( get_current_user_id() )
 				),
 				'canLockBlocks'                        => false,
+				'allowedBlockTypes'                    => get_allowed_block_types( $block_editor_context ),
 			),
 			$custom_editor_settings
 		),
