@@ -200,10 +200,7 @@ function bp_activity_block_editor_get_settings() {
 				'inspector'         => true,
 				'documentInspector' => __( 'Activity', 'bp-activity-block-editor' ),
 			),
-			'moreMenu' => array(
-				'topToolbar' => true,
-				'fullscreen' => defined( 'IFRAME_REQUEST' ) && IFRAME_REQUEST,
-			),
+			'moreMenu' => false,
 		),
 		'editor' => array_merge(
 			array(

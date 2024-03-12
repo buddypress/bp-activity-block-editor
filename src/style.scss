@@ -22,6 +22,26 @@ body {
 
 				.interface-interface-skeleton__header {
 					display: block;
+
+					.edit-post-header-toolbar__left {
+						padding-left: 20px;
+
+						> .edit-post-header-toolbar__inserter-toggle {
+							&.has-icon {
+
+								&.is-pressed svg {
+									transform: rotate(45deg);
+								}
+
+								&:not(.is-pressed) {
+									height: 32px;
+									min-width: 32px;
+									padding: 0;
+									width: 32px;
+								}
+							}
+						}
+					}
 				}
 
 				.interface-interface-skeleton__editor {
