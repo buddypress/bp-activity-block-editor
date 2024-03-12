@@ -54,6 +54,34 @@ body {
 			}
 		}
 
+		.edit-post-sidebar__panel-tabs {
+
+			> ul {
+				display: inline-flex;
+				-webkit-box-align: center;
+				align-items: center;
+				position: relative;
+				border-radius: 0px;
+				height: calc(48px);
+				background: transparent;
+				border: none;
+				box-shadow: none;
+				cursor: pointer;
+				padding: 3px calc(16px);
+				margin-left: 0px;
+				font-weight: 500;
+
+				.components-button.edit-post-sidebar__panel-tab {
+					height: 48px;
+
+					&.is-active {
+						border: none;
+						border-bottom: solid 4px var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+					}
+				}
+			}
+		}
+
 		.edit-post-visual-editor {
 			margin-top: 35px;
 		}

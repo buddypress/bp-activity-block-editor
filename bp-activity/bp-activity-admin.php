@@ -197,6 +197,8 @@ function bp_activity_block_editor_get_settings() {
 		'iso'    => array(
 			'footer'   => true,
 			'toolbar'  => array(
+				'inserter'          => false,
+				'undo'              => false,
 				'inspector'         => true,
 				'documentInspector' => __( 'Activity', 'bp-activity-block-editor' ),
 			),
