@@ -23,10 +23,10 @@
   },
   "homepage": "https://github.com/buddypress/bp-activity-block-editor#readme",
   "devDependencies": {
-    "@automattic/isolated-block-editor": "^2.28.0",
-    "@wordpress/scripts": "^26.19.0",
-    "@wordpress/babel-preset-default": "^7.32.0",
-    "@wordpress/browserslist-config": "^5.31.0"
+    "@automattic/isolated-block-editor": "^2.29.0",
+    "@wordpress/scripts": "^27.4.0",
+    "@wordpress/babel-preset-default": "^7.37.0",
+    "@wordpress/browserslist-config": "^5.37.0"
   },
   "browserslist": [
     "extends @wordpress/browserslist-config"
