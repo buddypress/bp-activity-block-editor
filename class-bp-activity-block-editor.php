@@ -19,7 +19,7 @@
  * Domain Path:       /languages/
  * Text Domain:       bp-activity-block-editor
  * GitHub Plugin URI: https://github.com/buddypress/bp-activity-block-editor
- * Requires at least: 6.1
+ * Requires at least: 6.5
  * Requires PHP:      5.6
  * Requires Plugins:  buddypress
  */

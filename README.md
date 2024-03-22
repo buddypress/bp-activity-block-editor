@@ -9,5 +9,5 @@ The Editor is not available on the front-end yet. To test it, you need to go to 
 Requirements
 ------------
 
-+ WordPress 6.1.0
-+ BuddyPress 11.0.0
++ WordPress 6.5.0
++ BuddyPress 12.0.0
