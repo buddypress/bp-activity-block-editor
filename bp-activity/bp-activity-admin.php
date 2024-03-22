@@ -63,7 +63,7 @@ function bp_activity_admin_register_wall() {
 	wp_register_style(
 		'bp-activity-wall',
 		plugins_url( 'activity-wall/style-index.css', __FILE__ ),
-		array( 'bp-admin-common-css' ),
+		array( 'bp-admin-common-css', 'dashicons' ),
 		$plugin_version
 	);
 

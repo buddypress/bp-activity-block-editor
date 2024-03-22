@@ -16,6 +16,7 @@
 				display: flex;
 				align-items: center;
 				gap: 0.5rem;
+				justify-content: flex-start;
 
 				.activity-avatar img {
 					width: 20px;
@@ -24,6 +25,34 @@
 
 				.activity-title p {
 					margin: 0;
+				}
+
+				.activity-major-actions {
+					margin-left: auto;
+
+					> button {
+						appearance: none;
+						background: none;
+						border: none;
+
+						&.is-open .dashicons-ellipsis {
+							transform: rotate(90deg);
+						}
+					}
+
+					.activity-major-actions-popover {
+						margin: 0;
+						margin-top: 0.5em;
+						padding: 0.5em 1em;
+						background-color: #fff;
+						border: 1px solid #dcdcde;
+						border-radius: 2px;
+						box-shadow: 0 2px 5px #0000001a, 0 0 56px rgba(0,0,0,.075);
+
+						a.delete-activity {
+							color: #b32d2e;
+						}
+					}
 				}
 			}
 

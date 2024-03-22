@@ -26,6 +26,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="activity-title item-title">
 				<p>{{{data.title}}} <a href="{{{data.link}}}" class="activity-time-since"><span class="time-since">{{data.timediff}}</span></a></p>
 			</div>
+
+			<# if ( !! data.edit_link || !! data.can_delete ) { #>
+				<div class="activity-major-actions">
+					<button popovertarget="activity-major-actions-{{data.id}}" popovertargetaction="toggle">
+						<span class="dashicons dashicons-ellipsis"></span>
+					</button>
+					<div popover="auto" id="activity-major-actions-{{data.id}}" role="tooltip" tabindex="-1" class="activity-major-actions-popover">
+						<ul class="activity-major-action-links">
+							<# if ( !! data.edit_link ) { #>
+								<li><span class="dashicons dashicons-edit"></span><a href="{{{data.edit_link}}}" class="bp-activity-edit" role="button"><?php esc_html_e( 'Edit', 'bp-activity-block-editor' ); ?></a></li>
+							<# } #>
+							<# if ( !! data.can_delete ) { #>
+								<li><span class="dashicons dashicons-trash"></span><a href="#delete" class="bp-activity-delete delete-activity submitdelete deletion" role="button"><?php esc_html_e( 'Delete', 'bp-activity-block-editor' ); ?></a></li>
+							<# } #>
+						</ul>
+					</div>
+				</div>
+			<# } #>
 		</header>
 
 		<div class="activity-content">
@@ -56,12 +74,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<# } #>
 						</a>
 					</li>
-				<# } #>
-				<# if ( !! data.edit_link ) { #>
-					<li><a href="{{{data.edit_link}}}" class="button bp-activity-edit" role="button"><?php esc_html_e( 'Edit', 'bp-activity-block-editor' ); ?></a></li>
-				<# } #>
-				<# if ( !! data.can_delete ) { #>
-					<li><a href="#delete" class="button bp-activity-delete delete-activity submitdelete deletion bp-secondary-action button-secondary" role="button"><?php esc_html_e( 'Delete', 'bp-activity-block-editor' ); ?></a></li>
 				<# } #>
 			</ul>
 		</footer>

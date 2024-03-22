@@ -62,7 +62,7 @@ class bpActivityWall {
 		props.id_attribute = 'activity_comment' === props.type ? 'activity-comment' : 'activity';
 
 		// Finally return the rendered activity.
-		return Template( props )
+		return Template( props );
 	}
 
 	/**
@@ -105,12 +105,59 @@ class bpActivityWall {
 	}
 
 	/**
+	 * Adjusts popover position and update toggle state.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param {HTMLButtonElement} invoker The Popover invoker.
+	 */
+	togglePopover( invoker ) {
+		const popover = document.getElementById( invoker.getAttribute( 'popovertarget' ) );
+		const position = invoker.getBoundingClientRect();
+
+		popover.style.top = position.bottom + 'px';
+		popover.style.left = position.left + 'px';
+
+		popover.addEventListener( 'toggle', ( e ) => {
+			if ( 'open' === e.newState ) {
+				if ( ! invoker.classList.contains( 'is-open' ) ) {
+					invoker.classList.add( 'is-open' );
+				}
+			} else {
+				invoker.classList.remove( 'is-open' );
+			}
+		} );
+	}
+
+	/**
+	 * Catches all stream click events to find the right handler.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param {PointerEvent} event The click event.
+	 */
+	catchStreamEvents( event ) {
+		let target = event.target;
+
+		if ( target.classList.contains( 'dashicons-ellipsis' ) ) {
+			target = target.closest( 'button' );
+		}
+
+		if ( target.getAttribute( 'popovertarget' ) ) {
+			return this.togglePopover( target );
+		}
+	}
+
+	/**
 	 * Add various listeners to the Activity Wall.
 	 *
 	 * @since 1.0.0
 	 */
 	setUpListeners() {
 		window.addEventListener( 'message', this.addItem.bind( this ), false );
+
+		// Use event delegation to catch any events.
+		this.container.addEventListener( 'click', this.catchStreamEvents.bind( this ), false );
 	}
 
 	/**
