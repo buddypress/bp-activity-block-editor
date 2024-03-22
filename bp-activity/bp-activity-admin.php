@@ -206,12 +206,17 @@ function bp_activity_block_editor_get_settings() {
 		),
 		'editor' => array_merge(
 			array(
-				'disableCustomColors'                  => get_theme_support( 'disable-custom-colors' ),
-				'disableCustomFontSizes'               => get_theme_support( 'disable-custom-font-sizes' ),
+				'disableCustomColors'                  => true,
+				'disableCustomFontSizes'               => true,
 				'isRTL'                                => is_rtl(),
 				'codeEditingEnabled'                   => false,
 				'__experimentalBlockPatterns'          => array(),
 				'__experimentalBlockPatternCategories' => array(),
+				'__experimentalFeatures'               => array(
+					'typography' => array(
+						'dropCap' => false,
+					),
+				),
 				'activeComponents'                     => array_values( bp_core_get_active_components() ),
 				'bodyPlaceholder'                      => sprintf(
 					/* translators: %s is the user display name. */
@@ -232,17 +237,6 @@ function bp_activity_block_editor_get_settings() {
 			__( 'Engage into the conversation and reply to %s!', 'bp-activity-block-editor' ),
 			bp_core_get_user_displayname( $viewed_activity->user_id )
 		);
-	}
-
-	list( $color_palette, ) = (array) get_theme_support( 'editor-color-palette' );
-	list( $font_sizes, )    = (array) get_theme_support( 'editor-font-sizes' );
-
-	if ( false !== $color_palette ) {
-		$settings['editor']['colors'] = $color_palette;
-	}
-
-	if ( false !== $font_sizes ) {
-		$settings['editor']['fontSizes'] = $font_sizes;
 	}
 
 	return $settings;
