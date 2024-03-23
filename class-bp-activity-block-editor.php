@@ -144,6 +144,19 @@ final class BP_Activity_Block_Editor {
 	}
 
 	/**
+	 * Installs the plugin.
+	 *
+	 * @since 1.0.0
+	 */
+	public static function install() {
+		if ( ! self::is_buddypress_active() ) {
+			return;
+		}
+
+		require_once plugin_dir_path( __FILE__ ) . 'inc/install.php';
+	}
+
+	/**
 	 * Return an instance of this class.
 	 *
 	 * @since 1.0.0
@@ -174,3 +187,5 @@ function bp_activity_block_editor() {
 	return BP_Activity_Block_Editor::start();
 }
 add_action( 'bp_loaded', 'bp_activity_block_editor', -1 );
+
+register_activation_hook( __FILE__, array( 'BP_Activity_Block_Editor', 'install' ) );
