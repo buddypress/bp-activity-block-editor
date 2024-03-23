@@ -1,34 +1,35 @@
 {
-  "name": "bp-activity-block-editor",
-  "version": "1.0.0",
-  "description": "Brings the power of the WordPress Blocks API into BuddyPress activities.",
-  "main": "index.js",
-  "scripts": {
-    "start": "wp-scripts start --output-path=bp-activity/block-editor",
-    "build": "wp-scripts build --output-path=bp-activity/block-editor",
-    "build:activity": "wp-scripts build --webpack-src-dir=src-activity-wall --output-path=bp-activity/activity-wall"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/buddypress/bp-activity-block-editor.git"
-  },
-  "keywords": [
-    "blocks",
-    "buddypress"
-  ],
-  "author": "buddypress",
-  "license": "GPL-2.0-or-later",
-  "bugs": {
-    "url": "https://github.com/buddypress/bp-activity-block-editor/issues"
-  },
-  "homepage": "https://github.com/buddypress/bp-activity-block-editor#readme",
-  "devDependencies": {
-    "@automattic/isolated-block-editor": "^2.29.0",
-    "@wordpress/scripts": "^27.4.0",
-    "@wordpress/babel-preset-default": "^7.37.0",
-    "@wordpress/browserslist-config": "^5.37.0"
-  },
-  "browserslist": [
-    "extends @wordpress/browserslist-config"
-  ]
+	"name": "bp-activity-block-editor",
+	"version": "1.0.0",
+	"description": "Brings the power of the WordPress Blocks API into BuddyPress activities.",
+	"main": "index.js",
+	"scripts": {
+		"start": "wp-scripts start --output-path=bp-activity/block-editor",
+		"build": "wp-scripts build --output-path=bp-activity/block-editor",
+		"build:activity": "wp-scripts build --webpack-src-dir=src-activity-wall --output-path=bp-activity/activity-wall",
+		"build:emojis": "wp-scripts build --webpack-src-dir=src-autocompleter --output-path=bp-activity/autocompleter"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/buddypress/bp-activity-block-editor.git"
+	},
+	"keywords": [
+		"blocks",
+		"buddypress"
+	],
+	"author": "buddypress",
+	"license": "GPL-2.0-or-later",
+	"bugs": {
+		"url": "https://github.com/buddypress/bp-activity-block-editor/issues"
+	},
+	"homepage": "https://github.com/buddypress/bp-activity-block-editor#readme",
+	"devDependencies": {
+		"@automattic/isolated-block-editor": "^2.29.0",
+		"@wordpress/scripts": "^27.4.0",
+		"@wordpress/babel-preset-default": "^7.37.0",
+		"@wordpress/browserslist-config": "^5.37.0"
+	},
+	"browserslist": [
+		"extends @wordpress/browserslist-config"
+	]
 }

@@ -27,6 +27,16 @@ function bp_activity_admin_register_editor() {
 		true
 	);
 
+	$autocompleter_assets = require_once plugin_dir_path( __FILE__ ) . 'autocompleter/index.asset.php';
+
+	wp_register_script(
+		'bp-activity-block-editor-emojis',
+		plugins_url( 'autocompleter/index.js', __FILE__ ),
+		$autocompleter_assets['dependencies'],
+		$autocompleter_assets['version'],
+		true
+	);
+
 	wp_register_style(
 		'bp-activity-block-editor',
 		plugins_url( 'block-editor/style-index.css', __FILE__ ),
@@ -364,6 +374,7 @@ function bp_activity_block_editor_enqueue_assets() {
 	);
 
 	wp_enqueue_script( 'bp-activity-block-editor' );
+	wp_enqueue_script( 'bp-activity-block-editor-emojis' );
 
 	if ( defined( 'IFRAME_REQUEST' ) && isset( $_GET['url'] ) && $_GET['url'] ) { // phpcs:ignore
 		wp_add_inline_style(
