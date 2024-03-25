@@ -153,7 +153,12 @@ final class BP_Activity_Block_Editor {
 			return;
 		}
 
-		require_once plugin_dir_path( __FILE__ ) . 'inc/install.php';
+		// Install only once.
+		if ( ! bp_get_option( '_bp_activity_block_editor_version', '' ) ) {
+			require_once plugin_dir_path( __FILE__ ) . 'inc/install.php';
+			bp_activity_install_emojis_db();
+			bp_update_option( '_bp_activity_block_editor_version', '1.0.0' );
+		}
 	}
 
 	/**

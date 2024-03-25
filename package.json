@@ -7,7 +7,8 @@
 		"start": "wp-scripts start --output-path=bp-activity/block-editor",
 		"build": "wp-scripts build --output-path=bp-activity/block-editor",
 		"build:activity": "wp-scripts build --webpack-src-dir=src-activity-wall --output-path=bp-activity/activity-wall",
-		"build:emojis": "wp-scripts build --webpack-src-dir=src-autocompleter --output-path=bp-activity/autocompleter"
+		"build:emojis": "wp-scripts build --webpack-src-dir=src-autocompleter --output-path=bp-activity/autocompleter",
+		"update:inserts": "php bin/wp-emoji/set-inserts.php"
 	},
 	"repository": {
 		"type": "git",
