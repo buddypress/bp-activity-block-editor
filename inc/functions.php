@@ -113,3 +113,91 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 	return $response;
 }
 add_filter( 'bp_rest_activity_prepare_value', 'bp_activity_wall_rest_activity_prepare_value', 10, 3 );
+
+/**
+ * Fetches emojis according to given args.
+ *
+ * @since 1.0.0
+ *
+ * @param array $args {
+ *     Associative array of arguments list to query for emojis.
+ *
+ *     @type integer $page      The current page.
+ *     @type integer $per_page  Emoji items per page.
+ *     @type string  $search    The search terms to restrict the list of emojis with matching names.
+ * }
+ * @return array An associative array containing the emojis and the total amount of available emojis.
+ */
+function bp_activity_get_emojis( $args = array() ) {
+	$results = array(
+		'emojis'       => array(),
+		'total_emojis' => 0,
+	);
+
+	if ( empty( $GLOBALS['wpdb'] ) ) {
+		return $results;
+	}
+
+	$wpdb = $GLOBALS['wpdb'];
+	$r    = bp_parse_args(
+		$args,
+		array(
+			'page'     => 1,
+			'per_page' => 10,
+			'search'   => '',
+		)
+	);
+
+	// Select conditions.
+	$table     = bp_core_get_table_prefix() . 'bp_emojis';
+	$sql       = "SELECT * FROM {$table} e";
+	$sql_total = "SELECT count( DISTINCT e.id ) FROM {$table} e";
+
+	// Where conditions.
+	$where_conditions = array();
+
+	if ( $r['search'] ) {
+		$search_like                = '%' . bp_esc_like( $r['search'] ) . '%';
+		$where_conditions['search'] = $wpdb->prepare( 'e.name LIKE %s', $search_like );
+	}
+
+	$where_sql = '';
+	if ( $where_conditions ) {
+		// Join the where conditions together.
+		$where_sql = ' WHERE ' . join( ' AND ', $where_conditions );
+	}
+
+	// Sanitize page and per_page parameters.
+	$page     = absint( $r['page'] );
+	$per_page = absint( $r['per_page'] );
+
+	$pag_sql = '';
+	if ( $page && $per_page ) {
+		$pag_sql = $wpdb->prepare( " LIMIT %d, %d", absint( ( $page - 1 ) * $per_page ), $per_page );
+	}
+
+	$emojis = $wpdb->get_results( $sql . $where_sql . $pag_sql );
+	if ( $emojis ) {
+		foreach ( $emojis as $emoji ) {
+			$emoji->id = (int) $emoji->id;
+		}
+	}
+
+	return array(
+		'emojis'       => $emojis,
+		'total_emojis' => (int) $wpdb->get_var( $sql_total . $where_sql ),
+	);
+}
+
+/**
+ * Register the BP Activity Block Editor Emojis REST controller.
+ *
+ * @since 1.0.0
+ */
+function bp_activity_emojis_set_rest_controller() {
+	require_once plugin_dir_path( dirname( __FILE__ ) ) . '/bp-activity/classes/class-bp-activity-block-editor-emojis-rest-controller.php';
+
+	$controller = new BP_Activity_Block_Editor_Emojis_REST_Controller();
+	$controller->register_routes();
+}
+add_action( 'bp_rest_api_init', 'bp_activity_emojis_set_rest_controller', 10 );
