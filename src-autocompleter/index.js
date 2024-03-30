@@ -4,20 +4,19 @@ import {
 	getTextContent,
 } from '@wordpress/rich-text';
 import { addFilter } from '@wordpress/hooks';
+import apiFetch from '@wordpress/api-fetch';
 
 const emojis = {
 	name: 'emoji',
 	triggerPrefix: ':',
-	options: [
-		{
-			char: '&#x1F004;',
-			name: 'mahjong',
-		},
-		{
-			char: '&#x1F63D;',
-			name: 'kissing cat',
+	options( search ) {
+		let payload = '';
+		if ( search ) {
+			payload = '?search=' + encodeURIComponent( search );
 		}
-	],
+		return apiFetch( { path: '/buddypress/v1/activity-emojis' + payload } );
+	},
+	isDebounced: true,
 	getOptionLabel: ( option ) => {
 		const emoji = getTextContent( create( { html: renderToString( option.char ) } ) );
 		return `${ emoji } ${ option.name }`;
