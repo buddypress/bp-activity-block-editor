@@ -241,12 +241,12 @@ function bp_current_theme_supports( $supports = false, $args = array(), $feature
 
 		if ( ! is_array( $feature ) ) {
 			$supports = false;
+		} else {
+			$theme_feature = $feature[0];
+
+			// Check the theme is supporting the component's feature.
+			$supports = isset( $theme_feature[ $component ] ) && in_array( $component_feature, $theme_feature[ $component ], true );
 		}
-
-		$theme_feature = $feature[0];
-
-		// Check the theme is supporting the component's feature.
-		$supports = isset( $theme_feature[ $component ] ) && in_array( $component_feature, $theme_feature[ $component ], true );
 	}
 
 	return $supports;
