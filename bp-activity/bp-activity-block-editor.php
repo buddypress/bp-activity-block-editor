@@ -104,6 +104,15 @@ function bp_activity_register_block_editor() {
 		true
 	);
 
+	if ( is_buddypress() ) {
+		$wp_styles = wp_styles();
+
+		// Remove some conflicting dependencies and replace 'wp-edit-blocks' by 'wp-block-editor-content'.
+		$wp_styles->registered['wp-reset-editor-styles']->deps = array();
+		$wp_styles->registered['wp-edit-post']->deps           = array_diff( $wp_styles->registered['wp-edit-post']->deps, array( 'wp-commands', 'wp-preferences', 'wp-edit-blocks' ) );
+		$wp_styles->registered['wp-edit-post']->deps[]         = 'wp-block-editor-content';
+	}
+
 	wp_register_style(
 		'bp-activity-block-editor',
 		plugins_url( 'block-editor/style-index.css', __FILE__ ),
@@ -202,12 +211,6 @@ function bp_activity_block_editor_enqueue_assets() {
 		'bp-activity-block-editor',
 		'window.bpActivityBlockEditor = ' . wp_json_encode( $settings ) . ';'
 	);
-
-	// Preload server-registered block schemas.
-	/*wp_add_inline_script(
-		'wp-blocks',
-		'wp.blocks.unstable__bootstrapServerSideBlockDefinitions(' . wp_json_encode( get_block_editor_server_block_settings() ) . ');'
-	);*/
 
 	// Editor default styles.
 	wp_enqueue_style( 'bp-activity-block-editor' );
@@ -333,8 +336,14 @@ function bp_activity_front_register_block_editor() {
 		return;
 	}
 
+	// Only load the Block Editor for logged in users.
+	if ( ! is_user_logged_in() ) {
+		return;
+	}
+
 	if ( current_theme_supports( 'buddypress', array( 'activity' => 'block-editor' ) ) ) {
 		bp_activity_register_block_editor();
+
 		add_action( 'bp_enqueue_community_scripts', 'bp_activity_block_editor_enqueue_assets' );
 
 		/**
