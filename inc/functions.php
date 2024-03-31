@@ -252,3 +252,17 @@ function bp_current_theme_supports( $supports = false, $args = array(), $feature
 	return $supports;
 }
 add_filter( 'current_theme_supports-buddypress', 'bp_current_theme_supports', 10, 3 );
+
+/**
+ * Loads the template pack functions.
+ *
+ * @since 1.0.0
+ */
+function bp_activity_block_editor_use_theme_compat() {
+	if ( bp_use_theme_compat_with_current_theme() ) {
+		$path = plugin_dir_path( dirname( __FILE__ ) );
+
+		require_once $path . 'bp-templates/bp-nouveau.php';
+	}
+}
+add_action( 'bp_after_setup_theme', 'bp_activity_block_editor_use_theme_compat', 2 );

@@ -326,6 +326,22 @@ function bp_activity_enqueue_block_editor_assets() {
 add_action( 'bp_activity_enqueue_block_editor_assets', 'bp_activity_enqueue_block_editor_assets', 1 );
 
 /**
+ * Checks whether the Activity Block Editor is supported by the theme.
+ *
+ * @since 1.0.0
+ */
+function bp_activity_block_editor_is_supported() {
+	$support = false;
+	$feature = bp_get_theme_compat_feature( 'activity-block-editor' );
+
+	if ( bp_use_theme_compat_with_current_theme() && $feature ) {
+		return ! bp_is_group() && ! bp_is_user();
+	}
+
+	return current_theme_supports( 'buddypress', array( 'activity' => 'block-editor' ) );
+}
+
+/**
  * Registers the Activity Block Editor for the front-end context.
  *
  * @since 1.0.0
@@ -341,7 +357,7 @@ function bp_activity_front_register_block_editor() {
 		return;
 	}
 
-	if ( current_theme_supports( 'buddypress', array( 'activity' => 'block-editor' ) ) ) {
+	if ( bp_activity_block_editor_is_supported() ) {
 		bp_activity_register_block_editor();
 
 		add_action( 'bp_enqueue_community_scripts', 'bp_activity_block_editor_enqueue_assets' );
