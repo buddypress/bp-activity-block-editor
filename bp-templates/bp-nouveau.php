@@ -45,6 +45,7 @@ function bp_activity_block_editor_dequeue_activity_post_form() {
 
 	if ( bp_is_activity_directory() || ( bp_is_group_activity() && in_array( 'group', $feature->single_items, true ) ) || ( bp_is_user_activity() && in_array( 'member', $feature->single_items, true ) ) ) {
 		wp_dequeue_script( 'bp-nouveau-activity-post-form' );
+		wp_enqueue_style( 'bp-activity-block-editor-front' );
 		remove_action( 'wp_footer', 'bp_nouveau_activity_print_post_form_templates' );
 
 		?>

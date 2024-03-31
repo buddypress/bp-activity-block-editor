@@ -113,6 +113,14 @@ function bp_activity_register_block_editor() {
 		$wp_styles->registered['wp-edit-post']->deps[]         = 'wp-block-editor-content';
 	}
 
+	// This stylesheet is needed for template packs.
+	wp_register_style(
+		'bp-activity-block-editor-front',
+		plugins_url( 'block-editor/index.css', __FILE__ ),
+		array(),
+		$script_assets['version']
+	);
+
 	wp_register_style(
 		'bp-activity-block-editor',
 		plugins_url( 'block-editor/style-index.css', __FILE__ ),
