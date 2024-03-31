@@ -36,6 +36,11 @@ function bp_activity_block_editor_set_feature() {
 }
 add_action( 'bp_after_setup_theme', 'bp_activity_block_editor_set_feature', 12 );
 
+/**
+ * Dequeues the Nouveau Activity Post Form script.
+ *
+ * @since 1.0.0
+ */
 function bp_activity_block_editor_dequeue_activity_post_form() {
 	$feature = bp_get_theme_compat_feature( 'activity-block-editor' );
 
