@@ -19,6 +19,7 @@ import IsolatedBlockEditor, { EditorHeadingSlot, DocumentSection, FooterSlot } f
  * Internal dependency.
  */
 import './style.scss';
+import './front-style.scss';
 import { BP_ACTIVITY_STORE_KEY } from './store';
 import ActivitySidebar from './components/sidebar';
 import ActivityActionButtons from './components/action-buttons';

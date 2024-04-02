@@ -201,3 +201,68 @@ function bp_activity_emojis_set_rest_controller() {
 	$controller->register_routes();
 }
 add_action( 'bp_rest_api_init', 'bp_activity_emojis_set_rest_controller', 10 );
+
+/**
+ * Registers the `buddypress` theme feature.
+ *
+ * @todo This function should be implemented into BuddyPress core.
+ *
+ * @since 1.0.0
+ */
+function bp_register_buddypress_theme_feature() {
+	register_theme_feature(
+		'buddypress',
+		array(
+			'type'        => 'array',
+			'variadic'    => true,
+			'description' => __( 'Whether the Theme supports BuddyPress and possibly BP Modern features', 'bp-activity-block-editor' ),
+		)
+	);
+}
+add_action( 'bp_init', 'bp_register_buddypress_theme_feature' );
+
+/**
+ * Checks whether a theme is supporting a BP Component's feature.
+ *
+ * @todo This filter should be implemented into BuddyPress core.
+ *
+ * @since 1.0.0
+ *
+ * @param bool   $supports Whether the active theme supports the given feature. Default false.
+ * @param array  $args     Array of arguments for the feature.
+ * @param string $feature  The theme feature.
+ * @return boolean True if the feature is supported. False otherwise.
+ */
+function bp_current_theme_supports( $supports = false, $args = array(), $feature = null ) {
+
+	if ( true === $supports && $args ) {
+		$component         = key( $args[0] );
+		$component_feature = $args[0][ $component ];
+
+		if ( ! is_array( $feature ) ) {
+			$supports = false;
+		} else {
+			$theme_feature = $feature[0];
+
+			// Check the theme is supporting the component's feature.
+			$supports = isset( $theme_feature[ $component ] ) && in_array( $component_feature, $theme_feature[ $component ], true );
+		}
+	}
+
+	return $supports;
+}
+add_filter( 'current_theme_supports-buddypress', 'bp_current_theme_supports', 10, 3 );
+
+/**
+ * Loads the template pack functions.
+ *
+ * @since 1.0.0
+ */
+function bp_activity_block_editor_use_theme_compat() {
+	if ( bp_use_theme_compat_with_current_theme() ) {
+		$path = plugin_dir_path( dirname( __FILE__ ) );
+
+		require_once $path . 'bp-templates/bp-nouveau.php';
+	}
+}
+add_action( 'bp_after_setup_theme', 'bp_activity_block_editor_use_theme_compat', 2 );
