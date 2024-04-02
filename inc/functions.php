@@ -15,6 +15,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_filter( 'bp_is_activity_blocks_active', '__return_true' );
 
 /**
+ * Force the current component to be set as the Activity one.
+ *
+ * NB: this is a workaround to make sure `activity/entry` template
+ * of BP Template packs is rendered as expected as BP URI globals are
+ * not set during REST requests.
+ *
+ * @since 1.0.0
+ */
+function bp_activity_block_editor_force_activity_component() {
+	return 'activity';
+}
+
+/**
  * Adds some specific data to the Activity REST API response.
  *
  * @since 1.0.0
@@ -31,8 +44,9 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 		$referer_path = wp_parse_url( $referer, PHP_URL_PATH );
 	}
 
-	$is_bp_activity_admin = $request->get_param( '_is_bp_activity_admin' ) || '/wp-admin/admin.php' === $referer_path;
-	$data                 = $response->get_data();
+	$is_bp_activity_admin  = $request->get_param( '_is_bp_activity_admin' ) || '/wp-admin/admin.php' === $referer_path;
+	$is_activity_directory = home_url( $referer_path ) === bp_get_activity_directory_permalink();
+	$data                  = $response->get_data();
 
 	if ( $data ) {
 		$activity_id       = (int) $data['id'];
@@ -69,45 +83,65 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 			);
 		}
 
-		// Activity comment capability.
-		$can_comment = false;
-		if ( 'activity_comment' === $data['type'] ) {
-			$can_comment_arg = $activity;
-			$filter          = 'bp_activity_can_comment_reply';
-			$can_comment     = bp_activity_can_comment_reply( $activity );
+		// BP Template packs are using jQuery & Ajax, let's send them the rendered output.
+		if ( $is_activity_directory && in_array( bp_get_theme_compat_id(), array( 'legacy', 'nouveau' ), true ) ) {
+			add_filter( 'bp_current_component', 'bp_activity_block_editor_force_activity_component', 10, 0 );
+
+			ob_start();
+			if ( bp_has_activities( array( 'include' => $activity_id, 'show_hidden' => $activity->hide_sitewide ) ) ) {
+				while ( bp_activities() ) {
+					bp_the_activity();
+					bp_get_template_part( 'activity/entry' );
+				}
+			}
+			$data['fully_rendered_activity'] = ob_get_contents();
+			ob_end_clean();
+
+			remove_filter( 'bp_current_component', 'bp_activity_block_editor_force_activity_component', 10, 0 );
+
+			// Update the response.
+			$response->set_data( $data );
 		} else {
-			$can_comment_arg = $data['type'];
-			$filter          = 'bp_activity_can_comment';
-			$can_comment     = bp_activity_type_supports( $data['type'], 'comment-reply' );
+			// Activity comment capability.
+			$can_comment = false;
+			if ( 'activity_comment' === $data['type'] ) {
+				$can_comment_arg = $activity;
+				$filter          = 'bp_activity_can_comment_reply';
+				$can_comment     = bp_activity_can_comment_reply( $activity );
+			} else {
+				$can_comment_arg = $data['type'];
+				$filter          = 'bp_activity_can_comment';
+				$can_comment     = bp_activity_type_supports( $data['type'], 'comment-reply' );
+			}
+
+			/*
+			* BuddyPress `bp_groups_filter_activity_can_comment()` needs the $activities_template to be set.
+			* We probably need to make this unnecessary in BuddyPress, in the meantime let's simulate this global.
+			*/
+			if ( isset( $GLOBALS['activities_template'] ) ) {
+				$reset_activities_template = $GLOBALS['activities_template'];
+			} else {
+				$reset_activities_template = null;
+			}
+
+			$GLOBALS['activities_template']           = new stdClass();
+			$GLOBALS['activities_template']->activity = $activity;
+
+			/** This filter is documented in wp-content/plugins/buddypress/bp-activity/bp-activity-template.php */
+			$data['can_comment'] = apply_filters( $filter, $can_comment, $can_comment_arg );
+
+			// Activity favorite capability.
+			$data['can_favorite'] = bp_activity_can_favorite();
+
+			// Activity delete capability.
+			$data['can_delete'] = bp_activity_user_can_delete( $activity );
+
+			// Update the response.
+			$response->set_data( $data );
+
+			// Reset the global.
+			$GLOBALS['activities_template'] = $reset_activities_template;
 		}
-
-		/*
-		 * BuddyPress `bp_groups_filter_activity_can_comment()` needs the $activities_template to be set.
-		 * We probably need to make this unnecessary in BuddyPress, in the meantime let's simulate this global.
-		 */
-		if ( isset( $GLOBALS['activities_template'] ) ) {
-			$reset_activities_template = $GLOBALS['activities_template'];
-		} else {
-			$reset_activities_template = null;
-		}
-
-		$GLOBALS['activities_template']           = new stdClass();
-		$GLOBALS['activities_template']->activity = $activity;
-
-		/** This filter is documented in wp-content/plugins/buddypress/bp-activity/bp-activity-template.php */
-		$data['can_comment'] = apply_filters( $filter, $can_comment, $can_comment_arg );
-
-		// Activity favorite capability.
-		$data['can_favorite'] = bp_activity_can_favorite();
-
-		// Activity delete capability.
-		$data['can_delete'] = bp_activity_user_can_delete( $activity );
-
-		// Update the response.
-		$response->set_data( $data );
-
-		// Reset the global.
-		$GLOBALS['activities_template'] = $reset_activities_template;
 	}
 
 	return $response;
