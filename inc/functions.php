@@ -85,7 +85,7 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 		}
 
 		// BP Template packs are using jQuery & Ajax, let's send them the rendered output.
-		if ( ( $is_activity_directory || $is_user_activity ) && in_array( bp_get_theme_compat_id(), array( 'legacy', 'nouveau' ), true ) ) {
+		if ( empty( $is_bp_activity_admin ) && ( $is_activity_directory || $is_user_activity ) && in_array( bp_get_theme_compat_id(), array( 'legacy', 'nouveau' ), true ) ) {
 			add_filter( 'bp_current_component', 'bp_activity_block_editor_force_activity_component', 10, 0 );
 
 			ob_start();
