@@ -28,7 +28,7 @@ function bp_activity_block_editor_set_feature() {
 			array(
 				'name'     => 'activity-block-editor',
 				'settings' => array(
-					'single_items' => array(),
+					'single_items' => array( 'member' ),
 				),
 			)
 		);
@@ -55,6 +55,7 @@ function bp_activity_block_editor_dequeue_activity_post_form() {
 
 		?>
 		<div id="bp-activity-block-editor"></div>
+		<div id="bp-activity-block-editor-notices"></div>
 		<?php
 	}
 }

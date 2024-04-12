@@ -46,6 +46,7 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 
 	$is_bp_activity_admin  = $request->get_param( '_is_bp_activity_admin' ) || '/wp-admin/admin.php' === $referer_path;
 	$is_activity_directory = home_url( $referer_path ) === bp_get_activity_directory_permalink();
+	$is_user_activity      = home_url( $referer_path ) === bp_loggedin_user_url() || bp_loggedin_user_url( array( 'single_item_component' => bp_get_activity_slug() ) );
 	$data                  = $response->get_data();
 
 	if ( $data ) {
@@ -84,7 +85,7 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 		}
 
 		// BP Template packs are using jQuery & Ajax, let's send them the rendered output.
-		if ( $is_activity_directory && in_array( bp_get_theme_compat_id(), array( 'legacy', 'nouveau' ), true ) ) {
+		if ( ( $is_activity_directory || $is_user_activity ) && in_array( bp_get_theme_compat_id(), array( 'legacy', 'nouveau' ), true ) ) {
 			add_filter( 'bp_current_component', 'bp_activity_block_editor_force_activity_component', 10, 0 );
 
 			ob_start();

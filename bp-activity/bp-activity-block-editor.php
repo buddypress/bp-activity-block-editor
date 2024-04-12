@@ -343,10 +343,20 @@ function bp_activity_block_editor_is_supported() {
 	$feature = bp_get_theme_compat_feature( 'activity-block-editor' );
 
 	if ( bp_use_theme_compat_with_current_theme() && $feature ) {
-		return ! bp_is_group() && ! bp_is_user();
+		if ( bp_is_group() ) {
+			$support = in_array( 'group', $feature->single_items, true );
+		} elseif ( bp_is_user() ) {
+			$support = in_array( 'member', $feature->single_items, true );
+		} else {
+			$support = true;
+		}
+
+		// Standalone themes needs to add support to the activity editor.
+	} else {
+		$support = current_theme_supports( 'buddypress', array( 'activity' => 'block-editor' ) );
 	}
 
-	return current_theme_supports( 'buddypress', array( 'activity' => 'block-editor' ) );
+	return $support;
 }
 
 /**
@@ -355,13 +365,13 @@ function bp_activity_block_editor_is_supported() {
  * @since 1.0.0
  */
 function bp_activity_front_register_block_editor() {
-	// Starts with Activity directory.
-	if ( ! bp_is_activity_directory() ) {
+	// Only load the Block Editor for logged in users.
+	if ( ! is_user_logged_in() ) {
 		return;
 	}
 
-	// Only load the Block Editor for logged in users.
-	if ( ! is_user_logged_in() ) {
+	// Starts with Activity directory.
+	if ( ! bp_is_activity_directory() && ! bp_is_group_activity() && ! bp_is_user_activity() ) {
 		return;
 	}
 
@@ -378,4 +388,4 @@ function bp_activity_front_register_block_editor() {
 		do_action( 'bp_activity_enqueue_block_editor_assets' );
 	}
 }
-add_action( 'bp_activity_parse_query', 'bp_activity_front_register_block_editor', 1 );
+add_action( 'bp_setup_canonical_stack', 'bp_activity_front_register_block_editor', 40 );
