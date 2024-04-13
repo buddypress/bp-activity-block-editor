@@ -44,9 +44,11 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 		$referer_path = wp_parse_url( $referer, PHP_URL_PATH );
 	}
 
+	$referer_url           = home_url( $referer_path );
 	$is_bp_activity_admin  = $request->get_param( '_is_bp_activity_admin' ) || '/wp-admin/admin.php' === $referer_path;
-	$is_activity_directory = home_url( $referer_path ) === bp_get_activity_directory_permalink();
-	$is_user_activity      = home_url( $referer_path ) === bp_loggedin_user_url() || bp_loggedin_user_url( array( 'single_item_component' => bp_get_activity_slug() ) );
+	$is_activity_directory = $referer_url === bp_get_activity_directory_permalink();
+	$is_user_activity      = $referer_url === bp_loggedin_user_url() || $referer_url === bp_loggedin_user_url( array( 'single_item_component' => bp_get_activity_slug() ) );
+	$is_group_activity     = false;
 	$data                  = $response->get_data();
 
 	if ( $data ) {
@@ -58,6 +60,11 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 			$top_level_parent_id   = 'activity_comment' === $activity->type ? $activity->item_id : 0;
 			$activity_comments     = BP_Activity_Activity::get_activity_comments( $activity->id, $activity->mptt_left, $activity->mptt_right, 'ham_only', $top_level_parent_id );
 			$data['comment_count'] = count( $activity_comments );
+		}
+
+		if ( 'groups' === $data['component'] && $data['primary_item_id'] ) {
+			$group_id          = (int) $data['primary_item_id'];
+			$is_group_activity = $referer_url === bp_get_group_url( $group_id ) || $referer_url === bp_get_group_url( $group_id, array( 'single_item_action' => bp_get_activity_slug() ) );
 		}
 
 		if ( (int) bp_loggedin_user_id() === (int) $data['user_id'] && bp_activity_has_blocks( $activity->content ) ) {
@@ -85,7 +92,7 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 		}
 
 		// BP Template packs are using jQuery & Ajax, let's send them the rendered output.
-		if ( empty( $is_bp_activity_admin ) && ( $is_activity_directory || $is_user_activity ) && in_array( bp_get_theme_compat_id(), array( 'legacy', 'nouveau' ), true ) ) {
+		if ( empty( $is_bp_activity_admin ) && ( $is_activity_directory || $is_user_activity || $is_group_activity ) && in_array( bp_get_theme_compat_id(), array( 'legacy', 'nouveau' ), true ) ) {
 			add_filter( 'bp_current_component', 'bp_activity_block_editor_force_activity_component', 10, 0 );
 
 			ob_start();

@@ -22,7 +22,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { BP_ACTIVITY_STORE_KEY } from '../store';
 
-const ActivityActionButtons = ( { parentActivity } ) => {
+const ActivityActionButtons = ( { parentActivity, parentGroup } ) => {
 	const { content, isInserting, user, group, activityEdits } = useSelect( ( select ) => {
 		const store = select( BP_ACTIVITY_STORE_KEY );
 
@@ -47,6 +47,7 @@ const ActivityActionButtons = ( { parentActivity } ) => {
 			component: 'activity',
 			content: content,
 		};
+		const groupId = !! group && group.id ? group.id : parentGroup;
 
 		if ( ( parentActivity && !! parentActivity.id ) || ( !! activityEdits.type && 'activity_comment' === activityEdits.type ) ) {
 			activity.type = 'activity_comment';
@@ -59,8 +60,8 @@ const ActivityActionButtons = ( { parentActivity } ) => {
 			}
 		}
 
-		if ( !! group && group.id ) {
-			activity.primary_item_id = group.id;
+		if ( !! groupId ) {
+			activity.primary_item_id = groupId;
 			activity.component = 'groups';
 		}
 

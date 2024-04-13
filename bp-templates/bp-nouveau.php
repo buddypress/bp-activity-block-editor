@@ -28,7 +28,7 @@ function bp_activity_block_editor_set_feature() {
 			array(
 				'name'     => 'activity-block-editor',
 				'settings' => array(
-					'single_items' => array( 'member' ),
+					'single_items' => array( 'member', 'group' ),
 				),
 			)
 		);

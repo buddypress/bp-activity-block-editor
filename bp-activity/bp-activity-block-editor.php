@@ -145,8 +145,13 @@ function bp_activity_block_editor_enqueue_assets() {
 	$settings                             = bp_activity_block_editor_get_settings();
 	$settings['editor']['activityEdit']   = $main_instance->edit_activity;
 	$settings['editor']['parentActivity'] = $main_instance->view_activity;
+	$settings['editor']['parentGroup']    = 0;
 
-	if ( ! is_null( $settings['editor']['parentActivity'] ) && isset( $settings['iso']['toolbar']['documentInspector'] ) ) {
+	if ( bp_is_group() ) {
+		$settings['editor']['parentGroup'] = bp_get_current_group_id();
+	}
+
+	if ( ( ! is_null( $settings['editor']['parentActivity'] ) || $settings['editor']['parentGroup'] ) && isset( $settings['iso']['toolbar']['documentInspector'] ) ) {
 		unset( $settings['iso']['toolbar']['documentInspector'] );
 	}
 
@@ -161,7 +166,7 @@ function bp_activity_block_editor_enqueue_assets() {
 	/**
 	 * Filter here to add your preloaded paths.
 	 *
-	 * @since TBD
+	 * @since 1.0.0
 	 *
 	 * @param array $paths the list of preloaded paths.
 	 */
