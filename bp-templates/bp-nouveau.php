@@ -32,6 +32,9 @@ function bp_activity_block_editor_set_feature() {
 				),
 			)
 		);
+
+		// The Activity Block Editor already includes natively an `@member` autocompleter.
+		add_filter( 'bp_activity_maybe_load_mentions_scripts', '__return_false' );
 	}
 }
 add_action( 'bp_after_setup_theme', 'bp_activity_block_editor_set_feature', 12 );
