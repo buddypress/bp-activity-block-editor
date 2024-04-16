@@ -34,7 +34,7 @@ function bp_activity_admin_register_wall() {
 	wp_register_script(
 		'bp-activity-wall',
 		plugins_url( 'activity-wall/index.js', __FILE__ ),
-		array( 'lodash', 'wp-dom-ready', 'wp-i18n', 'wp-url' ),
+		array( 'lodash', 'wp-dom-ready', 'wp-i18n', 'wp-url', 'wp-api-fetch' ),
 		$plugin_version,
 		true
 	);

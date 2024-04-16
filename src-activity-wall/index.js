@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
  const {
+	apiFetch,
 	domReady,
 	url: {
 		getPath,
@@ -145,6 +146,39 @@ class bpActivityWall {
 
 		if ( target.getAttribute( 'popovertarget' ) ) {
 			return this.togglePopover( target );
+		}
+
+		if ( target.classList.contains( 'bp-activity-delete' ) ) {
+			event.preventDefault();
+
+			const activityContainer = target.closest( '[data-bp-activity-id]' );
+			const activityId = activityContainer.dataset ? parseInt( activityContainer.dataset.bpActivityId, 10 ) : 0;
+
+			if ( activityId ) {
+				const activityAt = this.activities.findIndex( ( activity ) => activity.id === activityId );
+
+				if ( -1 !== activityAt ) {
+					apiFetch( {
+						path: 'buddypress/v1/activity/' + activityId,
+						method: 'DELETE'
+					} ).then( ( response ) => {
+						if ( response && true === response.deleted ) {
+							// Remove the Activity from the global list.
+							this.activities.splice( activityAt, 1 );
+
+							// Remove the HTML output of this activity.
+							activityContainer.remove();
+						} else {
+							// todo, use a notice message.
+							alert( 'ouch' );
+						}
+
+					} ).catch( ( error ) => {
+						// todo, use a notice message.
+						alert( error.message );
+					} );
+				}
+			}
 		}
 	}
 
