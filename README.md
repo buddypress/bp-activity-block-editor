@@ -3,8 +3,7 @@ BP Activity Block Editor
 
 BP Activity Block Editor is a BuddyPress feature as a plugin bringing a Block Based Activity post form to the Activity component.
 
-The Editor is not available on the front-end yet. To test it, you need to go to the Activity WP Admin screen.
-
+https://github.com/buddypress/bp-activity-block-editor/assets/1834524/9d9d163e-8c3a-49de-9893-106442fbc9f3
 
 Requirements
 ------------
