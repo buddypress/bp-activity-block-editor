@@ -40,26 +40,58 @@ function bp_activity_block_editor_set_feature() {
 add_action( 'bp_after_setup_theme', 'bp_activity_block_editor_set_feature', 12 );
 
 /**
- * Dequeues the Nouveau Activity Post Form script.
+ * Checks whether the Block Editor is being used.
+ *
+ * @since 1.0.0
+ *
+ * @return boolean True if the Block Editor is being used. False otherwise.
+ */
+function bp_activity_use_block_editor() {
+	$feature = bp_get_theme_compat_feature( 'activity-block-editor' );
+
+	if ( ! $feature ) {
+		return false;
+	}
+
+	return bp_is_activity_directory() || ( bp_is_group_activity() && in_array( 'group', $feature->single_items, true ) ) || ( bp_is_user_activity() && in_array( 'member', $feature->single_items, true ) );
+}
+
+/**
+ * Unregister the BP Nouveau Activity post form.
+ *
+ * NB: this is safer than dequeing it as some 3rd party plugins may add a
+ * dependency to it.
+ *
+ * @since 1.0.0
+ *
+ * @param array $scripts The BP Nouveau scripts to register.
+ * @return array The BP Nouveau scripts to register.
+ */
+function bp_activity_block_editor_unregister_activity_post_form( $scripts = array() ) {
+	if ( bp_activity_use_block_editor() ) {
+		unset( $scripts['bp-nouveau-activity-post-form'] );
+	}
+
+	return $scripts;
+}
+add_filter( 'bp_nouveau_register_scripts', 'bp_activity_block_editor_unregister_activity_post_form', 100, 1 );
+
+/**
+ * Enqueues the Activity Block Editor.
  *
  * @since 1.0.0
  */
 function bp_activity_block_editor_dequeue_activity_post_form() {
-	$feature = bp_get_theme_compat_feature( 'activity-block-editor' );
-
-	if ( ! $feature ) {
+	if (  ! bp_activity_use_block_editor() ) {
 		return;
 	}
 
-	if ( bp_is_activity_directory() || ( bp_is_group_activity() && in_array( 'group', $feature->single_items, true ) ) || ( bp_is_user_activity() && in_array( 'member', $feature->single_items, true ) ) ) {
-		wp_dequeue_script( 'bp-nouveau-activity-post-form' );
-		wp_enqueue_style( 'bp-activity-block-editor-front' );
-		remove_action( 'wp_footer', 'bp_nouveau_activity_print_post_form_templates' );
+	wp_enqueue_style( 'bp-activity-block-editor-front' );
+	remove_action( 'wp_footer', 'bp_nouveau_activity_print_post_form_templates' );
 
-		?>
-		<div id="bp-activity-block-editor"></div>
-		<div id="bp-activity-block-editor-notices"></div>
-		<?php
-	}
+	?>
+	<div id="bp-activity-block-editor"></div>
+	<div id="bp-activity-block-editor-notices"></div>
+	<?php
 }
 add_action( 'bp_after_activity_post_form', 'bp_activity_block_editor_dequeue_activity_post_form', 1 );
