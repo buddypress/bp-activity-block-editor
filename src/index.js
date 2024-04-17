@@ -86,7 +86,7 @@ domReady( function() {
 	const settings = window.bpActivityBlockEditor || {};
 
 	// Remove some formatting buttons.
-	['core/text-color', 'core/keyboard', 'core/subscript', 'core/superscript'].forEach( ( format ) => {
+	['core/text-color', 'core/keyboard', 'core/subscript', 'core/superscript', 'core/language', 'core/strikethrough'].forEach( ( format ) => {
 		unregisterFormatType( format );
 	} );
 
