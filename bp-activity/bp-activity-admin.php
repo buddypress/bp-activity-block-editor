@@ -264,25 +264,38 @@ function bp_activity_admin_screen() {
 	}
 
 	bp_core_admin_tabbed_screen_header( __( 'Activity', 'bp-activity-block-editor' ), $current_tab, $context );
+	?>
+	<div class="buddypress-body">
+		<dialog id="bp-confirm-action">
+			<form method="dialog">
+				<p>
+					<?php esc_html_e( 'Are you sure you want to do this?', 'bp-activity-block-editor' ); ?>
+				</p>
+				<menu>
+					<button value="cancel" class="button button-secondary"><?php esc_html_e( 'Cancel', 'bp-activity-block-editor' ); ?></button>
+					<button value="confirm" class="button button-primary"><?php esc_html_e( 'Ok', 'bp-activity-block-editor' ); ?></button>
+				</menu>
+			</form>
+		</dialog>
 
+	<?php
 	if ( 'bp-view-activity' !== $context ) {
 		?>
-		<div class="buddypress-body">
 			<div id="bp-activity-block-editor"></div>
 			<div id="bp-activity-block-editor-notices"></div>
 			<div id="bp-activity-wall-items"></div>
-		</div>
 		<?php
 	} else {
 		?>
-		<div class="buddypress-body">
 			<div id="bp-activity-view"></div>
 			<div id="bp-activity-wall-items"></div>
 			<div id="bp-activity-block-editor"></div>
 			<div id="bp-activity-block-editor-notices"></div>
-		</div>
 		<?php
 	}
+	?>
+	</div>
+	<?php
 }
 
 /**

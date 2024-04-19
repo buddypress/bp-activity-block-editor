@@ -45,7 +45,7 @@ class bpActivityWall {
 	 * @since 1.0.0
 	 *
 	 * @param {Object} props The activity item properties.
-	 * @returns {string} HTML output.
+	 * @return {string} HTML output.
 	 */
 	 renderItem( props ) {
 		const Template = setTemplate( 'bp-activity-entry' );
@@ -106,6 +106,50 @@ class bpActivityWall {
 	}
 
 	/**
+	 * Deletes an Activity item.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param {HTMLElement} activityContainer The Activity `<article>` container.
+	 * @return {void}
+	 */
+	deleteItem( activityContainer ) {
+		const activityId = activityContainer.dataset ? parseInt( activityContainer.dataset.bpActivityId, 10 ) : 0;
+
+		if ( ! activityId ) {
+			return;
+		}
+
+		const activityAt = this.activities.findIndex( ( activity ) => activity.id === activityId );
+		const errorDialog = activityContainer.querySelector( '#activity-error-' + activityId );
+
+		errorDialog.querySelector( 'button' ).addEventListener( 'click', () => errorDialog.close() );
+
+		if ( -1 === activityAt ) {
+			return;
+		}
+
+		apiFetch( {
+			path: 'buddypress/v1/activity/' + activityId,
+			method: 'DELETE'
+		} ).then( ( response ) => {
+			if ( response && true === response.deleted ) {
+				// Remove the Activity from the global list.
+				this.activities.splice( activityAt, 1 );
+
+				// Remove the HTML output of this activity.
+				activityContainer.remove();
+			} else {
+				errorDialog.showModal();
+			}
+
+		} ).catch( ( error ) => {
+			errorDialog.querySelector( 'p' ).innerHTML = error.message;
+			errorDialog.showModal();
+		} );
+	}
+
+	/**
 	 * Adjusts popover position and update toggle state.
 	 *
 	 * @since 1.0.0
@@ -151,34 +195,19 @@ class bpActivityWall {
 		if ( target.classList.contains( 'bp-activity-delete' ) ) {
 			event.preventDefault();
 
+			const confirmDialog = document.querySelector( '#bp-confirm-action' );
 			const activityContainer = target.closest( '[data-bp-activity-id]' );
-			const activityId = activityContainer.dataset ? parseInt( activityContainer.dataset.bpActivityId, 10 ) : 0;
+			const self = this;
 
-			if ( activityId ) {
-				const activityAt = this.activities.findIndex( ( activity ) => activity.id === activityId );
+			confirmDialog.showModal();
+			confirmDialog.querySelector( '[value="confirm"]' ).addEventListener( 'click',
+				( event ) => {
+					event.preventDefault();
+					confirmDialog.close();
 
-				if ( -1 !== activityAt ) {
-					apiFetch( {
-						path: 'buddypress/v1/activity/' + activityId,
-						method: 'DELETE'
-					} ).then( ( response ) => {
-						if ( response && true === response.deleted ) {
-							// Remove the Activity from the global list.
-							this.activities.splice( activityAt, 1 );
-
-							// Remove the HTML output of this activity.
-							activityContainer.remove();
-						} else {
-							// todo, use a notice message.
-							alert( 'ouch' );
-						}
-
-					} ).catch( ( error ) => {
-						// todo, use a notice message.
-						alert( error.message );
-					} );
+					return self.deleteItem( activityContainer );
 				}
-			}
+			);
 		}
 	}
 

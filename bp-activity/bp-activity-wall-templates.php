@@ -77,5 +77,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<# } #>
 			</ul>
 		</footer>
+		<dialog id="activity-error-{{data.id}}">
+			<button autofocus><?php esc_html_e( 'Close', 'bp-activity-block-editor' ); ?></button>
+			<p>
+				<?php esc_html_e( 'Ouch, there was an unexpected error.', 'bp-activity-block-editor' ); ?>
+			</p>
+		</dialog>
 	</article>
 </script>
