@@ -7,6 +7,9 @@
 	url: {
 		getPath,
 	},
+	i18n: {
+		__,
+	},
 } = wp;
 
 /**
@@ -150,6 +153,56 @@ class bpActivityWall {
 	}
 
 	/**
+	 * Favorites or Unfavorites an Activity item.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param {HTMLElement} activityContainer The Activity `<article>` container.
+	 * @return {void}
+	 */
+	favoriteItem( activityContainer ) {
+		const activityId = activityContainer.dataset ? parseInt( activityContainer.dataset.bpActivityId, 10 ) : 0;
+
+		if ( ! activityId ) {
+			return;
+		}
+
+		const activityAt = this.activities.findIndex( ( activity ) => activity.id === activityId );
+
+		if ( -1 === activityAt ) {
+			return;
+		}
+
+		const errorDialog = activityContainer.querySelector( '#activity-error-' + activityId );
+
+		errorDialog.querySelector( 'button' ).addEventListener( 'click', () => errorDialog.close() );
+
+		apiFetch( {
+			path: 'buddypress/v1/activity/' + activityId + '/favorite',
+			method: 'POST'
+		} ).then( ( response ) => {
+			if ( response && response[0] ) {
+				const activity = response[0];
+				const buttonLabel = true === activity.favorited ? __( 'Remove favorite', 'bp-activity-block-editor' ) : __( 'Favorite', 'bp-activity-block-editor' );
+
+				// Update the `favorited` property of the activity.
+				this.activities[ activityAt ]['favorited'] = activity.favorited;
+
+				console.log( this.activities[ activityAt ] );
+
+				// Update the activity favorite label button.
+				activityContainer.querySelector( '.bp-activity-favorite' ).innerHTML = buttonLabel;
+			} else {
+				errorDialog.showModal();
+			}
+
+		} ).catch( ( error ) => {
+			errorDialog.querySelector( 'p' ).innerHTML = error.message;
+			errorDialog.showModal();
+		} );
+	}
+
+	/**
 	 * Adjusts popover position and update toggle state.
 	 *
 	 * @since 1.0.0
@@ -208,6 +261,12 @@ class bpActivityWall {
 					return self.deleteItem( activityContainer );
 				}
 			);
+		}
+
+		if ( target.classList.contains( 'bp-activity-favorite' ) ) {
+			event.preventDefault();
+
+			return this.favoriteItem( target.closest( '[data-bp-activity-id]' ) );
 		}
 	}
 
