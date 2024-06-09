@@ -358,7 +358,7 @@ function bp_activity_block_editor_is_supported() {
 
 		// Standalone themes needs to add support to the activity editor.
 	} else {
-		$support = current_theme_supports( 'buddypress', array( 'activity' => 'block-editor' ) );
+		$support = bp_current_theme_supports( array( 'activity' => 'block-editor' ) );
 	}
 
 	return $support;
