@@ -20,7 +20,7 @@ function bp_activity_block_editor_setup_globals() {
 	$bp_plugin = bp_activity_block_editor();
 
 	// Version.
-	$bp_plugin->version = '1.0.0';
+	$bp_plugin->version = '1.0.1';
 
 	// Path.
 	$bp_plugin->dir = plugin_dir_path( dirname( __FILE__ ) );

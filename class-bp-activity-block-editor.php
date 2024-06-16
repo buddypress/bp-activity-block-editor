@@ -11,7 +11,7 @@
  * Plugin Name:       BP Activity Block Editor
  * Plugin URI:        https://github.com/buddypress/bp-activity-block-editor
  * Description:       Brings the power of the WordPress Blocks API into BuddyPress activities.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            The BuddyPress Community
  * Author URI:        https://buddypress.org
  * License:           GPL-2.0+
@@ -157,7 +157,7 @@ final class BP_Activity_Block_Editor {
 		if ( ! bp_get_option( '_bp_activity_block_editor_version', '' ) ) {
 			require_once plugin_dir_path( __FILE__ ) . 'inc/install.php';
 			bp_activity_install_emojis_db();
-			bp_update_option( '_bp_activity_block_editor_version', '1.0.0' );
+			bp_update_option( '_bp_activity_block_editor_version', '1.0.1' );
 		}
 	}
 
