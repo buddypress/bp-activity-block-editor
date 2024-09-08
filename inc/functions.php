@@ -6,6 +6,8 @@
  * @since 1.0.0
  */
 
+namespace BP\Activity;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -13,6 +15,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // The BP Activity Block Editor needs BuddyPress Activity Block functions.
 add_filter( 'bp_is_activity_blocks_active', '__return_true' );
+
+function set_up_component() {
+	$bp = \buddypress();
+
+	$bp->activity = new BP_Activity_Component();
+}
+
+function reset_component() {
+	remove_action( 'bp_setup_components', 'bp_setup_activity', 6 );
+	add_action( 'bp_setup_components', __NAMESPACE__ . '\set_up_component', 6, 0 );
+}
+ add_action( 'bp_setup_components', __NAMESPACE__ . '\reset_component', 0 );
+
 
 /**
  * Force the current component to be set as the Activity one.
@@ -154,7 +169,7 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 
 	return $response;
 }
-add_filter( 'bp_rest_activity_prepare_value', 'bp_activity_wall_rest_activity_prepare_value', 10, 3 );
+//add_filter( 'bp_rest_activity_prepare_value', 'bp_activity_wall_rest_activity_prepare_value', 10, 3 );
 
 /**
  * Fetches emojis according to given args.
@@ -236,24 +251,22 @@ function bp_activity_get_emojis( $args = array() ) {
  *
  * @since 1.0.0
  */
-function bp_activity_emojis_set_rest_controller() {
-	require_once plugin_dir_path( dirname( __FILE__ ) ) . '/bp-activity/classes/class-bp-activity-block-editor-emojis-rest-controller.php';
-
-	$controller = new BP_Activity_Block_Editor_Emojis_REST_Controller();
+function set_emojis_rest_controller() {
+	$controller = new BP_Activity_Emojis_REST_Controller();
 	$controller->register_routes();
 }
-add_action( 'bp_rest_api_init', 'bp_activity_emojis_set_rest_controller', 10 );
+add_action( 'bp_rest_api_init', __NAMESPACE__ . '\set_emojis_rest_controller', 10 );
 
 /**
  * Loads the template pack functions.
  *
  * @since 1.0.0
  */
-function bp_activity_block_editor_use_theme_compat() {
-	if ( bp_use_theme_compat_with_current_theme() ) {
-		$path = plugin_dir_path( dirname( __FILE__ ) );
+function use_theme_compat() {
+	if ( \bp_use_theme_compat_with_current_theme() ) {
+		$path = \plugin_dir_path( dirname( __FILE__ ) );
 
 		require_once $path . 'bp-templates/bp-nouveau.php';
 	}
 }
-add_action( 'bp_after_setup_theme', 'bp_activity_block_editor_use_theme_compat', 2 );
+add_action( 'bp_after_setup_theme', __NAMESPACE__ . '\use_theme_compat', 2 );

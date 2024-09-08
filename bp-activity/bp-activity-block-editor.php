@@ -6,6 +6,8 @@
  * @since 1.0.0
  */
 
+namespace BP\Activity;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -17,9 +19,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 function bp_activity_block_editor_get_settings() {
-	$block_editor_context = new WP_Block_Editor_Context( array( 'name' => 'bp/edit-activity' ) );
+	$block_editor_context = new \WP_Block_Editor_Context( array( 'name' => 'bp/edit-activity' ) );
 
-	wp_add_inline_script(
+	\wp_add_inline_script(
 		'wp-blocks',
 		sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( bp_activity_get_block_categories() ) ),
 		'after'
@@ -71,7 +73,7 @@ function bp_activity_block_editor_get_settings() {
 		),
 	);
 
-	$viewed_activity = bp_activity_block_editor()->view_activity;
+	$viewed_activity = bp_activity()->view_activity;
 	if ( isset( $viewed_activity->user_id ) ) {
 		$settings['editor']['bodyPlaceholder'] = sprintf(
 			/* translators: %s is the user display name. */
@@ -141,7 +143,7 @@ function bp_activity_register_block_editor() {
  * @since 1.0.0
  */
 function bp_activity_block_editor_enqueue_assets() {
-	$main_instance                        = bp_activity_block_editor();
+	$main_instance                        = bp_activity();
 	$settings                             = bp_activity_block_editor_get_settings();
 	$settings['editor']['activityEdit']   = $main_instance->edit_activity;
 	$settings['editor']['parentActivity'] = $main_instance->view_activity;
@@ -159,7 +161,7 @@ function bp_activity_block_editor_enqueue_assets() {
 		'/buddypress/v1/members/me?context=edit',
 	);
 
-	if ( bp_is_active( 'groups' ) ) {
+	if ( \bp_is_active( 'groups' ) ) {
 		$paths[] = '/buddypress/v1/groups/me?context=edit';
 	}
 
@@ -183,17 +185,17 @@ function bp_activity_block_editor_enqueue_assets() {
 	);
 
 	// Create the Fetch API Preloading middleware.
-	wp_add_inline_script(
+	\wp_add_inline_script(
 		'wp-api-fetch',
 		sprintf( 'wp.apiFetch.use( wp.apiFetch.createPreloadingMiddleware( %s ) );', wp_json_encode( $preload_data ) ),
 		'after'
 	);
 
-	wp_enqueue_script( 'bp-activity-block-editor' );
-	wp_enqueue_script( 'bp-activity-block-editor-emojis' );
+	\wp_enqueue_script( 'bp-activity-block-editor' );
+	\wp_enqueue_script( 'bp-activity-block-editor-emojis' );
 
 	if ( defined( 'IFRAME_REQUEST' ) && isset( $_GET['url'] ) && $_GET['url'] ) { // phpcs:ignore
-		wp_add_inline_style(
+		\wp_add_inline_style(
 			'common',
 			'html { overflow: hidden }
 			#adminmenumain { display: none; }
@@ -205,7 +207,7 @@ function bp_activity_block_editor_enqueue_assets() {
 	}
 
 	if ( isset( $_GET['aid'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-		wp_add_inline_style(
+		\wp_add_inline_style(
 			'common',
 			'#wpbody-content {
 				background-color: #f0f0f1;
@@ -220,13 +222,13 @@ function bp_activity_block_editor_enqueue_assets() {
 	$settings['editor']['isDialog']        = defined( 'IFRAME_REQUEST' ) && IFRAME_REQUEST;
 	$settings['editor']['hasActivityWall'] = ! defined( 'IFRAME_REQUEST' );
 
-	wp_add_inline_script(
+	\wp_add_inline_script(
 		'bp-activity-block-editor',
 		'window.bpActivityBlockEditor = ' . wp_json_encode( $settings ) . ';'
 	);
 
 	// Editor default styles.
-	wp_enqueue_style( 'bp-activity-block-editor' );
+	\wp_enqueue_style( 'bp-activity-block-editor' );
 }
 
 /**
@@ -237,7 +239,7 @@ function bp_activity_block_editor_enqueue_assets() {
  * @return array The list of block categories for the activity context.
  */
 function bp_activity_get_block_categories() {
-	$block_categories = get_default_block_categories();
+	$block_categories = \get_default_block_categories();
 	$embed_category   = array();
 
 	foreach ( $block_categories as $position => $category ) {
@@ -275,7 +277,7 @@ function bp_activity_get_block_categories() {
 function bp_activity_allowed_block_types( $allowed_block_types, $block_editor_context ) {
 	if ( isset( $block_editor_context->name ) && 'bp/edit-activity' === $block_editor_context->name ) {
 		$activity_block_types = array( 'core/paragraph', 'core/embed' );
-		$block_registry       = WP_Block_Type_Registry::get_instance();
+		$block_registry       = \WP_Block_Type_Registry::get_instance();
 
 		// Allow all Block types having the 'activity' `buddypress_contexts`.
 		foreach ( $block_registry->get_all_registered() as $block_name => $block_type ) {
@@ -298,7 +300,7 @@ function bp_activity_allowed_block_types( $allowed_block_types, $block_editor_co
 
 	return $allowed_block_types;
 }
-add_filter( 'allowed_block_types_all', 'bp_activity_allowed_block_types', 10, 2 );
+add_filter( 'allowed_block_types_all', __NAMESPACE__ . '\bp_activity_allowed_block_types', 10, 2 );
 
 /**
  * Enqueues script and styles for Activity blocks.
@@ -308,7 +310,7 @@ add_filter( 'allowed_block_types_all', 'bp_activity_allowed_block_types', 10, 2 
  * @since 1.0.0
  */
 function bp_activity_enqueue_block_editor_assets() {
-	$block_registry = WP_Block_Type_Registry::get_instance();
+	$block_registry = \WP_Block_Type_Registry::get_instance();
 
 	foreach ( $block_registry->get_all_registered() as $block_name => $block_type ) {
 		if ( empty( $block_type->buddypress_contexts ) || ! in_array( 'activity', $block_type->buddypress_contexts, true ) ) {
@@ -336,7 +338,7 @@ function bp_activity_enqueue_block_editor_assets() {
 		}
 	}
 }
-add_action( 'bp_activity_enqueue_block_editor_assets', 'bp_activity_enqueue_block_editor_assets', 1 );
+add_action( 'bp_activity_enqueue_block_editor_assets', __NAMESPACE__ . '\bp_activity_enqueue_block_editor_assets', 1 );
 
 /**
  * Checks whether the Activity Block Editor is supported by the theme.
@@ -383,7 +385,7 @@ function bp_activity_front_register_block_editor() {
 	if ( bp_activity_block_editor_is_supported() ) {
 		bp_activity_register_block_editor();
 
-		add_action( 'bp_enqueue_community_scripts', 'bp_activity_block_editor_enqueue_assets' );
+		add_action( 'bp_enqueue_community_scripts', __NAMESPACE__ . '\bp_activity_block_editor_enqueue_assets' );
 
 		/**
 		 * This hook is used to register blocks for the BuddyPress Activity Block Editor.
@@ -393,4 +395,4 @@ function bp_activity_front_register_block_editor() {
 		do_action( 'bp_activity_enqueue_block_editor_assets' );
 	}
 }
-add_action( 'bp_setup_canonical_stack', 'bp_activity_front_register_block_editor', 40 );
+add_action( 'bp_setup_canonical_stack', __NAMESPACE__ . '\bp_activity_front_register_block_editor', 40 );

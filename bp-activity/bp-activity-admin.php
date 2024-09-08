@@ -6,6 +6,8 @@
  * @since 1.0.0
  */
 
+namespace BP\Activity;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -19,8 +21,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 function bp_activity_admin_register_block_editor() {
 	bp_activity_register_block_editor();
 
-	add_action( 'bp_admin_enqueue_scripts', 'bp_activity_block_editor_enqueue_assets' );
-	add_filter( 'admin_body_class', 'bp_activity_admin_body_class' );
+	add_action( 'bp_admin_enqueue_scripts', __NAMESPACE__ . '\bp_activity_block_editor_enqueue_assets' );
+	add_filter( 'admin_body_class', __NAMESPACE__ . '\bp_activity_admin_body_class' );
 }
 
 /**
@@ -29,7 +31,7 @@ function bp_activity_admin_register_block_editor() {
  * @since 1.0.0
  */
 function bp_activity_admin_register_wall() {
-	$plugin_version = bp_activity_block_editor()->version;
+	$plugin_version = bp_activity()->version;
 
 	wp_register_script(
 		'bp-activity-wall',
@@ -46,8 +48,8 @@ function bp_activity_admin_register_wall() {
 		$plugin_version
 	);
 
-	add_action( 'bp_admin_enqueue_scripts', 'bp_activity_admin_enqueue_assets', 9 );
-	add_action( 'admin_footer', 'bp_activity_admin_print_wall_templates' );
+	add_action( 'bp_admin_enqueue_scripts', __NAMESPACE__ . '\bp_activity_admin_enqueue_assets', 9 );
+	add_action( 'admin_footer', __NAMESPACE__ . '\bp_activity_admin_print_wall_templates' );
 }
 
 /**
@@ -126,9 +128,9 @@ function bp_activity_admin_load_single_screen() {
 					wp_die( esc_html__( 'You are not the author of this activity. Only Activity authors can edit their activities.', 'bp-activity-block-editor' ) );
 				}
 
-				bp_activity_block_editor()->edit_activity = $activity;
+				bp_activity()->edit_activity = $activity;
 			} else {
-				bp_activity_block_editor()->view_activity = $activity;
+				bp_activity()->view_activity = $activity;
 			}
 		} else {
 			wp_die( esc_html__( 'The activity is missing.', 'bp-activity-block-editor' ) );
@@ -158,7 +160,7 @@ function bp_activity_admin_enqueue_assets() {
 	wp_enqueue_style( 'bp-activity-wall' );
 
 	// Check if we're displaying an activity.
-	$activity = bp_activity_block_editor()->view_activity;
+	$activity = bp_activity()->view_activity;
 
 	$bp_base = sprintf(
 		'/%1$s/%2$s/',
@@ -236,7 +238,7 @@ function bp_activity_admin_body_class( $admin_body_class = '' ) {
 		$admin_body_class .= ' iframe';
 	}
 
-	$edit_activity = bp_activity_block_editor()->edit_activity;
+	$edit_activity = bp_activity()->edit_activity;
 
 	if ( ! is_null( $edit_activity ) ) {
 		$admin_body_class .= ' edit-activity';
@@ -251,7 +253,7 @@ function bp_activity_admin_body_class( $admin_body_class = '' ) {
  *  @since 1.0.0
  */
 function bp_activity_admin_screen() {
-	$main_instance = bp_activity_block_editor();
+	$main_instance = bp_activity();
 	$context       = 'bp-activity';
 	$current_tab   = __( 'Everyone', 'bp-activity-block-editor' );
 
@@ -342,9 +344,9 @@ function bp_activity_admin_replace_menu() {
 		'bp_activity_admin_screen'
 	);
 
-	add_action( 'load-' . $screen, 'bp_activity_admin_load_screen' );
-	add_action( 'load-' . $edit_screen, 'bp_activity_admin_load_single_screen' );
-	add_action( 'load-' . $view_screen, 'bp_activity_admin_load_single_screen' );
+	add_action( 'load-' . $screen, __NAMESPACE__ . '\bp_activity_admin_load_screen' );
+	add_action( 'load-' . $edit_screen, __NAMESPACE__ . '\bp_activity_admin_load_single_screen' );
+	add_action( 'load-' . $view_screen, __NAMESPACE__ . '\bp_activity_admin_load_single_screen' );
 }
 
 /**
@@ -444,7 +446,7 @@ function bp_activity_admin_get_tabs( $tabs = array(), $context = '' ) {
 
 	return $tabs;
 }
-add_filter( 'bp_core_get_admin_tabs', 'bp_activity_admin_get_tabs', 10, 2 );
+add_filter( 'bp_core_get_admin_tabs', __NAMESPACE__ . '\bp_activity_admin_get_tabs', 10, 2 );
 
 /**
  * Inform the Admin user this plugin requires the Activity component to be active.
@@ -472,4 +474,4 @@ function bp_activity_block_editor_admin_hooks() {
 		add_filter( 'bp_admin_menu_order', 'bp_activity_admin_filter_menu_order' );
 	}
 }
-add_action( 'bp_init', 'bp_activity_block_editor_admin_hooks' );
+add_action( 'bp_init', __NAMESPACE__ . '\bp_activity_block_editor_admin_hooks' );

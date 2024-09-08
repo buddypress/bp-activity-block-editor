@@ -7,6 +7,8 @@
  * @since 1.0.0
  */
 
+namespace BP\Activity;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -17,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-class BP_Activity_Block_Editor_Emojis_REST_Controller extends WP_REST_Controller {
+class BP_Activity_Emojis_REST_Controller extends \WP_REST_Controller {
 
 	/**
 	 * Constructor.
@@ -42,7 +44,7 @@ class BP_Activity_Block_Editor_Emojis_REST_Controller extends WP_REST_Controller
 			'/' . $this->rest_base,
 			array(
 				array(
-					'methods'             => WP_REST_Server::READABLE,
+					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
 					'args'                => $this->get_collection_params(),
@@ -215,7 +217,7 @@ class BP_Activity_Block_Editor_Emojis_REST_Controller extends WP_REST_Controller
 	 */
 	public function get_collection_params() {
 		$bp                            = buddypress();
-		$params                        = WP_REST_Controller::get_collection_params();
+		$params                        = \WP_REST_Controller::get_collection_params();
 		$params['context']['default']  = 'view';
 		$params['per_page']['default'] = 10;
 

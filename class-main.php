@@ -1,28 +1,30 @@
 <?php
 /**
- * BuddyPress Activity Block Editor development plugin.
+ * BuddyPress Activity Add-on.
  *
- * @package   bp-activity-block-editor
+ * @package   bp-activity
  * @author    The BuddyPress Community
  * @license   GPL-2.0+
  * @link      https://buddypress.org
  *
  * @buddypress-plugin
- * Plugin Name:       BP Activity Block Editor
+ * Plugin Name:       BP Activity
  * Plugin URI:        https://github.com/buddypress/bp-activity-block-editor
- * Description:       Brings the power of the WordPress Blocks API into BuddyPress activities.
- * Version:           1.0.1
+ * Description:       Modernize the BP Activity component.
+ * Version:           1.0.2
  * Author:            The BuddyPress Community
  * Author URI:        https://buddypress.org
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Domain Path:       /languages/
- * Text Domain:       bp-activity-block-editor
+ * Text Domain:       bp-activity
  * GitHub Plugin URI: https://github.com/buddypress/bp-activity-block-editor
  * Requires at least: 6.5
- * Requires PHP:      5.6
+ * Requires PHP:      7.0
  * Requires Plugins:  buddypress
  */
+
+namespace BP\Activity;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -30,11 +32,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Main Plugin Class
+ * Main Add-on Class
  *
  * @since 1.0.0
  */
-final class BP_Activity_Block_Editor {
+final class Main {
 	/**
 	 * Instance of this class.
 	 *
@@ -55,6 +57,9 @@ final class BP_Activity_Block_Editor {
 	 * @since 1.0.0
 	 */
 	private function __construct() {
+		// Autoload Classes.
+		spl_autoload_register( array( $this, 'autoload' ) );
+
 		// Load Globals & Functions.
 		$path = plugin_dir_path( __FILE__ );
 
@@ -162,6 +167,31 @@ final class BP_Activity_Block_Editor {
 	}
 
 	/**
+	 * Class Autoload function
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  string $class The class name.
+	 */
+	public function autoload( $class ) {
+		$class_name = ltrim( str_replace( __NAMESPACE__, '', $class ), '\\' );
+		$name       = str_replace( '_', '-', strtolower( $class_name ) );
+
+		if ( 0 !== strpos( $name, 'bp-activity' ) ) {
+			return;
+		}
+
+		$path = plugin_dir_path( __FILE__ ) . "bp-activity/classes/class-{$name}.php";
+
+		// Sanity check.
+		if ( ! file_exists( $path ) ) {
+			return;
+		}
+
+		require $path;
+	}
+
+	/**
 	 * Return an instance of this class.
 	 *
 	 * @since 1.0.0
@@ -182,15 +212,15 @@ final class BP_Activity_Block_Editor {
 }
 
 /**
- * Start plugin.
+ * Start Add-on.
  *
  * @since 1.0.0
  *
- * @return BP_Activity_Block_Editor The main instance of the plugin.
+ * @return Activity The main instance of the add-on.
  */
-function bp_activity_block_editor() {
-	return BP_Activity_Block_Editor::start();
+function bp_activity() {
+	return Main::start();
 }
-add_action( 'bp_loaded', 'bp_activity_block_editor', -1 );
+add_action( 'bp_loaded', __NAMESPACE__ . '\bp_activity', -1 );
 
-register_activation_hook( __FILE__, array( 'BP_Activity_Block_Editor', 'install' ) );
+register_activation_hook( __FILE__, array( __NAMESPACE__ . '\Main', 'install' ) );

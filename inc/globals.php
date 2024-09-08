@@ -6,6 +6,8 @@
  * @since 1.0.0
  */
 
+namespace BP\Activity;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -16,22 +18,22 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-function bp_activity_block_editor_setup_globals() {
-	$bp_plugin = bp_activity_block_editor();
+function setup_globals() {
+	$main = bp_activity();
 
 	// Version.
-	$bp_plugin->version = '1.0.1';
+	$main->version = '1.0.2';
 
 	// Path.
-	$bp_plugin->dir = plugin_dir_path( dirname( __FILE__ ) );
+	$main->dir = \plugin_dir_path( dirname( __FILE__ ) );
 
 	// URL.
-	$bp_plugin->url = plugins_url( '', dirname( __FILE__ ) );
+	$main->url = \plugins_url( '', dirname( __FILE__ ) );
 
 	// Edited activity.
-	$bp_plugin->edit_activity = null;
+	$main->edit_activity = null;
 
 	// Viewed activity.
-	$bp_plugin->view_activity = null;
+	$main->view_activity = null;
 }
-add_action( 'bp_loaded', 'bp_activity_block_editor_setup_globals', 1 );
+add_action( 'bp_loaded', __NAMESPACE__ . '\setup_globals', 1 );
