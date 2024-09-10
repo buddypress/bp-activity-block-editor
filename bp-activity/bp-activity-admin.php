@@ -157,7 +157,7 @@ function bp_activity_admin_load_single_screen() {
  * @since 1.0.0
  */
 function bp_activity_admin_enqueue_assets() {
-	wp_enqueue_style( 'bp-activity-wall' );
+	//wp_enqueue_style( 'bp-activity-wall' );
 
 	// Check if we're displaying an activity.
 	$activity = bp_activity()->view_activity;
@@ -219,8 +219,8 @@ function bp_activity_admin_enqueue_assets() {
 		}
 	}
 
-	wp_enqueue_script( 'bp-activity-wall' );
-	wp_localize_script( 'bp-activity-wall', 'bpActivityWallSettings', $script_strings );
+	//wp_enqueue_script( 'bp-activity-wall' );
+	//wp_localize_script( 'bp-activity-wall', 'bpActivityWallSettings', $script_strings );
 }
 
 /**
@@ -286,6 +286,8 @@ function bp_activity_admin_screen() {
 			<div id="bp-activity-block-editor"></div>
 			<div id="bp-activity-block-editor-notices"></div>
 			<div id="bp-activity-wall-items"></div>
+			<!-- Testing a tiny editor. -->
+			<div id="bp-activity-editor"></div>
 		<?php
 	} else {
 		?>
@@ -322,7 +324,7 @@ function bp_activity_admin_replace_menu() {
 		_x( 'Activity', 'Admin Dashboard SWA menu', 'bp-activity-block-editor' ),
 		'exist',
 		'bp-activities',
-		'bp_activity_admin_screen',
+		__NAMESPACE__ . '\bp_activity_admin_screen',
 		'dashicons-buddicons-activity'
 	);
 
@@ -332,7 +334,7 @@ function bp_activity_admin_replace_menu() {
 		_x( 'Edit Activity', 'Admin Dashboard Activity Edit menu', 'bp-activity-block-editor' ),
 		'exist',
 		'bp-edit-activity',
-		'bp_activity_admin_screen'
+		__NAMESPACE__ . '\bp_activity_admin_screen'
 	);
 
 	$view_screen = add_submenu_page(
@@ -341,7 +343,7 @@ function bp_activity_admin_replace_menu() {
 		_x( 'View Activity', 'Admin Dashboard Activity Edit menu', 'bp-activity-block-editor' ),
 		'exist',
 		'bp-view-activity',
-		'bp_activity_admin_screen'
+		__NAMESPACE__ . '\bp_activity_admin_screen'
 	);
 
 	add_action( 'load-' . $screen, __NAMESPACE__ . '\bp_activity_admin_load_screen' );
@@ -467,11 +469,11 @@ function bp_activity_block_editor_admin_notice() {
  */
 function bp_activity_block_editor_admin_hooks() {
 	if ( ! bp_is_active( 'activity' ) ) {
-		add_action( 'admin_notices', 'bp_activity_block_editor_admin_notice' );
+		add_action( 'admin_notices', __NAMESPACE__ . '\bp_activity_block_editor_admin_notice' );
 	} else {
-		add_action( bp_core_admin_hook(), 'bp_activity_admin_replace_menu', 9 );
-		add_action( 'bp_admin_head', 'bp_activity_admin_head', 998 );
-		add_filter( 'bp_admin_menu_order', 'bp_activity_admin_filter_menu_order' );
+		add_action( bp_core_admin_hook(), __NAMESPACE__ . '\bp_activity_admin_replace_menu', 9 );
+		add_action( 'bp_admin_head', __NAMESPACE__ . '\bp_activity_admin_head', 998 );
+		add_filter( 'bp_admin_menu_order', __NAMESPACE__ . '\bp_activity_admin_filter_menu_order' );
 	}
 }
 add_action( 'bp_init', __NAMESPACE__ . '\bp_activity_block_editor_admin_hooks' );

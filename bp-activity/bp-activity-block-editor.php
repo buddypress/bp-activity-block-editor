@@ -86,15 +86,36 @@ function bp_activity_block_editor_get_settings() {
 }
 
 function bp_activity_register_block_editor() {
-	$script_assets = require_once plugin_dir_path( __FILE__ ) . 'block-editor/index.asset.php';
+	$script_assets = require_once plugin_dir_path( __FILE__ ) . 'activity-editor/index.asset.php';
 
 	wp_register_script(
+		'bp-activity-editor',
+		plugins_url( 'activity-editor/index.js', __FILE__ ),
+		$script_assets['dependencies'],
+		$script_assets['version'],
+		true
+	);
+
+	wp_register_style(
+		'bp-activity-editor',
+		plugins_url( 'activity-editor/index.css', __FILE__ ),
+		array(
+			'wp-format-library',
+			'wp-block-editor-content',
+			'wp-block-editor',
+			'wp-block-library',
+			'wp-components',
+		),
+		$script_assets['version']
+	);
+
+	/*wp_register_script(
 		'bp-activity-block-editor',
 		plugins_url( 'block-editor/index.js', __FILE__ ),
 		array_merge( $script_assets['dependencies'], array( 'bp-block-components' ) ),
 		$script_assets['version'],
 		true
-	);
+	);*/
 
 	$autocompleter_assets = require_once plugin_dir_path( __FILE__ ) . 'autocompleter/index.asset.php';
 
@@ -106,16 +127,16 @@ function bp_activity_register_block_editor() {
 		true
 	);
 
-	if ( is_buddypress() ) {
+	/*if ( is_buddypress() ) {
 		$wp_styles = wp_styles();
 
 		// Remove some conflicting dependencies and replace 'wp-edit-blocks' by 'wp-block-editor-content'.
 		$wp_styles->registered['wp-reset-editor-styles']->deps = array();
 		$wp_styles->registered['wp-edit-post']->deps           = array_diff( $wp_styles->registered['wp-edit-post']->deps, array( 'wp-commands', 'wp-preferences', 'wp-edit-blocks' ) );
 		$wp_styles->registered['wp-edit-post']->deps[]         = 'wp-block-editor-content';
-	}
+	}*/
 
-	// This stylesheet is needed for template packs.
+	/* This stylesheet is needed for template packs.
 	wp_register_style(
 		'bp-activity-block-editor-front',
 		plugins_url( 'block-editor/index.css', __FILE__ ),
@@ -134,7 +155,7 @@ function bp_activity_register_block_editor() {
 			'wp-edit-post',
 		),
 		$script_assets['version']
-	);
+	);*/
 }
 
 /**
@@ -191,10 +212,24 @@ function bp_activity_block_editor_enqueue_assets() {
 		'after'
 	);
 
-	\wp_enqueue_script( 'bp-activity-block-editor' );
+	/*
+	 *
+	 * Testing a tiny editor.
+	 *
+	 */
+	\wp_enqueue_script( 'bp-activity-editor' );
+	\wp_add_inline_script(
+		'bp-activity-editor',
+		'window.bpActivityEditor = ' . wp_json_encode( $settings['editor'] ) . ';'
+	);
+
+	// Editor default styles.
+	\wp_enqueue_style( 'bp-activity-editor' );
+
+	//\wp_enqueue_script( 'bp-activity-block-editor' );
 	\wp_enqueue_script( 'bp-activity-block-editor-emojis' );
 
-	if ( defined( 'IFRAME_REQUEST' ) && isset( $_GET['url'] ) && $_GET['url'] ) { // phpcs:ignore
+	/*if ( defined( 'IFRAME_REQUEST' ) && isset( $_GET['url'] ) && $_GET['url'] ) { // phpcs:ignore
 		\wp_add_inline_style(
 			'common',
 			'html { overflow: hidden }
@@ -204,7 +239,7 @@ function bp_activity_block_editor_enqueue_assets() {
 				.auto-fold #wpcontent { margin-left: 0 !important; }
 			}'
 		);
-	}
+	}*/
 
 	if ( isset( $_GET['aid'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 		\wp_add_inline_style(
@@ -219,7 +254,7 @@ function bp_activity_block_editor_enqueue_assets() {
 	 * Add a setting to inform whether the Activity Block Editor
 	 * is used from the Activity Admin screen or not.
 	 */
-	$settings['editor']['isDialog']        = defined( 'IFRAME_REQUEST' ) && IFRAME_REQUEST;
+	/*$settings['editor']['isDialog']        = defined( 'IFRAME_REQUEST' ) && IFRAME_REQUEST;
 	$settings['editor']['hasActivityWall'] = ! defined( 'IFRAME_REQUEST' );
 
 	\wp_add_inline_script(
@@ -228,7 +263,7 @@ function bp_activity_block_editor_enqueue_assets() {
 	);
 
 	// Editor default styles.
-	\wp_enqueue_style( 'bp-activity-block-editor' );
+	\wp_enqueue_style( 'bp-activity-block-editor' );*/
 }
 
 /**
