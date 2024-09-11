@@ -100,11 +100,11 @@ function bp_activity_register_block_editor() {
 		'bp-activity-editor',
 		plugins_url( 'activity-editor/index.css', __FILE__ ),
 		array(
-			'wp-format-library',
-			'wp-block-editor-content',
+			'wp-components',
 			'wp-block-editor',
 			'wp-block-library',
-			'wp-components',
+			'wp-block-editor-content',
+			'wp-format-library',
 		),
 		$script_assets['version']
 	);

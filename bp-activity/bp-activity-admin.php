@@ -157,6 +157,7 @@ function bp_activity_admin_load_single_screen() {
  * @since 1.0.0
  */
 function bp_activity_admin_enqueue_assets() {
+	return;
 	//wp_enqueue_style( 'bp-activity-wall' );
 
 	// Check if we're displaying an activity.
@@ -233,10 +234,6 @@ function bp_activity_admin_enqueue_assets() {
  */
 function bp_activity_admin_body_class( $admin_body_class = '' ) {
 	$admin_body_class .= ' bp-is-tabbed-screen';
-
-	if ( defined( 'IFRAME_REQUEST' ) ) {
-		$admin_body_class .= ' iframe';
-	}
 
 	$edit_activity = bp_activity()->edit_activity;
 
