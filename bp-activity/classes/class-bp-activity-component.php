@@ -1,10 +1,10 @@
 <?php
 /**
- * BP Activity Block Editor Emojis REST Controller.
+ * BP Activity Component class.
  *
- * @package \bp-activity\classes\class-bp-activity-component
+ * @package \bp-activity\classes\
  *
- * @since 1.0.0
+ * @since 1.0.2
  */
 
 namespace BP\Activity;
@@ -17,13 +17,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Main Activity Class.
  *
- * @since 1.0.0
+ * @since 1.0.2
  */
 class BP_Activity_Component extends \BP_Activity_Component {
 	/**
 	 * Types.
 	 *
-	 * @since 14.0.0
+	 * @since 1.0.2
 	 * @var array
 	 */
 	public $types = array();
@@ -33,7 +33,7 @@ class BP_Activity_Component extends \BP_Activity_Component {
 	/**
 	 * Start the activity component setup process.
 	 *
-	 * @since 1.5.0
+	 * @since 1.0.2
 	 */
 	public function __construct() {
 		$this->bp_path = trailingslashit( buddypress()->plugin_dir );
@@ -53,7 +53,7 @@ class BP_Activity_Component extends \BP_Activity_Component {
 	/**
 	 * Include component files.
 	 *
-	 * @since 1.5.0
+	 * @since 1.0.2
 	 *
 	 * @see BP_Component::includes() for a description of arguments.
 	 *
@@ -63,7 +63,29 @@ class BP_Activity_Component extends \BP_Activity_Component {
 		require $this->bp_path . 'bp-activity/bp-activity-functions.php';
 		require $this->bp_path . 'bp-activity/bp-activity-template.php';
 		require $this->bp_path . 'bp-activity/bp-activity-cache.php';
+		require $this->bp_path . 'bp-activity/bp-activity-blocks.php';
+		require $this->bp_path . 'bp-activity/bp-activity-block-functions.php';
 		require $this->bp_path . 'bp-activity/bp-activity-filters.php';
+
+		// Notifications support.
+		if ( bp_is_active( 'notifications' ) ) {
+			require $this->bp_path . 'bp-activity/bp-activity-notifications.php';
+		}
+
+		// Load Akismet support if Akismet is configured.
+		if ( defined( 'AKISMET_VERSION' ) && class_exists( 'Akismet' ) ) {
+			$akismet_key = bp_get_option( 'wordpress_api_key' );
+
+			/** This filter is documented in bp-activity/bp-activity-akismet.php */
+			if ( ( ! empty( $akismet_key ) || defined( 'WPCOM_API_KEY' ) ) && apply_filters( 'bp_activity_use_akismet', bp_is_akismet_active() ) ) {
+				require $this->bp_path . 'bp-activity/bp-activity-akismet.php';
+			}
+		}
+
+		// Embeds.
+		if ( bp_is_active( $this->id, 'embeds' ) ) {
+			require $this->bp_path . 'bp-activity/bp-activity-embeds.php';
+		}
 
 		\BP_Component::includes(
 			array(
@@ -80,7 +102,7 @@ class BP_Activity_Component extends \BP_Activity_Component {
 	 *
 	 * Only load up certain code when on specific pages.
 	 *
-	 * @since 3.0.0
+	 * @since 1.0.2
 	 */
 	public function late_includes() {
 		// Bail if PHPUnit is running.
@@ -157,9 +179,20 @@ class BP_Activity_Component extends \BP_Activity_Component {
 	}
 
 	/**
+	 * Set up the actions.
+	 *
+	 * @since 1.0.2
+	 */
+	public function setup_actions() {
+		\BP_Component::setup_actions();
+
+		add_action( 'bp_rest_api_init', array( $this, 'rest_api_init' ), 10 );
+	}
+
+	/**
 	 * Register component navigation.
 	 *
-	 * @since 12.0.0
+	 * @since 1.0.2
 	 *
 	 * @see `BP_Component::register_nav()` for a description of arguments.
 	 *
@@ -251,7 +284,7 @@ class BP_Activity_Component extends \BP_Activity_Component {
 	/**
 	 * Set up the component entries in the WordPress Admin Bar.
 	 *
-	 * @since 1.5.0
+	 * @since 1.0.2
 	 *
 	 * @see BP_Component::setup_nav() for a description of the $wp_admin_nav
 	 *      parameter array.
@@ -358,7 +391,7 @@ class BP_Activity_Component extends \BP_Activity_Component {
 	/**
 	 * Setup cache groups.
 	 *
-	 * @since 2.2.0
+	 * @since 1.0.2
 	 */
 	public function setup_cache_groups() {
 
@@ -374,5 +407,17 @@ class BP_Activity_Component extends \BP_Activity_Component {
 		);
 
 		\BP_Component::setup_cache_groups();
+	}
+
+	/**
+	 * Init the BP REST API.
+	 *
+	 * @since 1.0.2
+	 *
+	 * @param array $controllers Optional. See BP_Component::rest_api_init() for
+	 *                           description.
+	 */
+	public function rest_api_init( $controllers = array() ) {
+		\BP_Component::rest_api_init( array( __NAMESPACE__ . '\BP_Activity_REST_Controller' ) );
 	}
 }

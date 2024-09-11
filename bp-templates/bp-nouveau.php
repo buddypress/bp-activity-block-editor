@@ -94,7 +94,7 @@ function bp_activity_block_editor_dequeue_activity_post_form() {
 	<div id="bp-activity-block-editor-notices"></div>
 	<?php
 }
-add_action( 'bp_after_activity_post_form', 'bp_activity_block_editor_dequeue_activity_post_form', 1 );
+//add_action( 'bp_after_activity_post_form', 'bp_activity_block_editor_dequeue_activity_post_form', 1 );
 
 function filter_activity_entry_buttons( $buttons, $activity_id ) {
 

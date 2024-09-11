@@ -1,8 +1,8 @@
 <?php
 /**
- * BP Activity Block Editor Emojis REST Controller.
+ * BP Activity Emojis REST Controller.
  *
- * @package \bp-activity\classes\class-bp-activity-block-editor-emojis-rest-controller
+ * @package \bp-activity\classes\
  *
  * @since 1.0.0
  */
@@ -110,7 +110,7 @@ class BP_Activity_Emojis_REST_Controller extends \WP_REST_Controller {
 		$max_pages    = ceil( $total_emojis / $per_page );
 
 		if ( $page > $max_pages && $total_emojis > 0 ) {
-			return new WP_Error(
+			return new \WP_Error(
 				'bp_rest_activity_block_editor_emojis_invalid_page_number',
 				__( 'The page number requested is larger than the number of pages available.', 'bp-activity-block-editor' ),
 				array( 'status' => 400 )
@@ -148,7 +148,7 @@ class BP_Activity_Emojis_REST_Controller extends \WP_REST_Controller {
 	 * @return WP_Error|WP_REST_Response Response object on success, WP_Error object on failure.
 	 */
 	public function create_item( $request ) {
-		return new WP_Error(
+		return new \WP_Error(
 			'invalid-method',
 			/* translators: %s: Method name. */
 			sprintf( __( "Method '%s' not implemented yet.", 'bp-activity-block-editor' ), __METHOD__ ),
@@ -165,7 +165,7 @@ class BP_Activity_Emojis_REST_Controller extends \WP_REST_Controller {
 	 * @return WP_Error|WP_REST_Response Response object on success, WP_Error object on failure.
 	 */
 	public function update_item( $request ) {
-		return new WP_Error(
+		return new \WP_Error(
 			'invalid-method',
 			/* translators: %s: Method name. */
 			sprintf( __( "Method '%s' not implemented yet.", 'bp-activity-block-editor' ), __METHOD__ ),
@@ -182,7 +182,7 @@ class BP_Activity_Emojis_REST_Controller extends \WP_REST_Controller {
 	 * @return WP_Error|WP_REST_Response Response object on success, WP_Error object on failure.
 	 */
 	public function delete_item( $request ) {
-		return new WP_Error(
+		return new \WP_Error(
 			'invalid-method',
 			/* translators: %s: Method name. */
 			sprintf( __( "Method '%s' not implemented yet.", 'bp-activity-block-editor' ), __METHOD__ ),

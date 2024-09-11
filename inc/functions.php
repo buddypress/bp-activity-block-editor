@@ -13,20 +13,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// The BP Activity Block Editor needs BuddyPress Activity Block functions.
-add_filter( 'bp_is_activity_blocks_active', '__return_true' );
-
+/**
+ * Overrides the BuddyPress Activity component.
+ *
+ * @since 1.0.2
+ */
 function set_up_component() {
 	$bp = \buddypress();
 
 	$bp->activity = new BP_Activity_Component();
 }
 
+/**
+ * Unset the BuddyPress Activity component to use BP Activity one.
+ *
+ * @since 1.0.2
+ */
 function reset_component() {
 	remove_action( 'bp_setup_components', 'bp_setup_activity', 6 );
 	add_action( 'bp_setup_components', __NAMESPACE__ . '\set_up_component', 6, 0 );
 }
- add_action( 'bp_setup_components', __NAMESPACE__ . '\reset_component', 0 );
+add_action( 'bp_setup_components', __NAMESPACE__ . '\reset_component', 0 );
 
 
 /**

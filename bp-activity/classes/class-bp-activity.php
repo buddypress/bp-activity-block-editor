@@ -1,8 +1,8 @@
 <?php
 /**
- * BP Activity Block Editor Emojis REST Controller.
+ * BP Activity Main class.
  *
- * @package \bp-activity\classes\class-bp-activity-component
+ * @package \bp-activity\classes\
  *
  * @since 1.0.0
  */

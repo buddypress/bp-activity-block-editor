@@ -430,4 +430,4 @@ function bp_activity_front_register_block_editor() {
 		do_action( 'bp_activity_enqueue_block_editor_assets' );
 	}
 }
-add_action( 'bp_setup_canonical_stack', __NAMESPACE__ . '\bp_activity_front_register_block_editor', 40 );
+//add_action( 'bp_setup_canonical_stack', __NAMESPACE__ . '\bp_activity_front_register_block_editor', 40 );

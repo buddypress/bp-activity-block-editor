@@ -2,9 +2,9 @@
 /**
  * Activity API: BP_Activity_Type class
  *
- * @package BuddyPress
- * @subpackage Activity
- * @since 14.0.0
+ * @package \bp-activity\classes\
+ *
+ * @since 1.0.2
  */
 
 namespace BP\Activity;
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Activity class used for interacting with activity types.
  *
- * @since 14.0.0
+ * @since 1.0.2
  *
  * @see bp_register_activity_type()
  */
@@ -25,7 +25,7 @@ final class BP_Activity_Type {
 	/**
 	 * Activity type key.
 	 *
-	 * @since 14.0.0
+	 * @since 1.0.2
 	 * @var string $name
 	 */
 	public $name;
@@ -33,7 +33,7 @@ final class BP_Activity_Type {
 	/**
 	 * Activity type components.
 	 *
-	 * @since 14.0.0
+	 * @since 1.0.2
 	 * @var string[] $components
 	 */
 	public $components;
@@ -43,7 +43,7 @@ final class BP_Activity_Type {
 	 *
 	 * One of 'content', 'log', 'reaction'.
 	 *
-	 * @since 14.0.0
+	 * @since 1.0.2
 	 * @var string $role
 	 */
 	public $role;
@@ -53,7 +53,7 @@ final class BP_Activity_Type {
 	 *
 	 * Eg: 'comments', 'likes', etc.
 	 *
-	 * @since 14.0.0
+	 * @since 1.0.2
 	 * @var string $feature_name
 	 */
 	public $feature_name;
@@ -61,7 +61,7 @@ final class BP_Activity_Type {
 	/**
 	 * Activity type description.
 	 *
-	 * @since 14.0.0
+	 * @since 1.0.2
 	 * @var string $name
 	 */
 	public $description;
@@ -69,7 +69,7 @@ final class BP_Activity_Type {
 	/**
 	 * Labels object for this activity type.
 	 *
-	 * @since 14.0.0
+	 * @since 1.0.2
 	 * @var stdClass $labels
 	 */
 	public $labels;
@@ -77,7 +77,7 @@ final class BP_Activity_Type {
 	/**
 	 * Activity action fomatting callback.
 	 *
-	 * @since 14.0.0
+	 * @since 1.0.2
 	 * @var string $format_callback
 	 */
 	public $format_callback;
@@ -87,7 +87,7 @@ final class BP_Activity_Type {
 	 *
 	 * Possible lists may include 'activity', 'member', 'member_groups', 'group'.
 	 *
-	 * @since 14.0.0
+	 * @since 1.0.2
 	 * @var string[] $streams
 	 */
 	public $streams;
@@ -95,7 +95,7 @@ final class BP_Activity_Type {
 	/**
 	 * Activity action position when listed in filter dropdowns.
 	 *
-	 * @since 14.0.0
+	 * @since 1.0.2
 	 * @var integer $position
 	 */
 	public $position;
@@ -103,7 +103,7 @@ final class BP_Activity_Type {
 	/**
 	 * Supports object for this activity type.
 	 *
-	 * @since 14.0.0
+	 * @since 1.0.2
 	 * @var stdClass $supports
 	 */
 	public $supports;
@@ -116,7 +116,7 @@ final class BP_Activity_Type {
 	 * Will populate object properties from the provided arguments and assign other
 	 * default properties based on that information.
 	 *
-	 * @since 14.0.0
+	 * @since 1.0.2
 	 *
 	 * @see bp_register_activity_type()
 	 *
@@ -136,7 +136,7 @@ final class BP_Activity_Type {
 	 *
 	 * See the bp_register_activity_type() function for accepted arguments for `$args`.
 	 *
-	 * @since 14.0.0
+	 * @since 1.0.2
 	 *
 	 * @param array|string $args Array or string of arguments for registering an activity type.
 	 */
@@ -298,7 +298,7 @@ final class BP_Activity_Type {
 	/**
 	 * Sets the features support for the post type.
 	 *
-	 * @since 14.0.0
+	 * @since 1.0.2
 	 *
 	 * @param string     $feature The name key for the feature.
 	 * @param bool|array $args    True or an array of properties.
@@ -310,7 +310,7 @@ final class BP_Activity_Type {
 	/**
 	 * Sets the features support for the post type.
 	 *
-	 * @since 14.0.0
+	 * @since 1.0.2
 	 *
 	 * @param string $feature The name key for the feature.
 	 */
