@@ -7,9 +7,6 @@ import {
 	BlockCanvas,
 	BlockEditorProvider,
 } from '@wordpress/block-editor';
-import { registerCoreBlocks } from '@wordpress/block-library';
-import '@wordpress/format-library';
-import { unregisterFormatType } from '@wordpress/rich-text';
 import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
@@ -18,6 +15,11 @@ import { __ } from '@wordpress/i18n';
  */
 import './styles/index.scss';
 import { styles } from './styles/iframe-styles'
+import {
+	setDefaultActivityBlocks,
+	setDefaultActivityFormats,
+	disableBlockSupports,
+} from './omissions';
 
 const Editor = ( { settings } ) => {
 	const [ blocks, updateBlocks ] = useState( [] );
@@ -34,34 +36,19 @@ const Editor = ( { settings } ) => {
 	);
 }
 
-const disableBlockSupport = ( settings ) => {
-	return {
-        ...settings,
-        supports: {
-            ...settings.supports,
-            color: false,
-			typography: false,
-        },
-    };
-}
-
-addFilter(
-	'blocks.registerBlockType',
-	'bp/activity/disableSupport',
-	disableBlockSupport
-);
-
 domReady( function() {
 	const target = document.querySelector( '#bp-activity-editor' )
 	const root = createRoot( target );
 	const settings = window.bpActivityEditor || {};
 
-	registerCoreBlocks();
-
-	// Remove some formatting buttons.
-	['core/text-color', 'core/keyboard', 'core/subscript', 'core/superscript', 'core/language', 'core/strikethrough'].forEach( ( format ) => {
-		unregisterFormatType( format );
-	} );
+	setDefaultActivityBlocks();
+	setDefaultActivityFormats();
 
 	root.render( <Editor settings={ settings } /> );
 } );
+
+addFilter(
+	'blocks.registerBlockType',
+	'bp/activity/disableSupport',
+	disableBlockSupports
+);
