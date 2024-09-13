@@ -14,6 +14,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Makes sure to load the Activity Editor styles into the Block Canvas iFrame.
+ *
+ * @since 1.0.2
+ */
+function bp_activity_enqueue_iframe_block_assets() {
+	\wp_enqueue_style( 'bp-activity-editor' );
+}
+
+/**
  * Sets the Activity block editor settings.
  *
  * @since 1.0.0
@@ -36,6 +45,9 @@ function bp_activity_block_editor_get_settings() {
 	 */
 	$custom_editor_settings = apply_filters( 'bp_activity_block_editor_settings', array() );
 
+	// Let's make sure to load the Activity Editor styles into the Block Canvas iFrame.
+	add_action( 'enqueue_block_assets', __NAMESPACE__ . '\bp_activity_enqueue_iframe_block_assets' );
+
 	$settings = array(
 		'iso'    => array(
 			'footer'   => true,
@@ -49,6 +61,7 @@ function bp_activity_block_editor_get_settings() {
 		),
 		'editor' => array_merge(
 			array(
+				'__unstableResolvedAssets'             => _wp_get_iframed_editor_assets(),
 				'disableCustomColors'                  => true,
 				'disableCustomFontSizes'               => true,
 				'isRTL'                                => is_rtl(),
