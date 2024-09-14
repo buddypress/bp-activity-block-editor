@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { createRoot, useState } from '@wordpress/element';
+import { createRoot } from '@wordpress/element';
 import domReady from '@wordpress/dom-ready';
 import {
 	BlockCanvas,
