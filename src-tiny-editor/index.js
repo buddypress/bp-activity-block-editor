@@ -52,7 +52,7 @@ const Editor = ( { settings } ) => {
 				onChange={ ( blocks ) => updateContent( blocks ) }
 				settings={ settings }
 			>
-				<BlockCanvas height="400px" styles={ styles } />
+				<BlockCanvas height="150px" styles={ styles } />
 			</BlockEditorProvider>
 			<ActionButtons />
 		</div>
