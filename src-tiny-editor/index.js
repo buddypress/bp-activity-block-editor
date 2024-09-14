@@ -25,6 +25,7 @@ import {
 	disableBlockSupports,
 } from './omissions';
 import ActionButtons from './components/action-buttons';
+import SettingsPopover from './components/settings';
 import { BP_ACTIVITY_STORE_KEY } from './store';
 
 const Editor = ( { settings } ) => {
@@ -46,6 +47,7 @@ const Editor = ( { settings } ) => {
 
 	return (
 		<div className="activity-editor-ui">
+			<SettingsPopover />
 			<BlockEditorProvider
 				value={ blocks }
 				onInput={ ( blocks ) => updateContent( blocks ) }

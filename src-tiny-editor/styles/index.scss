@@ -1,13 +1,26 @@
 #bp-activity-editor {
-	padding: 1em;
 	background: #FFF;
 	border-bottom: solid 1px currentColor;
 	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif;
 
-	.activity-editor-footer__action-buttons {
-		margin: 1em;
+	.block-editor-iframe__container {
+		border-top: solid 1px #ccc;
+		padding: 1em;
+	}
+
+	.activity-editor-footer__action-buttons,
+	.activity-editor-header__action-buttons {
 		display: flex;
 		justify-content: flex-end;
 		align-items: center;
+	}
+
+	.activity-editor-footer__action-buttons {
+		margin: 1em;
+	}
+
+	.activity-editor-header__action-buttons {
+		margin: 0 0.5em;
+		padding: 0.25em;
 	}
 }
