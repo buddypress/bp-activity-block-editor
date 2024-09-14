@@ -7,6 +7,10 @@ import {
 	BlockCanvas,
 	BlockEditorProvider,
 } from '@wordpress/block-editor';
+import {
+	useSelect,
+	useDispatch,
+} from '@wordpress/data';
 import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
@@ -20,19 +24,38 @@ import {
 	setDefaultActivityFormats,
 	disableBlockSupports,
 } from './omissions';
+import ActionButtons from './components/action-buttons';
+import { BP_ACTIVITY_STORE_KEY } from './store';
 
 const Editor = ( { settings } ) => {
-	const [ blocks, updateBlocks ] = useState( [] );
+	const {
+		activeComponents,
+	} = settings;
+	const { setActiveComponents, updateContent } = useDispatch( BP_ACTIVITY_STORE_KEY );
+	const availableComponents = useSelect( ( select ) => {
+		return select( BP_ACTIVITY_STORE_KEY ).getActiveComponents();
+	}, [] );
+	const blocks = useSelect( ( select ) => {
+		return select( BP_ACTIVITY_STORE_KEY ).getContent();
+	}, [] );
+
+	// Set active components.
+	if ( ! availableComponents || availableComponents.length === 0 ) {
+		setActiveComponents( activeComponents );
+	}
 
 	return (
-		<BlockEditorProvider
-			value={ blocks }
-			onInput={ ( blocks ) => updateBlocks( blocks ) }
-			onChange={ ( blocks ) => updateBlocks( blocks ) }
-			settings={ settings }
-		>
-			<BlockCanvas height="400px" styles={ styles } />
-		</BlockEditorProvider>
+		<div className="activity-editor-ui">
+			<BlockEditorProvider
+				value={ blocks }
+				onInput={ ( blocks ) => updateContent( blocks ) }
+				onChange={ ( blocks ) => updateContent( blocks ) }
+				settings={ settings }
+			>
+				<BlockCanvas height="400px" styles={ styles } />
+			</BlockEditorProvider>
+			<ActionButtons />
+		</div>
 	);
 }
 

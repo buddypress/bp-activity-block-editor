@@ -852,7 +852,7 @@ class BP_Activity_REST_Controller extends \WP_REST_Controller {
 			}
 
 			// Set the `activities_template` global for the current activity.
-			$GLOBALS['activities_template']           = new stdClass();
+			$GLOBALS['activities_template']           = new \stdClass();
 			$GLOBALS['activities_template']->activity = $activity;
 
 			// Set up activity oEmbed cache.
@@ -993,7 +993,7 @@ class BP_Activity_REST_Controller extends \WP_REST_Controller {
 	 * @return stdClass|WP_Error Object or WP_Error.
 	 */
 	protected function prepare_item_for_database( $request ) {
-		$prepared_activity = new stdClass();
+		$prepared_activity = new \stdClass();
 		$schema            = $this->get_item_schema();
 		$activity          = $this->get_activity_object( $request );
 
