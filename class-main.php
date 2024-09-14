@@ -177,11 +177,16 @@ final class Main {
 		$class_name = ltrim( str_replace( __NAMESPACE__, '', $class ), '\\' );
 		$name       = str_replace( '_', '-', strtolower( $class_name ) );
 
-		if ( 0 !== strpos( $name, 'bp-activity' ) ) {
+		if ( 0 !== strpos( $name, 'bp-activity' ) && 'bp-members-rest-controller' !== $name ) {
 			return;
 		}
 
-		$path = plugin_dir_path( __FILE__ ) . "bp-activity/classes/class-{$name}.php";
+		$component = 'bp-activity';
+		if ( 'bp-members-rest-controller' === $name ) {
+			$component = 'bp-members';
+		}
+
+		$path = plugin_dir_path( __FILE__ ) . $component . "/classes/class-{$name}.php";
 
 		// Sanity check.
 		if ( ! file_exists( $path ) ) {
