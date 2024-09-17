@@ -16,6 +16,7 @@ const DEFAULT_STATE = {
 	groups: [],
 	groupId: 0,
 	edits: {},
+	canReply: true,
 };
 
 /**
@@ -108,6 +109,12 @@ const reducer = ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				created: {},
+			};
+
+		case types.SET_ACTIVITY_REPLIES:
+			return {
+				...state,
+				canReply: action.canReply,
 			};
 	}
 

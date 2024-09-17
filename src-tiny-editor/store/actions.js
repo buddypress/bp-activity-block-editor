@@ -192,3 +192,16 @@ export function resetActivityGroup() {
 		type: types.RESET_ACTIVITY_GROUP,
 	};
 }
+
+/**
+ * Returns an action object used to set whether the activity can be commented.
+ *
+ * @param {boolean} canReply True if the activity can be commented false otherwise.
+ * @return {Object} Object for action.
+ */
+export function setActivityReplies( canReply ) {
+	return {
+		type: types.SET_ACTIVITY_REPLIES,
+		canReply,
+	};
+}

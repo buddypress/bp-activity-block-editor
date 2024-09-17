@@ -98,3 +98,13 @@ export const getActivityGroup = ( state ) => {
 	const groups = state.groups || [];
 	return groups.find( ( group ) => group.id === state.groupId );
 };
+
+/**
+ * Returns true if an activity can be commented.
+ *
+ * @param {Object} state The current state.
+ * @return {boolean} True if an activity can be commented.
+ */
+export const canReplytoActivity = ( state )  => {
+	return state.canReply || true;
+};
