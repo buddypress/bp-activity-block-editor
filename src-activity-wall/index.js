@@ -1,22 +1,15 @@
 /**
  * WordPress dependencies
  */
- const {
-	apiFetch,
-	domReady,
-	url: {
-		getPath,
-	},
-	i18n: {
-		__,
-	},
-} = wp;
+import domReady from '@wordpress/dom-ready';
+import apiFetch from '@wordpress/api-fetch';
+import { __ } from '@wordpress/i18n';
+import { getPath } from '@wordpress/url';
 
 /**
  * Internal dependencies
  */
 import './style.scss';
-import { default as setTemplate, stringToElements } from './utilities';
 
 /**
  * Activity Wall class.
@@ -51,22 +44,28 @@ class bpActivityWall {
 	 * @return {string} HTML output.
 	 */
 	 renderItem( props ) {
-		const Template = setTemplate( 'bp-activity-entry' );
-		let activity_classes = [ props.component, props.type ];
+		const template = document.querySelector( '#bp-activity-entry-template' );
+		const activityEntry = document.importNode( template.content, true );
 
-		if ( ! 'rendered' in props.content || ! props.content.rendered ) {
-			activity_classes.push( 'mini' );
+		if ( 'user' in props._embedded && !! props._embedded.user ) {
+			activityEntry.querySelector( '.activity-avatar a' ).setAttribute( 'href', props._embedded.user[0].link );
 		}
 
-		if ( 'comment_count' in props && !! props.comment_count ) {
-			activity_classes.push( 'has-comments' );
+		if ( props.user_avatar ) {
+			activityEntry.querySelector( '.activity-avatar a' ).innerHTML = '<img loading="lazy" src="' + props.user_avatar.thumb + '" class="avatar user-' + props.user_id + '-avatar avatar-50 photo" width="50" alt="' + props.altAvatar + '">';
+		} else {
+			activityEntry.querySelector( '.activity-avatar a' ).innerHTML = '<div class="avatar user-' + props.user_id + '-avatar avatar-50 photo">&nbsp;</div>';
 		}
 
-		props.activity_class = activity_classes.join( ' ' );
-		props.id_attribute = 'activity_comment' === props.type ? 'activity-comment' : 'activity';
+		activityEntry.querySelector( '.activity-title-text' ).innerHTML = props.title;
+		activityEntry.querySelector( '.activity-title .activity-time-since' ).setAttribute( 'href', props.link );
+		activityEntry.querySelector( '.activity-title .time-since' ).textContent = props.timediff;
 
-		// Finally return the rendered activity.
-		return Template( props );
+		if ( 'rendered' in props.content && !! props.content.rendered ) {
+			activityEntry.querySelector( '.activity-inner' ).innerHTML = props.content.rendered;
+		}
+
+		return activityEntry;
 	}
 
 	/**
@@ -78,8 +77,7 @@ class bpActivityWall {
 	 */
 	loop( activities ) {
 		activities.forEach( ( activity ) => {
-			activity.author_link = activity._embedded.user[0].link;
-			this.container.innerHTML += this.renderItem( activity );
+			this.container.appendChild( this.renderItem( activity ) );
 		} );
 	}
 

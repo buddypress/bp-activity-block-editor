@@ -157,8 +157,7 @@ function bp_activity_admin_load_single_screen() {
  * @since 1.0.0
  */
 function bp_activity_admin_enqueue_assets() {
-	return;
-	//wp_enqueue_style( 'bp-activity-wall' );
+	wp_enqueue_style( 'bp-activity-wall' );
 
 	// Check if we're displaying an activity.
 	$activity = bp_activity()->view_activity;
@@ -171,7 +170,7 @@ function bp_activity_admin_enqueue_assets() {
 
 	$request_args = array(
 		'_embed'                => true,
-		'_is_bp_activity_admin' => true,
+		/*'_is_bp_activity_admin' => true, // Why is this necessary? */
 	);
 
 	// We need this activity comments.
@@ -220,8 +219,8 @@ function bp_activity_admin_enqueue_assets() {
 		}
 	}
 
-	//wp_enqueue_script( 'bp-activity-wall' );
-	//wp_localize_script( 'bp-activity-wall', 'bpActivityWallSettings', $script_strings );
+	wp_enqueue_script( 'bp-activity-wall' );
+	wp_localize_script( 'bp-activity-wall', 'bpActivityWallSettings', $script_strings );
 }
 
 /**
@@ -281,10 +280,10 @@ function bp_activity_admin_screen() {
 	if ( 'bp-view-activity' !== $context ) {
 		?>
 			<div id="bp-activity-block-editor"></div>
-			<div id="bp-activity-block-editor-notices"></div>
-			<div id="bp-activity-wall-items"></div>
 			<!-- Testing a tiny editor. -->
 			<div id="bp-activity-editor"></div>
+			<div id="bp-activity-block-editor-notices"></div>
+			<div id="bp-activity-wall-items"></div>
 		<?php
 	} else {
 		?>

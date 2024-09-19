@@ -11,6 +11,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 ?>
+<template id="bp-activity-entry-template">
+	<article class="" id="" data-bp-object-id="" data-bp-timestamp="">
+		<header class="activity-header item-header">
+			<div class="activity-avatar item-avatar">
+				<a class="activity-avatar-link" href=""></a>
+			</div>
+			<div class="activity-title item-title">
+				<p><span class="activity-title-text"></span> <a href="" class="activity-time-since"><span class="time-since"></span></a></p>
+			</div>
+		</header>
+		<div class="activity-content">
+			<div class="activity-inner"></div>
+		</div>
+	</article>
+</template>
 <script type="text/html" id="tmpl-bp-activity-entry">
 	<article class="{{data.activity_class}}" id="activity-{{data.id}}" data-bp-{{data.id_attribute}}-id="{{data.id}}" data-bp-timestamp="{{data.timestamp}}">
 		<header class="activity-header item-header">

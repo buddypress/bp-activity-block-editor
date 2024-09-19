@@ -167,7 +167,7 @@ class BP_Members_REST_Controller extends \WP_REST_Users_Controller {
 		$args = apply_filters( 'bp_rest_members_get_items_query_args', $args, $request );
 
 		// Actually, query it.
-		$member_query = new BP_User_Query( $args );
+		$member_query = new \BP_User_Query( $args );
 		$members      = array_values( $member_query->results );
 
 		$retval = array();
@@ -242,7 +242,7 @@ class BP_Members_REST_Controller extends \WP_REST_Users_Controller {
 			);
 
 			// Get the member with BuddyPress extra data.
-			$member_query = new BP_User_Query( $args );
+			$member_query = new \BP_User_Query( $args );
 			$member       = reset( $member_query->results );
 
 			$member   = $this->prepare_item_for_response( $member, $request );
@@ -274,7 +274,7 @@ class BP_Members_REST_Controller extends \WP_REST_Users_Controller {
 		if ( bp_current_user_can( 'bp_view', array( 'bp_component' => 'members' ) ) ) {
 			$user = bp_rest_get_user( $request->get_param( 'id' ) );
 
-			if ( ! $user instanceof WP_User ) {
+			if ( ! $user instanceof \WP_User ) {
 				$retval = new \WP_Error(
 					'bp_rest_member_invalid_id',
 					__( 'Invalid member ID.', 'buddypress' ),

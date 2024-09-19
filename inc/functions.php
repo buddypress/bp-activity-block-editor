@@ -60,7 +60,7 @@ function bp_activity_block_editor_force_activity_component() {
  * @return WP_REST_Response $response The response object.
  */
 function bp_activity_wall_rest_activity_prepare_value( $response, $request, $activity ) {
-	$referer      = $request->get_header( 'referer' );
+	/*$referer      = $request->get_header( 'referer' );
 	$referer_path = '';
 	if ( $referer ) {
 		$referer_path = wp_parse_url( $referer, PHP_URL_PATH );
@@ -70,7 +70,7 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 	$is_bp_activity_admin  = $request->get_param( '_is_bp_activity_admin' ) || '/wp-admin/admin.php' === $referer_path;
 	$is_activity_directory = $referer_url === bp_get_activity_directory_permalink();
 	$is_user_activity      = $referer_url === bp_loggedin_user_url() || $referer_url === bp_loggedin_user_url( array( 'single_item_component' => bp_get_activity_slug() ) );
-	$is_group_activity     = false;
+	$is_group_activity     = false;*/
 	$data                  = $response->get_data();
 
 	if ( $data ) {
@@ -78,7 +78,7 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 		$data['timediff']  = bp_core_time_since( $activity->date_recorded );
 		$data['timestamp'] = strtotime( $activity->date_recorded );
 
-		if ( ! isset( $activity->children ) ) {
+		/*if ( ! isset( $activity->children ) ) {
 			$top_level_parent_id   = 'activity_comment' === $activity->type ? $activity->item_id : 0;
 			$activity_comments     = BP_Activity_Activity::get_activity_comments( $activity->id, $activity->mptt_left, $activity->mptt_right, 'ham_only', $top_level_parent_id );
 			$data['comment_count'] = count( $activity_comments );
@@ -148,7 +148,7 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 			* BuddyPress `bp_groups_filter_activity_can_comment()` needs the $activities_template to be set.
 			* We probably need to make this unnecessary in BuddyPress, in the meantime let's simulate this global.
 			*/
-			if ( isset( $GLOBALS['activities_template'] ) ) {
+			/*if ( isset( $GLOBALS['activities_template'] ) ) {
 				$reset_activities_template = $GLOBALS['activities_template'];
 			} else {
 				$reset_activities_template = null;
@@ -158,7 +158,7 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 			$GLOBALS['activities_template']->activity = $activity;
 
 			/** This filter is documented in wp-content/plugins/buddypress/bp-activity/bp-activity-template.php */
-			$data['can_comment'] = apply_filters( $filter, $can_comment, $can_comment_arg );
+			/*$data['can_comment'] = apply_filters( $filter, $can_comment, $can_comment_arg );
 
 			// Activity favorite capability.
 			$data['can_favorite'] = bp_activity_can_favorite();
@@ -171,12 +171,14 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 
 			// Reset the global.
 			$GLOBALS['activities_template'] = $reset_activities_template;
-		}
+		}*/
+		// Update the response.
+		$response->set_data( $data );
 	}
 
 	return $response;
 }
-//add_filter( 'bp_rest_activity_prepare_value', 'bp_activity_wall_rest_activity_prepare_value', 10, 3 );
+add_filter( 'bp_rest_activity_prepare_value', __NAMESPACE__ . '\bp_activity_wall_rest_activity_prepare_value', 10, 3 );
 
 /**
  * Fetches emojis according to given args.
