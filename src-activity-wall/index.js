@@ -36,6 +36,29 @@ class bpActivityWall {
 	}
 
 	/**
+	 * Renders the HTML of an activity entry's actions.
+	 *
+	 * @since 1.0.2
+	 *
+	 * @param {Object} props The activity item properties.
+	 * @return {string} HTML output.
+	 */
+	renderActions( props ) {
+		const template = document.querySelector( '#bp-activity-entry-actions-template' );
+		const entryActions = document.createDocumentFragment();
+
+		props.actions.forEach( ( action ) => {
+			const entryAction = template.content.cloneNode( true );
+			entryAction.querySelector( 'a' ).setAttribute( 'href', action['url'] );
+			entryAction.querySelector( 'a' ).classList.add( 'bp-activity-' + action.name );
+			entryAction.querySelector( 'a' ).innerHTML = action.text;
+			entryActions.appendChild( entryAction );
+		} );
+
+		return entryActions;
+	}
+
+	/**
 	 * Renders the HTML of an activity entry's major actions.
 	 *
 	 * @since 1.0.2
@@ -89,6 +112,10 @@ class bpActivityWall {
 
 		if ( 'rendered' in props.content && !! props.content.rendered ) {
 			activityEntry.querySelector( '.activity-inner' ).innerHTML = props.content.rendered;
+		}
+
+		if ( !! props.actions ) {
+			activityEntry.querySelector( '.activity-action-buttons' ).appendChild( this.renderActions( props ) );
 		}
 
 		return activityEntry;

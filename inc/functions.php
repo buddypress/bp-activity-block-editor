@@ -78,6 +78,7 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 		$data['timediff']     = bp_core_time_since( $activity->date_recorded );
 		$data['timestamp']    = strtotime( $activity->date_recorded );
 		$data['majorActions'] = array();
+		$data['actions']      = array();
 
 		/*if ( ! isset( $activity->children ) ) {
 			$top_level_parent_id   = 'activity_comment' === $activity->type ? $activity->item_id : 0;
@@ -145,6 +146,28 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 						'bp_activity_delete_link'
 					)
 				),
+			);
+		}
+
+		if ( 'activity_comment' !== $data['type'] && bp_activity_type_supports( $data['type'], 'comment-reply' ) ) {
+			$data['actions'][] = array(
+				'name' => 'comment',
+				'text' => esc_html__( 'Comment', 'bp-activity' ),
+				'url'  => '#comment',
+			);
+		} elseif ( bp_activity_can_comment_reply( $activity ) ) {
+			$data['actions'][] = array(
+				'name' => 'reply',
+				'text' => esc_html__( 'Reply', 'bp-activity' ),
+				'url'  => '#reply',
+			);
+		}
+
+		if ( bp_activity_can_favorite() ) {
+			$data['actions'][] = array(
+				'name' => 'favorite',
+				'text' => esc_html__( 'Favorite', 'bp-activity' ),
+				'url'  => '#favorite',
 			);
 		}
 
