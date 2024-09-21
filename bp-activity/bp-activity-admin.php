@@ -278,10 +278,41 @@ function bp_activity_admin_screen() {
 
 	<?php
 	if ( 'bp-view-activity' !== $context ) {
+		$placeholder = sprintf(
+			/* translators: %s: member name */
+			esc_html__( "What's new, %s?", 'bp-activity' ),
+			esc_html( bp_get_user_firstname( bp_get_loggedin_user_fullname() ) )
+		);
 		?>
 			<div id="bp-activity-block-editor"></div>
+			<form id="bp-activity-post-form" method="post">
+				<div class="bp-activity-post-form-avatar">
+					<a href="<?php bp_loggedin_user_link(); ?>">
+						<?php
+						bp_loggedin_user_avatar(
+							array(
+								'width'  => bp_core_avatar_thumb_width(),
+								'height' => bp_core_avatar_thumb_height(),
+							)
+						);
+						?>
+					</a>
+				</div>
+				<div class="bp-activity-post-form-message">
+					<label for="whats-new" class="screen-reader-text">
+						<?php
+							/* translators: accessibility text */
+							esc_html_e( 'Post what\'s new', 'bp-activity' );
+						?>
+					</label>
+					<textarea id="whats-new" name="whats-new" data-bp-parent-id="0" placeholder="<?php echo esc_attr( $placeholder ); ?>" cols="50" rows="10"></textarea>
+				</div>
+				<div class="bp-activity-post-form-action">
+					<input type="submit" value="<?php esc_attr_e( 'Post Update', 'bp-activity' ); ?>" class="button button-primary">
+				</div>
+			</form>
 			<!-- Testing a tiny editor. -->
-			<div id="bp-activity-editor"></div>
+			<div id="bp-activity-editor" class="popunder"></div>
 			<div id="bp-activity-block-editor-notices"></div>
 			<div id="bp-activity-wall-items"></div>
 		<?php

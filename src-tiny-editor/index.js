@@ -1,7 +1,12 @@
 /**
  * WordPress dependencies
  */
-import { createRoot } from '@wordpress/element';
+import {
+	createRoot,
+	useCallback,
+	useEffect,
+	useRef,
+} from '@wordpress/element';
 import domReady from '@wordpress/dom-ready';
 import {
 	BlockCanvas,
@@ -39,11 +44,25 @@ const Editor = ( { settings } ) => {
 	const blocks = useSelect( ( select ) => {
 		return select( BP_ACTIVITY_STORE_KEY ).getContent();
 	}, [] );
+	const documentRef = useRef( document );
+	const togglePopover = useCallback( ( e ) => {
+		if ( e.target.dataset.bpParentId ) {
+			documentRef.current.querySelector( '#bp-activity-editor' ).classList.remove( 'popunder' );
+		}
+	}, [] );
 
 	// Set active components.
 	if ( ! availableComponents || availableComponents.length === 0 ) {
 		setActiveComponents( activeComponents );
 	}
+
+	useEffect( () => {
+		documentRef.current.addEventListener( 'click', togglePopover );
+
+		return () => {
+			documentRef.current.removeEventListener( 'click', togglePopover );
+		};
+	}, [] );
 
 	return (
 		<div className="activity-editor-ui">

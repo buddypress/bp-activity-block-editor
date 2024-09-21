@@ -1,6 +1,28 @@
 #wpbody-content {
 	background-color: #f0f0f1;
 
+	form#bp-activity-post-form {
+		margin: 0 auto;
+		width: 800px;
+		display: flex;
+		justify-content: flex-end;
+		flex-wrap: wrap;
+		padding-bottom: 2em;
+
+		.bp-activity-post-form-avatar {
+			width: 90px;
+		}
+
+		.bp-activity-post-form-message {
+			width: calc(100% - 90px);
+		}
+
+		textarea#whats-new {
+			width: 100%;
+			height: 90px;
+		}
+	}
+
 	#bp-activity-wall-items,
 	#bp-activity-view {
 		margin: 2rem 0;

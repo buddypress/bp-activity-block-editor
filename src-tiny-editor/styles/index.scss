@@ -2,6 +2,12 @@
 	background: #FFF;
 	border-bottom: solid 1px currentColor;
 	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen-Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif;
+	position: fixed;
+    width: 800px;
+
+	&.popunder {
+		display: none;
+	}
 
 	.block-editor-iframe__container {
 		border-top: solid 1px #ccc;
