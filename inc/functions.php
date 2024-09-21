@@ -74,9 +74,10 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 	$data                  = $response->get_data();
 
 	if ( $data ) {
-		$activity_id       = (int) $data['id'];
-		$data['timediff']  = bp_core_time_since( $activity->date_recorded );
-		$data['timestamp'] = strtotime( $activity->date_recorded );
+		$activity_id          = (int) $data['id'];
+		$data['timediff']     = bp_core_time_since( $activity->date_recorded );
+		$data['timestamp']    = strtotime( $activity->date_recorded );
+		$data['majorActions'] = array();
 
 		/*if ( ! isset( $activity->children ) ) {
 			$top_level_parent_id   = 'activity_comment' === $activity->type ? $activity->item_id : 0;
@@ -87,10 +88,25 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 		if ( 'groups' === $data['component'] && $data['primary_item_id'] ) {
 			$group_id          = (int) $data['primary_item_id'];
 			$is_group_activity = $referer_url === bp_get_group_url( $group_id ) || $referer_url === bp_get_group_url( $group_id, array( 'single_item_action' => bp_get_activity_slug() ) );
-		}
+		}*/
 
 		if ( (int) bp_loggedin_user_id() === (int) $data['user_id'] && bp_activity_has_blocks( $activity->content ) ) {
-			$data['edit_link'] = bp_get_admin_url(
+			$data['majorActions'][] = array(
+				'name' => 'edit',
+				'text' => esc_html__( 'Edit', 'bp-activity' ),
+				'url'  => esc_url(
+					bp_get_admin_url(
+						add_query_arg(
+							array(
+								'page' => 'bp-edit-activity',
+								'aid'  => $activity_id,
+							),
+							'admin.php'
+						)
+					)
+				),
+			);
+			/*$data['edit_link'] = bp_get_admin_url(
 				add_query_arg(
 					array(
 						'page' => 'bp-edit-activity',
@@ -98,10 +114,41 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 					),
 					'admin.php'
 				)
+			);*/
+		}
+
+		// Activity delete capability.
+		if ( bp_activity_user_can_delete( $activity ) ) {
+			/*
+			 * `bp_get_activity_delete_url()` requires the $GLOBALS['activities_template'].
+			 * It should be possible to get this URL without this global to avoid this code
+			 * duplication.
+			 */
+			$url = bp_rewrites_get_url(
+				array(
+					'component_id'                 => 'activity',
+					'single_item_action'           => 'delete',
+					'single_item_action_variables' => array( $activity_id ),
+				)
+			);
+
+			if ( 'activity_comment' === $data['type'] ) {
+				$url = add_query_arg( 'cid', $activity_id, $url );
+			}
+
+			$data['majorActions'][] = array(
+				'name' => 'trash',
+				'text' => esc_html__( 'Delete', 'bp-activity' ),
+				'url'  => esc_url(
+					wp_nonce_url(
+						$url,
+						'bp_activity_delete_link'
+					)
+				),
 			);
 		}
 
-		if ( ! empty( $is_bp_activity_admin ) ) {
+		/*if ( ! empty( $is_bp_activity_admin ) ) {
 			$data['link'] = bp_get_admin_url(
 				add_query_arg(
 					array(

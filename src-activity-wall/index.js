@@ -14,7 +14,7 @@ import './style.scss';
 /**
  * Activity Wall class.
  *
- * @since 11.0.0
+ * @since 1.0.0
  */
 class bpActivityWall {
 	/**
@@ -36,14 +36,36 @@ class bpActivityWall {
 	}
 
 	/**
-	 * Renders the HTML of an activity item.
+	 * Renders the HTML of an activity entry's major actions.
+	 *
+	 * @since 1.0.2
+	 *
+	 * @param {Object} props The activity item properties.
+	 * @return {string} HTML output.
+	 */
+	renderMajorActions( props ) {
+		const template = document.querySelector( '#bp-activity-entry-major-actions-template' );
+		const majorActions = document.importNode( template.content, true );
+
+		majorActions.querySelector( '[popovertarget="activity-major-actions"]' ).setAttribute( 'popovertarget', 'activity-major-actions-' + props.id );
+		majorActions.querySelector( '#activity-major-actions' ).setAttribute( 'id', 'activity-major-actions-' + props.id );
+
+		props.majorActions.forEach( ( action ) => {
+			majorActions.querySelector( '.activity-major-action-links' ).innerHTML += '<li><span class="dashicons dashicons-' + action['name'] + '"></span><a href="' +  action['url'] + '" class="bp-activity-' + action['name'] + '" role="button">' + action['text'] + '</a></li>';
+		} );
+
+		return majorActions;
+	}
+
+	/**
+	 * Renders the HTML of an activity entry.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param {Object} props The activity item properties.
 	 * @return {string} HTML output.
 	 */
-	 renderItem( props ) {
+	 renderEntry( props ) {
 		const template = document.querySelector( '#bp-activity-entry-template' );
 		const activityEntry = document.importNode( template.content, true );
 
@@ -61,6 +83,10 @@ class bpActivityWall {
 		activityEntry.querySelector( '.activity-title .activity-time-since' ).setAttribute( 'href', props.link );
 		activityEntry.querySelector( '.activity-title .time-since' ).textContent = props.timediff;
 
+		if ( !! props.majorActions ) {
+			activityEntry.querySelector( '.activity-major-actions' ).appendChild( this.renderMajorActions( props ) );
+		}
+
 		if ( 'rendered' in props.content && !! props.content.rendered ) {
 			activityEntry.querySelector( '.activity-inner' ).innerHTML = props.content.rendered;
 		}
@@ -77,7 +103,7 @@ class bpActivityWall {
 	 */
 	loop( activities ) {
 		activities.forEach( ( activity ) => {
-			this.container.appendChild( this.renderItem( activity ) );
+			this.container.appendChild( this.renderEntry( activity ) );
 		} );
 	}
 
@@ -97,11 +123,11 @@ class bpActivityWall {
 			if ( 'activity_comment' === activity.type ) {
 				this.activities.push( activity );
 
-				this.container.append( stringToElements( this.renderItem( activity ) ) );
+				this.container.append( stringToElements( this.renderEntry( activity ) ) );
 			} else {
 				this.activities.unshift( activity );
 
-				this.container.prepend( stringToElements( this.renderItem( activity ) ) );
+				this.container.prepend( stringToElements( this.renderEntry( activity ) ) );
 			}
 		}
 	}
@@ -291,7 +317,7 @@ class bpActivityWall {
 		}
 
 		if ( !! this.currentActivity ) {
-			document.querySelector( '#bp-activity-view' ).innerHTML = this.renderItem( this.currentActivity );
+			document.querySelector( '#bp-activity-view' ).innerHTML = this.renderEntry( this.currentActivity );
 		}
 
 		this.setUpListeners();

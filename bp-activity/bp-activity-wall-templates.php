@@ -20,11 +20,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="activity-title item-title">
 				<p><span class="activity-title-text"></span> <a href="" class="activity-time-since"><span class="time-since"></span></a></p>
 			</div>
+			<div class="activity-major-actions"></div>
 		</header>
 		<div class="activity-content">
 			<div class="activity-inner"></div>
 		</div>
 	</article>
+</template>
+<template id="bp-activity-entry-major-actions-template">
+	<button popovertarget="activity-major-actions" popovertargetaction="toggle">
+		<span class="dashicons dashicons-ellipsis"></span>
+	</button>
+	<div popover="auto" id="activity-major-actions" role="tooltip" tabindex="-1" class="activity-major-actions-popover">
+		<ul class="activity-major-action-links"></ul>
+	</div>
 </template>
 <script type="text/html" id="tmpl-bp-activity-entry">
 	<article class="{{data.activity_class}}" id="activity-{{data.id}}" data-bp-{{data.id_attribute}}-id="{{data.id}}" data-bp-timestamp="{{data.timestamp}}">
