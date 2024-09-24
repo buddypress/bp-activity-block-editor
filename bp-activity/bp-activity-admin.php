@@ -285,7 +285,7 @@ function bp_activity_admin_screen() {
 		);
 		?>
 			<div id="bp-activity-block-editor"></div>
-			<form id="bp-activity-post-form" method="post">
+			<form id="bp-activity-post-form" method="post" class="activity-editor-not-supported">
 				<div class="bp-activity-post-form-avatar">
 					<a href="<?php bp_loggedin_user_link(); ?>">
 						<?php

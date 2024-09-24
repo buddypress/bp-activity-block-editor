@@ -16,7 +16,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { BP_ACTIVITY_STORE_KEY } from '../store';
 
-const ActionButtons = () => {
+const ActionButtons = ( { onCancel } ) => {
 	const { content, user } = useSelect( ( select ) => {
 		const store = select( BP_ACTIVITY_STORE_KEY );
 
@@ -41,6 +41,13 @@ const ActionButtons = () => {
 
 	return (
 		<div className="activity-editor-footer__action-buttons">
+			<Button
+				className="activity-editor-footer__reset-button"
+				variant="secondary"
+				onClick={ () => onCancel() }
+			>
+				{ __( 'Cancel', 'bp-activity-block-editor' ) }
+			</Button>
 			<Button
 				className="activity-editor-footer__publish-button"
 				variant="primary"

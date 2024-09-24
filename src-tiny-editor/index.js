@@ -3,6 +3,7 @@
  */
 import {
 	createRoot,
+	unmount,
 	useCallback,
 	useEffect,
 	useRef,
@@ -37,7 +38,7 @@ const Editor = ( { settings } ) => {
 	const {
 		activeComponents,
 	} = settings;
-	const { setActiveComponents, updateContent } = useDispatch( BP_ACTIVITY_STORE_KEY );
+	const { setActiveComponents, updateContent, resetActivity } = useDispatch( BP_ACTIVITY_STORE_KEY );
 	const availableComponents = useSelect( ( select ) => {
 		return select( BP_ACTIVITY_STORE_KEY ).getActiveComponents();
 	}, [] );
@@ -57,12 +58,19 @@ const Editor = ( { settings } ) => {
 	}
 
 	useEffect( () => {
+		documentRef.current.querySelector( '#bp-activity-post-form' ).classList.remove( 'activity-editor-not-supported' );
 		documentRef.current.addEventListener( 'click', togglePopover );
 
 		return () => {
 			documentRef.current.removeEventListener( 'click', togglePopover );
 		};
 	}, [] );
+
+	const cancelActivity = () => {
+		resetActivity();
+		reInitializeActivityEditor();
+		documentRef.current.querySelector( '#bp-activity-editor' ).classList.add( 'popunder' );
+	}
 
 	return (
 		<div className="activity-editor-ui">
@@ -75,21 +83,59 @@ const Editor = ( { settings } ) => {
 			>
 				<BlockCanvas height="150px" styles={ styles } />
 			</BlockEditorProvider>
-			<ActionButtons />
+			<ActionButtons onCancel={ cancelActivity } />
 		</div>
 	);
 }
 
-domReady( function() {
-	const target = document.querySelector( '#bp-activity-editor' )
-	const root = createRoot( target );
+// We need to edit root.
+let root;
+
+/**
+ * Generate the Actvitiiy Block Editor.
+ *
+ * @since 1.0.2
+ *
+ * @param {boolean} register True to register format & blocks. False otherwise.
+ */
+const initializeActivityEditor = ( register = true ) => {
+	const target = document.querySelector( '#bp-activity-editor' );
+
+	// Create a node after the textarea
+	const activityEditor = document.createElement( 'div' );
+	activityEditor.classList.add( 'block-editor' );
+
+	target.append( activityEditor );
+
+	root = createRoot( activityEditor );
 	const settings = window.bpActivityEditor || {};
 
-	setDefaultActivityBlocks();
-	setDefaultActivityFormats();
+	if ( register ) {
+		setDefaultActivityBlocks();
+		setDefaultActivityFormats();
+	}
 
 	root.render( <Editor settings={ settings } /> );
-} );
+}
+domReady( function() { initializeActivityEditor(); } );
+
+/**
+ * Recreate root once unmounted.
+ *
+ * Block Editor's resetBlocks() has no effect on Block Canvas.
+ *
+ * To make sure the blocks added to the editor are removed once the user clicked
+ * on the "Cancel" or "Post update" buttons, we need to unmount and recreate root.
+ *
+ * @since 1.0.2
+ */
+const reInitializeActivityEditor = () => {
+	const target = document.querySelector( '#bp-activity-editor .block-editor' );
+	root.unmount();
+	target.remove();
+
+	initializeActivityEditor( false );
+}
 
 addFilter(
 	'blocks.registerBlockType',

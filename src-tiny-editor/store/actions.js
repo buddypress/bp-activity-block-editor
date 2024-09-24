@@ -194,6 +194,17 @@ export function resetActivityGroup() {
 }
 
 /**
+ * Returns an action object used to reset activity.
+ *
+ * @return {Object} Object for action.
+ */
+export function resetActivity() {
+	return {
+		type: types.RESET_ACTIVITY,
+	};
+}
+
+/**
  * Returns an action object used to set whether the activity can be commented.
  *
  * @param {boolean} canReply True if the activity can be commented false otherwise.

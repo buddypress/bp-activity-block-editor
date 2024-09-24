@@ -105,6 +105,16 @@ const reducer = ( state = DEFAULT_STATE, action ) => {
 				groupId: 0,
 			};
 
+		case types.RESET_ACTIVITY:
+			return {
+				...state,
+				content: '',
+				date: '',
+				inserting: false,
+				groupId: 0,
+				canReply: true,
+			};
+
 		case types.RESET_CREATED:
 			return {
 				...state,
