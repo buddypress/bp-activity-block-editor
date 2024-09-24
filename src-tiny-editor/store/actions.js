@@ -1,4 +1,9 @@
 /**
+ * WordPress dependencies.
+ */
+import apiFetch from '@wordpress/api-fetch';
+
+/**
  * Internal dependencies.
  */
 import { TYPES as types } from './action-types';
@@ -17,35 +22,45 @@ export function setActiveComponents( list ) {
 }
 
 /**
- * Resolver for saving an activity.
+ * Returns the Saved Activity Promise.
+ *
+ * @since 1.0.2
+ *
+ * @param {Object} activity
+ * @returns {Promise}
  */
-export function* saveActivity( activity ) {
-	let inserting = true, created;
+export const saveActivity = ( activity ) => async ( { dispatch } ) => {
+	let inserting = true, method = 'POST';
+	let path = '/buddypress/v1/activity';
 
-	yield { type: types.SAVE_START, inserting, activity };
+    dispatch( { type: 'SAVE_START', inserting } );
 
-	try {
-		if ( ! activity.id ) {
-			created = yield createFromAPI( '/buddypress/v1/activity', activity );
-		} else {
-			created = yield updateFromAPI( '/buddypress/v1/activity/' + activity.id, activity );
-		}
+	if ( activity.id  ) {
+		method = 'PUT';
+		path += '/' + activity.id;
+	}
 
-	} catch ( error ) {
-		created = {
+    const created = await apiFetch( {
+		path: path,
+		method: method,
+		data: activity,
+	} ).then( ( succeeded ) => {
+		inserting = false;
+		dispatch( { type: 'SAVE_END', inserting, succeeded } );
+
+	} ).catch( ( error ) => {
+		inserting = false;
+		const failed = {
 			id: 0,
 			error: error.message,
 		};
 
-		Object.assign( created, activity );
+		Object.assign( failed, activity );
 
+		dispatch( { type: 'ADD_ERROR', inserting, failed } );
+	} );
 
-		yield { type: types.ADD_ERROR, created };
-	}
-
-	inserting = false;
-
-	yield { type: types.SAVE_END, inserting, created };
+    return created;
 }
 
 /**

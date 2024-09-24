@@ -51,14 +51,14 @@ const reducer = ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				inserting: action.inserting,
-				created: action.created,
+				created: {},
 			};
 
 		case types.SAVE_END:
 			return {
 				...state,
 				inserting: action.inserting,
-				created: !! action.created[0] ? action.created[0] : state.created,
+				created: action.succeeded,
 				content: '',
 				date: '',
 				groupId: 0,
@@ -68,7 +68,8 @@ const reducer = ( state = DEFAULT_STATE, action ) => {
 		case types.ADD_ERROR:
 			return {
 				...state,
-				created: { ...action.created },
+				inserting: action.inserting,
+				created: { ...action.failed },
 			};
 
 		case types.UPDATE_CONTENT:

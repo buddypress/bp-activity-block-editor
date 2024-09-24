@@ -32,13 +32,19 @@ import {
 } from './omissions';
 import ActionButtons from './components/action-buttons';
 import SettingsPopover from './components/settings';
+import UserFeedbacks from './components/feedbacks';
 import { BP_ACTIVITY_STORE_KEY } from './store';
 
 const Editor = ( { settings } ) => {
 	const {
 		activeComponents,
 	} = settings;
-	const { setActiveComponents, updateContent, resetActivity } = useDispatch( BP_ACTIVITY_STORE_KEY );
+	const {
+		setActiveComponents,
+		updateContent,
+		resetActivity,
+		resetJustPostedActivity,
+	} = useDispatch( BP_ACTIVITY_STORE_KEY );
 	const availableComponents = useSelect( ( select ) => {
 		return select( BP_ACTIVITY_STORE_KEY ).getActiveComponents();
 	}, [] );
@@ -68,6 +74,7 @@ const Editor = ( { settings } ) => {
 
 	const cancelActivity = () => {
 		resetActivity();
+		resetJustPostedActivity();
 		reInitializeActivityEditor();
 		documentRef.current.querySelector( '#bp-activity-editor' ).classList.add( 'popunder' );
 	}
@@ -84,6 +91,7 @@ const Editor = ( { settings } ) => {
 				<BlockCanvas height="150px" styles={ styles } />
 			</BlockEditorProvider>
 			<ActionButtons onCancel={ cancelActivity } />
+			<UserFeedbacks />
 		</div>
 	);
 }

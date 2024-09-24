@@ -142,7 +142,8 @@ class bpActivityWall {
 	 * @param {MessageEvent} event The Window posted message event.
 	 */
 	addItem( event ) {
-		const activity = event.data && event.data.message && 'postedBPActivity' === event.data.message ? event.data : null;
+		console.log( event );
+		/*const activity = event.data && event.data.message && 'postedBPActivity' === event.data.message ? event.data : null;
 
 		if ( !! activity && ! this.activities.find( existingActivity => existingActivity.id === activity.id ) ) {
 			delete activity.message;
@@ -156,7 +157,7 @@ class bpActivityWall {
 
 				this.container.prepend( stringToElements( this.renderEntry( activity ) ) );
 			}
-		}
+		}*/
 	}
 
 	/**

@@ -17,7 +17,7 @@ import { __ } from '@wordpress/i18n';
 import { BP_ACTIVITY_STORE_KEY } from '../store';
 
 const ActionButtons = ( { onCancel } ) => {
-	const { content, user } = useSelect( ( select ) => {
+	const { content, user, isInserting } = useSelect( ( select ) => {
 		const store = select( BP_ACTIVITY_STORE_KEY );
 
 		return {
@@ -27,6 +27,7 @@ const ActionButtons = ( { onCancel } ) => {
 		};
 	}, [] );
 	const { saveActivity } = useDispatch( BP_ACTIVITY_STORE_KEY );
+	const isBusy = !! isInserting;
 
 	const postActivity = () => {
 		const activity = {
@@ -51,6 +52,7 @@ const ActionButtons = ( { onCancel } ) => {
 			<Button
 				className="activity-editor-footer__publish-button"
 				variant="primary"
+				isBusy={ isBusy }
 				onClick={ () => postActivity() }
 			>
 				{ __( 'Post Update', 'bp-activity' ) }
