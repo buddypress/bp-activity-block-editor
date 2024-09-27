@@ -9,6 +9,10 @@
 		flex-wrap: wrap;
 		padding-bottom: 2em;
 
+		&.popunder {
+			display: none;
+		}
+
 		.bp-activity-post-form-avatar {
 			width: 60px;
 		}

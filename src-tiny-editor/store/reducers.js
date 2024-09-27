@@ -8,7 +8,7 @@ import { TYPES as types } from './action-types';
  */
 const DEFAULT_STATE = {
 	user: {},
-	content: '',
+	content: [],
 	date: '',
 	inserting: false,
 	created: {},
@@ -59,7 +59,7 @@ const reducer = ( state = DEFAULT_STATE, action ) => {
 				...state,
 				inserting: action.inserting,
 				created: action.succeeded,
-				content: '',
+				content: [],
 				date: '',
 				groupId: 0,
 				blocks: [],
@@ -109,7 +109,7 @@ const reducer = ( state = DEFAULT_STATE, action ) => {
 		case types.RESET_ACTIVITY:
 			return {
 				...state,
-				content: '',
+				content: [],
 				date: '',
 				inserting: false,
 				groupId: 0,

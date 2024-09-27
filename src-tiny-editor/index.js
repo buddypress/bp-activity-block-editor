@@ -51,10 +51,14 @@ const Editor = ( { settings } ) => {
 	const blocks = useSelect( ( select ) => {
 		return select( BP_ACTIVITY_STORE_KEY ).getContent();
 	}, [] );
+	const postedActivity = useSelect( ( select ) => {
+		return select( BP_ACTIVITY_STORE_KEY ).getJustPostedActivity();
+	}, [] );
 	const documentRef = useRef( document );
 	const togglePopover = useCallback( ( e ) => {
 		if ( e.target.dataset.bpParentId ) {
 			documentRef.current.querySelector( '#bp-activity-editor' ).classList.remove( 'popunder' );
+			documentRef.current.querySelector( '#bp-activity-post-form' ).classList.add( 'popunder' );
 		}
 	}, [] );
 
@@ -72,12 +76,20 @@ const Editor = ( { settings } ) => {
 		};
 	}, [] );
 
-	const cancelActivity = () => {
+	const resetEditor = () => {
 		resetActivity();
 		resetJustPostedActivity();
 		reInitializeActivityEditor();
 		documentRef.current.querySelector( '#bp-activity-editor' ).classList.add( 'popunder' );
+		documentRef.current.querySelector( '#bp-activity-post-form' ).classList.remove( 'popunder' );
 	}
+
+	useEffect( () => {
+		if ( postedActivity.link ) {
+			resetActivity();
+			resetJustPostedActivity();
+		}
+	}, [ postedActivity ] );
 
 	return (
 		<div className="activity-editor-ui">
@@ -90,7 +102,7 @@ const Editor = ( { settings } ) => {
 			>
 				<BlockCanvas height="150px" styles={ styles } />
 			</BlockEditorProvider>
-			<ActionButtons onCancel={ cancelActivity } />
+			<ActionButtons onReset={ resetEditor } />
 			<UserFeedbacks />
 		</div>
 	);

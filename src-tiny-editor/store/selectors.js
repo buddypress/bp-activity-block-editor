@@ -49,16 +49,6 @@ export const getContent = ( state )  => {
 };
 
 /**
- * Retrieves blocks.
- *
- * @param {Object} state The current state.
- * @return {Array} Array of of blocks.
- */
-export const getBlocks = ( state )  => {
-	return state.blocks || [];
-};
-
-/**
  * Returns true if an activity is being added.
  *
  * @param {Object} state The current state.
