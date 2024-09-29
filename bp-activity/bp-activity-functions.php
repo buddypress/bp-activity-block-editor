@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Registers an activity type.
  *
- * @since 1.0.2
+ * @since 1.1.0
  *
  * @param string $type The name key of the activity type.
  * @param array  $args {
@@ -70,7 +70,7 @@ function bp_register_activity_type( $type, $args = array() ) {
 /**
  * Unregisters an activity type.
  *
- * @since 1.0.2
+ * @since 1.1.0
  *
  * @param  string $type The name key of the activity type.
  * @return bool|WP_Error True on success. A `WP_Error` object on failure.
@@ -243,7 +243,7 @@ function bp_activity_add_interaction( $args = '' ) {
 /**
  * Remove an activity interaction.
  *
- * @since 1.0.2
+ * @since 1.1.0
  *
  * @param integer $reaction_id   The Activity ID of the reaction.
  * @param string  $reaction_type The Activity reaction key name.

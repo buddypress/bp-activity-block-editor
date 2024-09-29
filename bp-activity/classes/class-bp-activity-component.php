@@ -4,7 +4,7 @@
  *
  * @package \bp-activity\classes\
  *
- * @since 1.0.2
+ * @since 1.1.0
  */
 
 namespace BP\Activity;
@@ -17,13 +17,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Main Activity Class.
  *
- * @since 1.0.2
+ * @since 1.1.0
  */
 class BP_Activity_Component extends \BP_Activity_Component {
 	/**
 	 * Types.
 	 *
-	 * @since 1.0.2
+	 * @since 1.1.0
 	 * @var array
 	 */
 	public $types = array();
@@ -33,7 +33,7 @@ class BP_Activity_Component extends \BP_Activity_Component {
 	/**
 	 * Start the activity component setup process.
 	 *
-	 * @since 1.0.2
+	 * @since 1.1.0
 	 */
 	public function __construct() {
 		$this->bp_path = trailingslashit( buddypress()->plugin_dir );
@@ -53,7 +53,7 @@ class BP_Activity_Component extends \BP_Activity_Component {
 	/**
 	 * Include component files.
 	 *
-	 * @since 1.0.2
+	 * @since 1.1.0
 	 *
 	 * @see BP_Component::includes() for a description of arguments.
 	 *
@@ -102,7 +102,7 @@ class BP_Activity_Component extends \BP_Activity_Component {
 	 *
 	 * Only load up certain code when on specific pages.
 	 *
-	 * @since 1.0.2
+	 * @since 1.1.0
 	 */
 	public function late_includes() {
 		// Bail if PHPUnit is running.
@@ -181,7 +181,7 @@ class BP_Activity_Component extends \BP_Activity_Component {
 	/**
 	 * Set up the actions.
 	 *
-	 * @since 1.0.2
+	 * @since 1.1.0
 	 */
 	public function setup_actions() {
 		\BP_Component::setup_actions();
@@ -192,7 +192,7 @@ class BP_Activity_Component extends \BP_Activity_Component {
 	/**
 	 * Register component navigation.
 	 *
-	 * @since 1.0.2
+	 * @since 1.1.0
 	 *
 	 * @see `BP_Component::register_nav()` for a description of arguments.
 	 *
@@ -284,7 +284,7 @@ class BP_Activity_Component extends \BP_Activity_Component {
 	/**
 	 * Set up the component entries in the WordPress Admin Bar.
 	 *
-	 * @since 1.0.2
+	 * @since 1.1.0
 	 *
 	 * @see BP_Component::setup_nav() for a description of the $wp_admin_nav
 	 *      parameter array.
@@ -391,7 +391,7 @@ class BP_Activity_Component extends \BP_Activity_Component {
 	/**
 	 * Setup cache groups.
 	 *
-	 * @since 1.0.2
+	 * @since 1.1.0
 	 */
 	public function setup_cache_groups() {
 
@@ -412,7 +412,7 @@ class BP_Activity_Component extends \BP_Activity_Component {
 	/**
 	 * Init the BP REST API.
 	 *
-	 * @since 1.0.2
+	 * @since 1.1.0
 	 *
 	 * @param array $controllers Optional. See BP_Component::rest_api_init() for
 	 *                           description.

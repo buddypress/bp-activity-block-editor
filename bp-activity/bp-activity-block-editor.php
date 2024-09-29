@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Makes sure to load the Activity Editor styles into the Block Canvas iFrame.
  *
- * @since 1.0.2
+ * @since 1.1.0
  */
 function bp_activity_enqueue_iframe_block_assets() {
 	\wp_enqueue_style( 'bp-activity-editor' );

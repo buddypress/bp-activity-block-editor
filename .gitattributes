@@ -1,8 +1,6 @@
 /.wordpress export-ignore
 /bin export-ignore
 /src export-ignore
-/src-activity-wall export-ignore
-/src-autocompleter export-ignore
 /tests export-ignore
 /.editorconfig export-ignore
 /.gitattributes export-ignore

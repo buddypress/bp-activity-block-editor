@@ -114,7 +114,7 @@ let root;
 /**
  * Generate the Actvitiiy Block Editor.
  *
- * @since 1.0.2
+ * @since 1.1.0
  *
  * @param {boolean} register True to register format & blocks. False otherwise.
  */
@@ -147,7 +147,7 @@ domReady( function() { initializeActivityEditor(); } );
  * To make sure the blocks added to the editor are removed once the user clicked
  * on the "Cancel" or "Post update" buttons, we need to unmount and recreate root.
  *
- * @since 1.0.2
+ * @since 1.1.0
  */
 const reInitializeActivityEditor = () => {
 	const target = document.querySelector( '#bp-activity-editor .block-editor' );

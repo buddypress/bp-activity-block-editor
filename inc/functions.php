@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Overrides the BuddyPress Activity component.
  *
- * @since 1.0.2
+ * @since 1.1.0
  */
 function set_up_component() {
 	$bp = \buddypress();
@@ -27,7 +27,7 @@ function set_up_component() {
 /**
  * Unset the BuddyPress Activity component to use BP Activity one.
  *
- * @since 1.0.2
+ * @since 1.1.0
  */
 function reset_component() {
 	remove_action( 'bp_setup_components', 'bp_setup_activity', 6 );

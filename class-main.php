@@ -11,7 +11,7 @@
  * Plugin Name:       BP Activity
  * Plugin URI:        https://github.com/buddypress/bp-activity-block-editor
  * Description:       Modernize the BP Activity component.
- * Version:           1.0.2
+ * Version:           1.1.0
  * Author:            The BuddyPress Community
  * Author URI:        https://buddypress.org
  * License:           GPL-2.0+

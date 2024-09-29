@@ -38,7 +38,7 @@ class bpActivityWall {
 	/**
 	 * Renders the HTML of an activity entry's actions.
 	 *
-	 * @since 1.0.2
+	 * @since 1.1.0
 	 *
 	 * @param {Object} props The activity item properties.
 	 * @return {string} HTML output.
@@ -61,7 +61,7 @@ class bpActivityWall {
 	/**
 	 * Renders the HTML of an activity entry's major actions.
 	 *
-	 * @since 1.0.2
+	 * @since 1.1.0
 	 *
 	 * @param {Object} props The activity item properties.
 	 * @return {string} HTML output.

@@ -22,7 +22,7 @@ function setup_globals() {
 	$main = bp_activity();
 
 	// Version.
-	$main->version = '1.0.2';
+	$main->version = '1.1.0';
 
 	// Path.
 	$main->dir = \plugin_dir_path( dirname( __FILE__ ) );

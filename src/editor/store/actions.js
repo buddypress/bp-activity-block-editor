@@ -24,7 +24,7 @@ export function setActiveComponents( list ) {
 /**
  * Returns the Saved Activity Promise.
  *
- * @since 1.0.2
+ * @since 1.1.0
  *
  * @param {Object} activity
  * @returns {Promise}
