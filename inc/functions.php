@@ -59,7 +59,7 @@ function bp_activity_block_editor_force_activity_component() {
  * @param BP_Activity_Activity $activity BP_Activity_Activity object.
  * @return WP_REST_Response $response The response object.
  */
-function bp_activity_wall_rest_activity_prepare_value( $response, $request, $activity ) {
+function bp_activity_stream_rest_activity_prepare_value( $response, $request, $activity ) {
 	/*$referer      = $request->get_header( 'referer' );
 	$referer_path = '';
 	if ( $referer ) {
@@ -248,7 +248,7 @@ function bp_activity_wall_rest_activity_prepare_value( $response, $request, $act
 
 	return $response;
 }
-add_filter( 'bp_rest_activity_prepare_value', __NAMESPACE__ . '\bp_activity_wall_rest_activity_prepare_value', 10, 3 );
+add_filter( 'bp_rest_activity_prepare_value', __NAMESPACE__ . '\bp_activity_stream_rest_activity_prepare_value', 10, 3 );
 
 /**
  * Fetches emojis according to given args.

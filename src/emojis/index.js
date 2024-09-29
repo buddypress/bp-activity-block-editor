@@ -14,7 +14,7 @@ const emojis = {
 		if ( search ) {
 			payload = '?search=' + encodeURIComponent( search );
 		}
-		return apiFetch( { path: '/buddypress/v1/activity-emojis' + payload } );
+		return apiFetch( { path: '/buddypress/v2/activity-emojis' + payload } );
 	},
 	isDebounced: true,
 	getOptionLabel: ( option ) => {
@@ -34,7 +34,7 @@ const appendEmojiAutoCompleter = ( completers, blockName ) => {
 
 addFilter(
 	'editor.Autocomplete.completers',
-	'bp-activity-block-editor/emojis',
+	'bp-activity/emojis',
 	appendEmojiAutoCompleter,
 	11
 );

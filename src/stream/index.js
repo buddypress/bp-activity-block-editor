@@ -32,7 +32,7 @@ class bpActivityWall {
 		this.activities = 'body' in preloadedActivity ? preloadedActivity.body : [];
 		this.member = 'body' in preloadedMember ? preloadedMember.body : {};
 		this.currentActivity = currentActivity;
-		this.container = document.querySelector( '#bp-activity-wall-items' );
+		this.container = document.querySelector( '#bp-activity-stream-items' );
 	}
 
 	/**
@@ -185,7 +185,7 @@ class bpActivityWall {
 		}
 
 		apiFetch( {
-			path: 'buddypress/v1/activity/' + activityId,
+			path: 'buddypress/v2/activity/' + activityId,
 			method: 'DELETE'
 		} ).then( ( response ) => {
 			if ( response && true === response.deleted ) {
@@ -230,7 +230,7 @@ class bpActivityWall {
 		errorDialog.querySelector( 'button' ).addEventListener( 'click', () => errorDialog.close() );
 
 		apiFetch( {
-			path: 'buddypress/v1/activity/' + activityId + '/favorite',
+			path: 'buddypress/v2/activity/' + activityId + '/favorite',
 			method: 'POST'
 		} ).then( ( response ) => {
 			if ( response && response[0] ) {
@@ -352,7 +352,7 @@ class bpActivityWall {
 	}
 }
 
-const settings = window.bpActivityWallSettings || {};
+const settings = window.bpActivityStreamSettings || {};
 window.bp = window.bp || {};
 window.bp.Activity = new bpActivityWall( settings );
 

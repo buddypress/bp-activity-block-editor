@@ -31,7 +31,7 @@ export function setActiveComponents( list ) {
  */
 export const saveActivity = ( activity ) => async ( { dispatch } ) => {
 	let inserting = true, method = 'POST';
-	let path = '/buddypress/v1/activity';
+	let path = '/buddypress/v2/activity';
 
     dispatch( { type: 'SAVE_START', inserting } );
 

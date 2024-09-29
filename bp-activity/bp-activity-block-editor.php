@@ -99,11 +99,11 @@ function bp_activity_block_editor_get_settings() {
 }
 
 function bp_activity_register_block_editor() {
-	$script_assets = require_once plugin_dir_path( __FILE__ ) . 'activity-editor/index.asset.php';
+	$script_assets = require_once plugin_dir_path( __FILE__ ) . 'assets/editor/index.asset.php';
 
 	wp_register_script(
 		'bp-activity-editor',
-		plugins_url( 'activity-editor/index.js', __FILE__ ),
+		plugins_url( 'assets/editor/index.js', __FILE__ ),
 		$script_assets['dependencies'],
 		$script_assets['version'],
 		true
@@ -111,7 +111,7 @@ function bp_activity_register_block_editor() {
 
 	wp_register_style(
 		'bp-activity-editor',
-		plugins_url( 'activity-editor/index.css', __FILE__ ),
+		plugins_url( 'assets/editor/index.css', __FILE__ ),
 		array(
 			'wp-components',
 			'wp-block-editor',
@@ -130,11 +130,11 @@ function bp_activity_register_block_editor() {
 		true
 	);*/
 
-	$autocompleter_assets = require_once plugin_dir_path( __FILE__ ) . 'autocompleter/index.asset.php';
+	$autocompleter_assets = require_once plugin_dir_path( __FILE__ ) . 'assets/emojis/index.asset.php';
 
 	wp_register_script(
-		'bp-activity-block-editor-emojis',
-		plugins_url( 'autocompleter/index.js', __FILE__ ),
+		'bp-activity-editor-emojis',
+		plugins_url( 'assets/emojis/index.js', __FILE__ ),
 		$autocompleter_assets['dependencies'],
 		$autocompleter_assets['version'],
 		true
@@ -192,11 +192,11 @@ function bp_activity_block_editor_enqueue_assets() {
 	}
 
 	$paths = array(
-		'/buddypress/v1/members/me?context=edit',
+		'/buddypress/v2/members/me?context=edit',
 	);
 
 	if ( \bp_is_active( 'groups' ) ) {
-		$paths[] = '/buddypress/v1/groups/me?context=edit';
+		$paths[] = '/buddypress/v2/groups/me?context=edit';
 	}
 
 	/**
@@ -240,7 +240,7 @@ function bp_activity_block_editor_enqueue_assets() {
 	\wp_enqueue_style( 'bp-activity-editor' );
 
 	//\wp_enqueue_script( 'bp-activity-block-editor' );
-	\wp_enqueue_script( 'bp-activity-block-editor-emojis' );
+	\wp_enqueue_script( 'bp-activity-editor-emojis' );
 
 	/*if ( defined( 'IFRAME_REQUEST' ) && isset( $_GET['url'] ) && $_GET['url'] ) { // phpcs:ignore
 		\wp_add_inline_style(

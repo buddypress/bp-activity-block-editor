@@ -12,7 +12,7 @@ import {
  */
 export function* getCurrentUser() {
 	const user = yield fetchFromAPI(
-		'/buddypress/v1/members/me?context=edit',
+		'/buddypress/v2/members/me?context=edit',
 		true
 	);
 	yield getCurrentUserSelector( user );
@@ -23,7 +23,7 @@ export function* getCurrentUser() {
  */
 export function* getUserGroups() {
 	const groups = yield fetchFromAPI(
-		'/buddypress/v1/groups/me?context=edit',
+		'/buddypress/v2/groups/me?context=edit',
 		true
 	);
 	yield getUserGroupsSelector( groups );

@@ -421,7 +421,6 @@ class BP_Activity_Component extends \BP_Activity_Component {
 		\BP_Component::rest_api_init(
 			array(
 				__NAMESPACE__ . '\BP_Activity_REST_Controller',
-				__NAMESPACE__ . '\BP_Members_REST_Controller',
 			)
 		);
 	}

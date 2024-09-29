@@ -30,26 +30,26 @@ function bp_activity_admin_register_block_editor() {
  *
  * @since 1.0.0
  */
-function bp_activity_admin_register_wall() {
-	$plugin_version = bp_activity()->version;
+function bp_activity_admin_register_stream() {
+	$script_assets = require_once plugin_dir_path( __FILE__ ) . 'assets/stream/index.asset.php';
 
 	wp_register_script(
-		'bp-activity-wall',
-		plugins_url( 'activity-wall/index.js', __FILE__ ),
-		array( 'lodash', 'wp-dom-ready', 'wp-i18n', 'wp-url', 'wp-api-fetch' ),
-		$plugin_version,
+		'bp-activity-stream',
+		plugins_url( 'assets/stream/index.js', __FILE__ ),
+		$script_assets['dependencies'],
+		$script_assets['version'],
 		true
 	);
 
 	wp_register_style(
-		'bp-activity-wall',
-		plugins_url( 'activity-wall/style-index.css', __FILE__ ),
+		'bp-activity-stream',
+		plugins_url( 'assets/stream/style-index.css', __FILE__ ),
 		array( 'bp-admin-common-css', 'dashicons' ),
-		$plugin_version
+		$script_assets['version']
 	);
 
 	add_action( 'bp_admin_enqueue_scripts', __NAMESPACE__ . '\bp_activity_admin_enqueue_assets', 9 );
-	add_action( 'admin_footer', __NAMESPACE__ . '\bp_activity_admin_print_wall_templates' );
+	add_action( 'admin_footer', __NAMESPACE__ . '\bp_activity_admin_print_stream_templates' );
 }
 
 /**
@@ -59,7 +59,7 @@ function bp_activity_admin_register_wall() {
  */
 function bp_activity_admin_load_screen() {
 	bp_activity_admin_register_block_editor();
-	bp_activity_admin_register_wall();
+	bp_activity_admin_register_stream();
 
 	/**
 	 * This hook is used to register blocks for the BuddyPress Activity Block Editor.
@@ -137,7 +137,7 @@ function bp_activity_admin_load_single_screen() {
 		}
 
 		if ( ! $is_edit ) {
-			bp_activity_admin_register_wall();
+			bp_activity_admin_register_stream();
 		}
 
 		/**
@@ -157,7 +157,7 @@ function bp_activity_admin_load_single_screen() {
  * @since 1.0.0
  */
 function bp_activity_admin_enqueue_assets() {
-	wp_enqueue_style( 'bp-activity-wall' );
+	wp_enqueue_style( 'bp-activity-stream' );
 
 	// Check if we're displaying an activity.
 	$activity = bp_activity()->view_activity;
@@ -219,8 +219,8 @@ function bp_activity_admin_enqueue_assets() {
 		}
 	}
 
-	wp_enqueue_script( 'bp-activity-wall' );
-	wp_localize_script( 'bp-activity-wall', 'bpActivityWallSettings', $script_strings );
+	wp_enqueue_script( 'bp-activity-stream' );
+	wp_localize_script( 'bp-activity-stream', 'bpActivityStreamSettings', $script_strings );
 }
 
 /**
@@ -314,12 +314,12 @@ function bp_activity_admin_screen() {
 			<!-- Testing a tiny editor. -->
 			<div id="bp-activity-editor" class="popunder"></div>
 			<div id="bp-activity-block-editor-notices"></div>
-			<div id="bp-activity-wall-items"></div>
+			<div id="bp-activity-stream-items"></div>
 		<?php
 	} else {
 		?>
 			<div id="bp-activity-view"></div>
-			<div id="bp-activity-wall-items"></div>
+			<div id="bp-activity-stream-items"></div>
 			<div id="bp-activity-block-editor"></div>
 			<div id="bp-activity-block-editor-notices"></div>
 		<?php
@@ -334,8 +334,8 @@ function bp_activity_admin_screen() {
  *
  * @since .1.0.0
  */
-function bp_activity_admin_print_wall_templates() {
-	require_once plugin_dir_path( __FILE__ ) . 'bp-activity-wall-templates.php';
+function bp_activity_admin_print_stream_templates() {
+	require_once plugin_dir_path( __FILE__ ) . 'bp-activity-stream-templates.php';
 }
 
 /**
