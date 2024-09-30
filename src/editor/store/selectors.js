@@ -96,5 +96,5 @@ export const getActivityGroup = ( state ) => {
  * @return {boolean} True if an activity can be commented.
  */
 export const canReplytoActivity = ( state )  => {
-	return state.canReply || true;
+	return state.canReply;
 };

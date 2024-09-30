@@ -3,7 +3,6 @@
  */
 import {
 	createRoot,
-	unmount,
 	useCallback,
 	useEffect,
 	useRef,
@@ -79,7 +78,6 @@ const Editor = ( { settings } ) => {
 	const resetEditor = () => {
 		resetActivity();
 		resetJustPostedActivity();
-		reInitializeActivityEditor();
 		documentRef.current.querySelector( '#bp-activity-editor' ).classList.add( 'popunder' );
 		documentRef.current.querySelector( '#bp-activity-post-form' ).classList.remove( 'popunder' );
 	}
@@ -108,54 +106,21 @@ const Editor = ( { settings } ) => {
 	);
 }
 
-// We need to edit root.
-let root;
-
 /**
  * Generate the Actvitiiy Block Editor.
  *
  * @since 1.1.0
- *
- * @param {boolean} register True to register format & blocks. False otherwise.
  */
-const initializeActivityEditor = ( register = true ) => {
+domReady( function() {
 	const target = document.querySelector( '#bp-activity-editor' );
-
-	// Create a node after the textarea
-	const activityEditor = document.createElement( 'div' );
-	activityEditor.classList.add( 'block-editor' );
-
-	target.append( activityEditor );
-
-	root = createRoot( activityEditor );
+	const root = createRoot( target );
 	const settings = window.bpActivityEditor || {};
 
-	if ( register ) {
-		setDefaultActivityBlocks();
-		setDefaultActivityFormats();
-	}
+	setDefaultActivityBlocks();
+	setDefaultActivityFormats();
 
 	root.render( <Editor settings={ settings } /> );
-}
-domReady( function() { initializeActivityEditor(); } );
-
-/**
- * Recreate root once unmounted.
- *
- * Block Editor's resetBlocks() has no effect on Block Canvas.
- *
- * To make sure the blocks added to the editor are removed once the user clicked
- * on the "Cancel" or "Post update" buttons, we need to unmount and recreate root.
- *
- * @since 1.1.0
- */
-const reInitializeActivityEditor = () => {
-	const target = document.querySelector( '#bp-activity-editor .block-editor' );
-	root.unmount();
-	target.remove();
-
-	initializeActivityEditor( false );
-}
+} );
 
 addFilter(
 	'blocks.registerBlockType',

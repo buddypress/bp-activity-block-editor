@@ -34,12 +34,9 @@ const SettingsPopover = () => {
 	const canReply = useSelect( ( select ) => {
 		return select( BP_ACTIVITY_STORE_KEY ).canReplytoActivity();
 	}, [] );
-	const [ isChecked, setIsChecked ] = useState( canReply );
 
 	const setCanReply = () => {
-		const checked = ! isChecked;
-		setIsChecked( checked );
-		setActivityReplies( checked );
+		setActivityReplies( ! canReply );
 	}
 
 	return (
@@ -63,7 +60,7 @@ const SettingsPopover = () => {
 								<CheckboxControl
 									label={ __( 'Allow replies', 'bp-activity' ) }
 									help={ __( 'Deactivating this setting will prevent other community members to comment your update.', 'bp-activity' ) }
-									checked={ isChecked }
+									checked={ canReply }
 									onChange={ setCanReply }
 								/>
 							</PanelRow>
